@@ -142,7 +142,7 @@ fn assert_required_terminal(
 }
 
 #[test]
-fn actual_function_and_fresh_qsl_session_agree() {
+fn actual_function_and_fresh_fsl_session_agree() {
     let dependencies = DependencyInput::default();
     // This authority is a fresh acquisition; it does not reuse a generated
     // prepared body, expected label, serialized output or manually charged call.

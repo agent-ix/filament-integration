@@ -3,19 +3,19 @@ id: IT-016
 title: "Carry producer-origin identity into exact runtime observations"
 type: IT
 relationships:
-  - target: ix://agent-ix/quire-contract-runtime/FR-012
+  - target: ix://agent-ix/filament-contract-runtime/FR-012
     type: verifies
-  - target: ix://agent-ix/quire-contract-runtime/FR-007
+  - target: ix://agent-ix/filament-contract-runtime/FR-007
     type: verifies
-  - target: ix://agent-ix/quire-contract-runtime/FR-008
+  - target: ix://agent-ix/filament-contract-runtime/FR-008
     type: verifies
-  - target: ix://agent-ix/quire-contract-runtime/FR-011
+  - target: ix://agent-ix/filament-contract-runtime/FR-011
     type: verifies
-  - target: ix://agent-ix/quire-contract-runtime/FR-273
+  - target: ix://agent-ix/filament-contract-runtime/FR-273
     type: verifies
-  - target: ix://agent-ix/quire-contract-runtime/FR-275
+  - target: ix://agent-ix/filament-contract-runtime/FR-275
     type: verifies
-  - target: ix://agent-ix/quire-contract-runtime/FR-277
+  - target: ix://agent-ix/filament-contract-runtime/FR-277
     type: verifies
 ---
 # IT-016: Carry producer-origin identity into exact runtime observations
@@ -24,26 +24,26 @@ relationships:
 
 Restore the identity-sensitive observations moved from RT's TC-033, TC-201,
 TC-203, TC-025/TC-026 and TC-194 tests. Their semantic node keys must originate
-in a QSL-admitted checked package, survive contract IR reading, and designate the
-same owners when QSV, quire-exact and RT consume them. The test must retain each
+in a FSL-admitted checked package, survive contract IR reading, and designate the
+same owners when FSV, filament-exact and RT consume them. The test must retain each
 value, refusal, charge and ordering oracle named in IR-1175; moving a fixture
 does not retire its acceptance criterion.
 
 ## Target Integration
 
-QSL source and its runnable checked-package V2 producer → emitted bytes →
+FSL source and its runnable checked-package V2 producer → emitted bytes →
 contract IR checked-package reader → admitted declaration, member, unit,
-expression and function identities → QSV / quire-exact / RT public entry points.
+expression and function identities → FSV / filament-exact / RT public entry points.
 The source of each semantic key is the admitted package, including for negative
 tests whose *operation* is malformed after admission.
-Unit identity controls may instead use QSL's public admitted context from the
+Unit identity controls may instead use FSL's public admitted context from the
 same real producer run. This retained-context route includes checked but unused
 unit declarations; it is distinct from a claim that their nodes occur in the
 emitted bytes or pass the strict reader.
 
 ## Preconditions
 
-Use the QSL checkout selected by this repository's Cargo lock and its installed
+Use the FSL checkout selected by this repository's Cargo lock and its installed
 `emit_checked_v2` example. Emit the checked package during the test from authored
 source, then read those bytes with the locked contract IR reader. Refusal or
 absence of the producer, reader, or required declaration is a test failure, not
@@ -52,18 +52,18 @@ revision. The test report identifies the producer command, application version
 and observed outcome, and points to that lock for the source revision; it adds
 no separate revision record. Neither package bytes nor derived identity values
 are frozen as fixtures.
-For retained-context unit controls, compile authored source through QSL's
+For retained-context unit controls, compile authored source through FSL's
 `compile_admitted` facade and take the checked unit facts from its
-`AdmittedContext`. Build the QSV unit graph from those same checked facts. A
+`AdmittedContext`. Build the FSV unit graph from those same checked facts. A
 strict-reader claim requires a separate emitted-byte check that locates every
 root used by that claim in the canonical bytes.
 
 ## Inputs
 
 Author source for the unit, enum, quantity, composite and function scenarios
-needed by the RT test rows listed below. Read any QSL-owned corpus directly from
+needed by the RT test rows listed below. Read any FSL-owned corpus directly from
 its locked checkout. Use admitted structural identities from emitted packages
-for strict-reader controls, or from the same QSL compilation's retained
+for strict-reader controls, or from the same FSL compilation's retained
 `AdmittedContext` for the checked-unused-unit handoff control. Never construct
 semantic node keys from a digest, byte string or constituent parts in an RT
 test. Vary malformed operations and meter limits while retaining the real

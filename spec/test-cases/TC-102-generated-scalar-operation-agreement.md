@@ -3,9 +3,9 @@ id: TC-102
 title: "Execute generated Boolean, Integer, Rational, Decimal, IEEE and Text scalar operations"
 type: TC
 relationships:
-  - target: ix://agent-ix/quire-integration/IT-019
+  - target: ix://agent-ix/filament-integration/IT-019
     type: references
-  - target: ix://agent-ix/quire-contract-codegen/FR-014
+  - target: ix://agent-ix/filament-contract-codegen/FR-014
     type: references
 ---
 # TC-102: Execute generated Boolean, Integer, Rational, Decimal, IEEE and Text scalar operations
@@ -13,14 +13,14 @@ relationships:
 ## Description
 
 Qualify selected SC-05 ExactScalar operation rows against independently checked
-QSL operation bodies. This operation boundary is distinct from FR-021 whole-call
+FSL operation bodies. This operation boundary is distinct from FR-021 whole-call
 sessions. The same original checked body supplies CG's emitted claim and
-public QSL checked-body evaluation after an independent source acquisition.
+public FSL checked-body evaluation after an independent source acquisition.
 Neither evaluator is reproduced.
 
 ## Test Procedure
 
-1. Check original QSL source, emit its exact checked-package/v2 bytes and strictly
+1. Check original FSL source, emit its exact checked-package/v2 bytes and strictly
    admit them. Select each function's original body using the shared
    declaration selector. Derive scalar items and require genuine generated claims
    with original node identities.
@@ -54,20 +54,20 @@ Neither evaluator is reproduced.
    a second input pair per body at the admitted empty and 16-scalar bounds;
    these pairs cover equality, inequality and ordering at both endpoints.
    Require independent Boolean answers, source locations on exhausted work and the
-   complete native/QSL comparison observations.
+   complete native/FSL comparison observations.
 7. Evaluate genuine parameterized Rational Add, Subtract, Multiply and Negate
    bodies with `Rational[-9,9;1,9]` operands and a separately declared
    `Rational[-200,200;1,200]` result. Use noninteger fractions, including
    `1/2 + 1/3 = 5/6`, `4/3 - 7/2 = -13/6`, `2/3 * 3/4 = 1/2` and
    `-(7/3) = -7/3`. Require the actual derived RationalArithmetic claim and
-   complete native/QSL agreement at work 0, 1 and 1024.
+   complete native/FSL agreement at work 0, 1 and 1024.
 8. Add Integer LessOrEqual and GreaterOrEqual, operand-endpoint cases for every
    Integer body (`9 + 9`, `-9 - 9`, `-9 * 9`, negating `-9`, equal, reversed
    and endpoint ordering pairs), and Rational Divide (`Rational[1,9;1,9]`
    divisor), IntegerDivide (`Int[1,9]` divisor) and the four Rational orderings.
 9. Evaluate Decimal Add, Subtract, Multiply, Negate and the four orderings over
    `Decimal[-1000,1000;0,2;exact]` operands, literal-divisor Divide bodies
-   (QSL requires a provably nonzero divisor) including an out-of-domain
+   (FSL requires a provably nonzero divisor) including an out-of-domain
    refusal, and `convert<Decimal[-9,9;0,0;mode]>` for every rounding mode over
    2.5 and -2.5. Require authored coefficients and scales for completed cases
    and the Decimal loss list in every comparison.
@@ -79,7 +79,7 @@ Neither evaluator is reproduced.
     bit patterns.
 11. Admit the standalone `acme/colors` model with the four original enum
     comparisons (`Red = Red`, `Red = Green`, `Red != Red`, `Red != Green`)
-    through QSL and IR, derive each application as an enum comparison with the
+    through FSL and IR, derive each application as an enum comparison with the
     catalogued `quire.op.enum.eq` or `quire.op.enum.ne` identity and generate the
     oracles. Take the genuine `Red` and `Green` model members as native operands
     (the language has no ordering on enums). Evaluate each original body with the
@@ -98,7 +98,7 @@ derivation. These selected cases make no whole-family claim.
 ## Expected Results
 
 Every selected generated symbol executes natively and agrees with its independent
-QSL operation authority on the complete exposed observation. Independent Boolean
+FSL operation authority on the complete exposed observation. Independent Boolean
 truth values distinguish matching wrong computations. Exhausted
 work preserves the typed stop and all accounting without normalization.
 At work zero, connectives stop at BooleanResultRetain with next charge 1;

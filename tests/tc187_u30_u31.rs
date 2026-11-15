@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-//! Public TC-187 U30/U31 quantity type admission through QSL intake.
+//! Public TC-187 U30/U31 quantity type admission through FSL intake.
 
 use ix_trace_rs::trace;
 use qsl_foundation::SourceIdentity;
@@ -136,8 +136,8 @@ fn assert_check_mismatch(declarations: &str, selected: &str) {
     );
 }
 
-/// Trace: QSpec-TC-187 and QSpec-FR-142-AC-11. Unit types and namespace misses.
-#[trace("QSpec-TC-187", "QSpec-FR-142-AC-11")]
+/// Trace: FSpec-TC-187 and FSpec-FR-142-AC-11. Unit types and namespace misses.
+#[trace("FSpec-TC-187", "FSpec-FR-142-AC-11")]
 #[test]
 fn public_u30_quantity_parameter_uses_ms_and_refuses_other_units_or_names() {
     public_cell(
@@ -183,8 +183,8 @@ fn public_u30_quantity_parameter_uses_ms_and_refuses_other_units_or_names() {
     );
 }
 
-/// Trace: QSpec-TC-187 and QSpec-FR-142-AC-12. The result retains ms.
-#[trace("QSpec-TC-187", "QSpec-FR-142-AC-12")]
+/// Trace: FSpec-TC-187 and FSpec-FR-142-AC-12. The result retains ms.
+#[trace("FSpec-TC-187", "FSpec-FR-142-AC-12")]
 #[test]
 fn public_u31_result_names_ms_and_refuses_a_converted_s_result() {
     public_cell(

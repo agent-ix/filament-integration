@@ -3,18 +3,18 @@ id: TC-100
 title: "Construct a real produced monitor and reject adverse intake"
 type: TC
 relationships:
-  - target: ix://agent-ix/quire-driver/FR-015
+  - target: ix://agent-ix/filament-driver/FR-015
     type: verifies
-  - target: ix://agent-ix/quire-driver/FR-016
+  - target: ix://agent-ix/filament-driver/FR-016
     type: references
-  - target: ix://agent-ix/quire-contract-runtime/FR-276
+  - target: ix://agent-ix/filament-contract-runtime/FR-276
     type: verifies
 ---
 # TC-100: Construct a real produced monitor and reject adverse intake
 
 ## Description
 
-Qualify the IR-721 AC3 construction handoff from genuine QSL production through
+Qualify the IR-721 AC3 construction handoff from genuine FSL production through
 strict IR admission and the driver to RT. The first executable contribution prepares the changed-target and
 unsupported-instruction controls. Full IR-721 AC3 still requires the healthy
 FR-276-AC-6 construction and all FR-276-AC-7 adverse cases listed below. A
@@ -24,14 +24,14 @@ Event/watermark execution is a separate qualification.
 
 ## Test Procedure
 
-1. Read the QSL-owned ConfigVersion model unchanged by reference. Author a
+1. Read the FSL-owned ConfigVersion model unchanged by reference. Author a
    bounded timed clause and explicit target, and invoke public
-   `qsl_analyze::monitor_root::emit_plan_root`. Strictly admit the exact final
+   `fsl_analyze::monitor_root::emit_plan_root`. Strictly admit the exact final
    emission with its original evidence and model document. Preserve the plan,
    root and four entry content keys, authentic occurrence and producer
    witnesses. No synthetic plan or executable arena supplies the positive case.
 2. Generate the same entry source with the public `monitor_entries` generator,
-   check it through QSL and emit with `emit_monitor_plan_over`. Require that
+   check it through FSL and emit with `emit_monitor_plan_over`. Require that
    the unmodified route reproduces the original final emission exactly.
    In a separate source, change only the generated initializer's Integer
    zero expression to `0 mod 1`. Check and emit that source through the same
@@ -55,7 +55,7 @@ Event/watermark execution is a separate qualification.
 3. Prepare the healthy admitted root using the driver's public owning entry
    and independent authentic selection, exact target and operating allowances.
    Require success before interpreting any negative control as qualifying.
-   Drop source, QSL/IR and driver preparation objects while retaining only the
+   Drop source, FSL/IR and driver preparation objects while retaining only the
    RT-owned program, then call RT `build` twice with explicit operating budgets.
    Assert the prescribed initialized state and independent state ownership;
    build consumes no event and produces no verdict.
@@ -99,13 +99,13 @@ this test invents neither an API nor a diagnostic type.
 | Required control | Observed boundary and ownership | Status |
 | --- | --- | --- |
 | Healthy final plan after preparation objects are dropped; two independent builds | Driver FR-015 returns the complete owned program; RT FR-276 runs its real initializer | Planned |
-| Foreign atom or operand and equal numeric subformula under another subject | QSL retains complete subject/body identity; IR resolves real references; driver FR-015 binds the independent original selection | Planned |
+| Foreign atom or operand and equal numeric subformula under another subject | FSL retains complete subject/body identity; IR resolves real references; driver FR-015 binds the independent original selection | Planned |
 | Missing entry body | IR strict monitor/function closure admission before preparation; driver never initializes a refused input | Planned |
 | Changed initializer under original selection | Producer assigns the actual changed entry/root keys; driver binds them against the independent original selected identity | Planned |
-| Foreign interval or buffer owner; changed activation binding | QSL retains original topology and activation; IR validates reached buffer owners and entry shape; driver binds the independently selected plan | Planned |
+| Foreign interval or buffer owner; changed activation binding | FSL retains original topology and activation; IR validates reached buffer owners and entry shape; driver binds the independently selected plan | Planned |
 | Changed uncertainty, counter, counter width, tick unit, maximum gap or event rate | IR retains valid exact premises; driver rejects an otherwise valid differing premise under the unchanged original target and selection | Planned |
 | Changed buffer or activation capacity | IR retains exact capacities and their owners; driver compares the independent original capacity premises without recomputing them | Planned |
-| Reachable unsupported ordinary entry instruction | QSL and IR admit the separately emitted entry and its fresh identity; driver FR-015 returns typed Unsupported at that actual locus before init | Planned |
+| Reachable unsupported ordinary entry instruction | FSL and IR admit the separately emitted entry and its fresh identity; driver FR-015 returns typed Unsupported at that actual locus before init | Planned |
 | Native RT allocation or initialization stop | RT build returns its original typed failure with no monitor, using the genuine retained program and explicit operating allowances | Planned |
 
 
@@ -118,7 +118,7 @@ hand-built `ProgramParts`, unavailable-seam skip or test-only evaluator supplies
 missing meaning.
 
 Status: Planned for the complete construction and adverse intake handoff under
-IR-721. The two `monitor_program_adverse` tests pass on the refreshed QSL main
+IR-721. The two `monitor_program_adverse` tests pass on the refreshed FSL main
 dependency after the upstream fix.
 Executed evidence covers the genuine final PlanRoot production and unchanged
 entry-source reproduction; separately produced, selected-initializer-reachable

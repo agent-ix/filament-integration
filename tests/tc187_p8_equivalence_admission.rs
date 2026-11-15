@@ -268,7 +268,7 @@ fn admitted(body: &str, pairs: &[(&str, [&str; 2], Rational)], keys: &Keys) -> E
     classes
 }
 
-#[trace("TC-111", "QSpec-TC-187", "QSpec-FR-142-AC-22")]
+#[trace("TC-111", "FSpec-TC-187", "FSpec-FR-142-AC-22")]
 #[test]
 fn public_u37_is_bound_by_reference() {
     let rows: Vec<_> = vectors_of(TestCase::Tc187)
@@ -322,7 +322,7 @@ fn public_u37_is_bound_by_reference() {
     }
 }
 
-#[trace("TC-111", "QSpec-TC-187", "QSpec-FR-142-AC-22")]
+#[trace("TC-111", "FSpec-TC-187", "FSpec-FR-142-AC-22")]
 #[test]
 fn basic_pairs_names_and_self_pair_keep_native_identity_and_locus() {
     let keys = Keys::control();
@@ -383,7 +383,7 @@ fn basic_pairs_names_and_self_pair_keep_native_identity_and_locus() {
     );
 }
 
-#[trace("TC-111", "QSpec-TC-187", "QSpec-FR-142-AC-22")]
+#[trace("TC-111", "FSpec-TC-187", "FSpec-FR-142-AC-22")]
 #[test]
 fn duplicate_pairs_keep_both_original_declarations_in_either_order() {
     for reverse in [
@@ -418,7 +418,7 @@ fn duplicate_pairs_keep_both_original_declarations_in_either_order() {
     }
 }
 
-#[trace("TC-111", "QSpec-TC-187", "QSpec-FR-142-AC-22")]
+#[trace("TC-111", "FSpec-TC-187", "FSpec-FR-142-AC-22")]
 #[test]
 fn wrong_units_values_affine_offset_and_area_keep_full_typed_payloads() {
     let keys = Keys::control();
@@ -498,7 +498,7 @@ fn wrong_units_values_affine_offset_and_area_keep_full_typed_payloads() {
     );
 }
 
-#[trace("TC-111", "QSpec-TC-187", "QSpec-FR-142-AC-22")]
+#[trace("TC-111", "FSpec-TC-187", "FSpec-FR-142-AC-22")]
 #[test]
 fn dur_uses_base_authority_before_derived_phase_in_both_source_orders() {
     let keys = Keys::control();
@@ -536,7 +536,7 @@ fn dur_uses_base_authority_before_derived_phase_in_both_source_orders() {
     }
 }
 
-#[trace("TC-111", "QSpec-TC-187", "QSpec-FR-142-AC-22")]
+#[trace("TC-111", "FSpec-TC-187", "FSpec-FR-142-AC-22")]
 #[test]
 fn speeds_require_both_base_pairs_and_exact_ratio_in_all_phase_orders() {
     let keys = Keys::control();
@@ -604,7 +604,7 @@ fn speeds_require_both_base_pairs_and_exact_ratio_in_all_phase_orders() {
     }
 }
 
-#[trace("TC-111", "QSpec-TC-187", "QSpec-FR-142-AC-22")]
+#[trace("TC-111", "FSpec-TC-187", "FSpec-FR-142-AC-22")]
 #[test]
 fn abc_cycles_preserve_sizes_and_actual_closing_locus_when_reversed() {
     let keys = Keys::control();

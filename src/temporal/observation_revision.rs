@@ -106,7 +106,7 @@ impl ObservationAdmissionError {
 ///
 /// Retains the actual admitted historical bundle, independently admitted selected
 /// observation and exact previous receipt. Bundle lineage does not establish
-/// selected observation-document lineage, QSL capture binding or result lineage.
+/// selected observation-document lineage, FSL capture binding or result lineage.
 #[derive(Debug)]
 pub struct AdmittedObservationRevision<'a> {
     bundle: bundle::View,

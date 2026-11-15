@@ -3,17 +3,17 @@ id: IT-008
 title: "Execute native Boolean projections through the existing backend"
 type: IT
 relationships:
-  - target: ix://agent-ix/quire-spec-language/FR-009
+  - target: ix://agent-ix/filament-spec-language/FR-009
     type: verifies
-  - target: ix://agent-ix/quire-spec-language/FR-029
+  - target: ix://agent-ix/filament-spec-language/FR-029
     type: verifies
 ---
 # IT-008: Execute native Boolean projections through the existing backend
 
 ## Current Status
 
-The V1 QSL projection inputs used by the former composition test were removed
-from the locked QSL API. Its test binary was retired; IT-008-SC-01 through
+The V1 FSL projection inputs used by the former composition test were removed
+from the locked FSL API. Its test binary was retired; IT-008-SC-01 through
 IT-008-SC-04 have no current integration test and remain unmet. IT-013-SC-03
 generates one V2 Boolean negation claim, but does not establish Boolean parity
 or LLVM activation. The procedure below preserves the intended integration
@@ -25,11 +25,11 @@ remains open.
 
 Expose frontend/backend truth or implication-activation drift on actual compiled
 output. This bounded Boolean milestone does not close the full ConfigVersion
-workflow in QSL's IT-002 (`ix://agent-ix/quire-spec-language/IT-002`).
+workflow in FSL's IT-002 (`ix://agent-ix/filament-spec-language/IT-002`).
 
 ## Target Integration
 
-Native parse/link/check/package/lower → contract IR wire reader → quire-contract-codegen
+Native parse/link/check/package/lower → contract IR wire reader → filament-contract-codegen
 → generated Rust, generated proptest strategy and runtime operators. Native
 validation/evaluation supplies the reference result; actual LLVM coverage
 supplies generated activation for the exact admitted fixture profile.
@@ -49,9 +49,9 @@ and negation. Use independently specified truth and activation expectations.
 ## Test Procedure
 
 The following was the V1 procedure. It cannot execute against the current
-locked QSL API and supplies no passing evidence for the scenarios below.
+locked FSL API and supplies no passing evidence for the scenarios below.
 
-1. Produce and lower the actual checked native package, including through QSL's
+1. Produce and lower the actual checked native package, including through FSL's
    `lower` command path, which exports exactly the lowered bytes.
    IT-008-SC-01: every authored clause and native source locus survives binding.
 2. Consume the exact emitted wire through the contract IR reader and invoke

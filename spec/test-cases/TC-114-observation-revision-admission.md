@@ -3,7 +3,7 @@ id: TC-114
 title: "Exact observation selection and bundle predecessor admission"
 type: TC
 relationships:
-  - target: ix://agent-ix/quire-integration/IT-021
+  - target: ix://agent-ix/filament-integration/IT-021
     type: verifies
 ---
 # TC-114: Exact observation selection and bundle predecessor admission

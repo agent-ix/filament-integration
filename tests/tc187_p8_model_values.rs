@@ -106,7 +106,7 @@ fn original_local(
         .clone()
 }
 
-#[trace("TC-113", "QSpec-TC-187", "QSpec-FR-142-AC-21")]
+#[trace("TC-113", "FSpec-TC-187", "FSpec-FR-142-AC-21")]
 #[test]
 fn u36_calls_and_incompatible_operations_keep_original_source_loci() {
     model::bind(
@@ -166,7 +166,7 @@ fn u36_calls_and_incompatible_operations_keep_original_source_loci() {
     mismatch("dimension Dur = R::Time; unit dsec : Dur = rational(1, 1); function observe using v(): Quantity<dsec> pure { convert<Quantity<dsec>>(3 R::s) }", false, "convert<Quantity<dsec>>(3 R::s)");
 }
 
-#[trace("TC-113", "QSpec-TC-187", "QSpec-FR-142-AC-21")]
+#[trace("TC-113", "FSpec-TC-187", "FSpec-FR-142-AC-21")]
 #[test]
 fn u36_native_incompatibility_refuses_before_every_charge() {
     model::bind(
@@ -271,7 +271,7 @@ fn agree(package: &CheckedPackage, whole: bool, native: &Outcome<Quantity>, nati
         formed_units,
         &mut meter,
     )
-    .expect("original closed QSL stage");
+    .expect("original closed FSL stage");
     let FamilyOutcome::Evaluated(outcome) = evaluation.outcome else {
         panic!("original value stage");
     };
@@ -299,7 +299,7 @@ fn agree(package: &CheckedPackage, whole: bool, native: &Outcome<Quantity>, nati
     );
 }
 
-#[trace("TC-113", "QSpec-TC-187", "QSpec-FR-142-AC-21")]
+#[trace("TC-113", "FSpec-TC-187", "FSpec-FR-142-AC-21")]
 #[test]
 fn u36_quotients_and_products_preserve_native_canonical_maps_and_ledgers() {
     model::bind(
@@ -407,7 +407,7 @@ fn u36_quotients_and_products_preserve_native_canonical_maps_and_ledgers() {
     );
 }
 
-#[trace("TC-113", "QSpec-TC-187", "QSpec-FR-142-AC-21")]
+#[trace("TC-113", "FSpec-TC-187", "FSpec-FR-142-AC-21")]
 #[test]
 fn u36_original_whole_let_bridges_compound_to_dur_with_complete_ledger() {
     model::bind(
@@ -542,7 +542,7 @@ fn admitted_equivalences(body: &str, clock: bool, pairs: &[(&str, [&str; 2], Rat
     }
 }
 
-#[trace("TC-113", "QSpec-TC-187", "QSpec-FR-142-AC-23", "QSpec-FR-142-AC-26")]
+#[trace("TC-113", "FSpec-TC-187", "FSpec-FR-142-AC-23", "FSpec-FR-142-AC-26")]
 #[test]
 fn u38_u40_original_ratio_spellings_and_three_root_classes_admit() {
     model::bind(
@@ -605,7 +605,7 @@ fn u38_u40_original_ratio_spellings_and_three_root_classes_admit() {
     );
 }
 
-#[trace("TC-113", "QSpec-TC-187", "QSpec-FR-142-AC-26")]
+#[trace("TC-113", "FSpec-TC-187", "FSpec-FR-142-AC-26")]
 #[test]
 fn u40_conflicting_cycle_retains_every_original_declaration_in_order() {
     model::bind(
@@ -646,7 +646,7 @@ fn u40_conflicting_cycle_retains_every_original_declaration_in_order() {
     );
 }
 
-#[trace("TC-113", "QSpec-TC-187", "QSpec-FR-142-AC-24")]
+#[trace("TC-113", "FSpec-TC-187", "FSpec-FR-142-AC-24")]
 #[test]
 fn u38_missing_mass_unit_and_unanchored_force_keep_original_named_causes() {
     model::bind(
@@ -697,7 +697,7 @@ fn u38_missing_mass_unit_and_unanchored_force_keep_original_named_causes() {
 const TORQUE: &str = "dimension Length; unit m : Length = rational(1, 1); dimension Mass; unit kg : Mass = rational(1, 1); dimension Torque = Length ^ 2 * Mass / Time ^ 2; dimension Energy = Length ^ 2 * Mass / Time ^ 2; unit N_m : Torque = rational(1, 1); unit J : Energy = rational(1, 1);";
 const TE: &str = "dimension Torque ~ Energy by 1 N_m = 1 J;";
 
-#[trace("TC-113", "QSpec-TC-187", "QSpec-FR-142-AC-24")]
+#[trace("TC-113", "FSpec-TC-187", "FSpec-FR-142-AC-24")]
 #[test]
 fn u38_derived_equivalence_admission_and_invalid_ratio_keep_original_dimensions() {
     model::bind(
@@ -770,7 +770,7 @@ fn u38_derived_equivalence_admission_and_invalid_ratio_keep_original_dimensions(
     no_charge(&meter);
 }
 
-#[trace("TC-113", "QSpec-TC-187", "QSpec-FR-142-AC-23", "QSpec-FR-142-AC-26")]
+#[trace("TC-113", "FSpec-TC-187", "FSpec-FR-142-AC-23", "FSpec-FR-142-AC-26")]
 #[test]
 fn u38_u40_unconverted_source_operations_and_unrelated_conversion_refuse() {
     model::bind(
@@ -888,7 +888,7 @@ fn characterize_missing_equivalent_conversion(
     println!("{id} characterization only; intended {expected} remains Planned; source={source:?}; checker=IllTyped(TypeMismatch) at original conversion body; rows={:?}; R={r:?}; target={target:?}; classes={classes:?}; native={result:?}; charges={:?}; counters={:?}",original.dimension_equivalences,meter.admitted_charges(),LimitKind::ALL.map(|kind|(kind,meter.consumed(kind))));
 }
 
-#[trace("TC-113", "QSpec-TC-187")]
+#[trace("TC-113", "FSpec-TC-187")]
 #[test]
 fn characterize_u38_checked_and_native_conversion_missing_equivalence_effect() {
     characterize_missing_equivalent_conversion(
@@ -902,7 +902,7 @@ fn characterize_u38_checked_and_native_conversion_missing_equivalence_effect() {
     );
 }
 
-#[trace("TC-113", "QSpec-TC-187")]
+#[trace("TC-113", "FSpec-TC-187")]
 #[test]
 fn characterize_u40_checked_and_native_conversion_missing_equivalence_effect() {
     characterize_missing_equivalent_conversion(

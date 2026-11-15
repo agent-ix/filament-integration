@@ -467,7 +467,7 @@ fn observe() {{ let graph={}; let table=UnitTable::declared(&graph);
             match value {
                 quire_exact::Value::Quantity(quantity) => {
                     if let Some(key) = quantity.unit().declared_key() {
-                        // The emitted declared quantity type must join the original QSL key.
+                        // The emitted declared quantity type must join the original FSL key.
                         assert!(package
                             .graph()
                             .nodes
@@ -541,7 +541,7 @@ fn observe() {{ let graph={}; let table=UnitTable::declared(&graph);
     let actual = super::generated_oracle::execute(&output.artifacts, &driver);
     assert_eq!(
         actual, expected,
-        "complete original QSL/native quantity observations"
+        "complete original FSL/native quantity observations"
     );
     actual.len()
 }

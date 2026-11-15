@@ -1,28 +1,28 @@
 ---
 id: TC-099
-title: "Execute generated oracle artifacts against QSL value authority"
+title: "Execute generated oracle artifacts against FSL value authority"
 type: TC
 relationships:
-  - target: ix://agent-ix/quire-integration/IT-019
+  - target: ix://agent-ix/filament-integration/IT-019
     type: references
 ---
-# TC-099: Execute generated oracle artifacts against QSL value authority
+# TC-099: Execute generated oracle artifacts against FSL value authority
 
 ## Description
 
-Run IT-019's real QSL-source to emitted V2 to strict IR admission to CG-generated
+Run IT-019's real FSL-source to emitted V2 to strict IR admission to CG-generated
 native artifact path for scalar, composite and function families, including the
-authoritative TC-187 observations. Compare those executions with QSL evaluation
+authoritative TC-187 observations. Compare those executions with FSL evaluation
 of the same admitted claims rather than substituting direct runtime operations.
 
 ## Test Procedure
 
 Execute IT-019-SC-01 through SC-06. Obtain the published TC-187 cases by reference
-through QSpec's public vector API and dispatch every case explicitly. Keep
+through FSpec's public vector API and dispatch every case explicitly. Keep
 admission-only observations separate. Compile the actual CG artifacts, invoke
 their selected generated functions, and compare complete typed outcomes,
 values, defined accounting, limit denials and selection provenance against the
-real QSL authority path. Exercise the specified owner/occurrence mismatch and
+real FSL authority path. Exercise the specified owner/occurrence mismatch and
 sibling controls. Compile the outer test before running generated child Cargo
 through its own serialized lane; do not invoke Kani or recursively lock Cargo.
 

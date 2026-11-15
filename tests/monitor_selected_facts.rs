@@ -16,7 +16,7 @@ use quire_contract_ir::{
 use quire_exact::{Cancel, Integer, Presence, Rational, ValueType};
 
 // An original model source for the representable record-field selection.
-// The monitor subject remains the separate QSL-owned ConfigVersion model.
+// The monitor subject remains the separate FSL-owned ConfigVersion model.
 fn selected_record_document() -> Vec<u8> {
     let origin = |identity: &str| {
         serde_json::json!({"generated": {
@@ -60,11 +60,11 @@ fn selected_record_document() -> Vec<u8> {
 #[trace("TC-098", "FR-357-AC-9")]
 #[test]
 fn real_plan_root_rows_join_selected_model_and_equality_facts() {
-    // The producer's own domain document is read from Cargo's resolved QSL
+    // The producer's own domain document is read from Cargo's resolved FSL
     // checkout by reference, with no copied or rewritten model fixture.
     let document =
-        std::fs::read(support::qsl_root().join("examples/config-version/model.semantic-ir.json"))
-            .expect("QSL owns the domain fixture");
+        std::fs::read(support::fsl_root().join("examples/config-version/model.semantic-ir.json"))
+            .expect("FSL owns the domain fixture");
     let domain: serde_json::Value = serde_json::from_slice(&document).unwrap();
     let identity = domain["package"]["identity"].as_str().unwrap();
     let selected_document = selected_record_document();
@@ -112,7 +112,7 @@ temporal SelectedFacts using timed over (candidate: Selected::ConfigVersion) clo
         },
         &Cancel::new(),
     )
-    .expect("the real QSL producer returns a final PlanRoot emission");
+    .expect("the real FSL producer returns a final PlanRoot emission");
     let emission = root.emission();
     let mut evidence = emission.evidence().clone();
     evidence

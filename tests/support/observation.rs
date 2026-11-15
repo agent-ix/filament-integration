@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 //! Genuine observation-owner admission and progress association rows.
-// Copied from the QSL authority tests so the progress view is the owner's real one.
+// Copied from the FSL authority tests so the progress view is the owner's real one.
 #![allow(dead_code, missing_docs)]
 
 use quire_observation::authority::{

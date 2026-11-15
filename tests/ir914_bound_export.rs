@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-//! IR-914: a QSL export refusal is withheld while bound siblings reach CG.
+//! IR-914: a FSL export refusal is withheld while bound siblings reach CG.
 //! The injected refusal names one unbound model element because this
-//! QSL-compiled fixture has no attachable abstraction relation. The test
+//! FSL-compiled fixture has no attachable abstraction relation. The test
 //! checks that the driver preserves the exact typed refusal it receives.
 
 mod support;
@@ -40,7 +40,7 @@ use quire_driver::{
     ProviderManifest, QslCg, Upstream,
 };
 use quire_eval::FamilyOutcome;
-use quire_exact::{Cancel, Integer, Meter, Outcome, ScalarLimits as QslScalarLimits, Value};
+use quire_exact::{Cancel, Integer, Meter, Outcome, ScalarLimits as FslScalarLimits, Value};
 
 struct ExportVector {
     envelope: RefCell<Option<BackendProviderEnvelope>>,
@@ -341,17 +341,17 @@ fn integer_siblings_source() -> String {
 }
 
 fn mixed_model_source() -> (String, PackageInput) {
-    let root = support::qsl_root().join("tests/fixtures");
+    let root = support::fsl_root().join("tests/fixtures");
     let path = root.join("spine-model.semantic-ir.json");
     let document = fs::read(&path).unwrap_or_else(|error| panic!("{path:?}: {error}"));
     let packages =
-        package_input([document.as_slice()]).expect("QSL fixture declares one model identity");
+        package_input([document.as_slice()]).expect("FSL fixture declares one model identity");
     let source_path = root.join("spine-model.native");
     let selected_source =
         fs::read_to_string(&source_path).unwrap_or_else(|error| panic!("{source_path:?}: {error}"));
     let selection = selected_source
         .split_once("function keep")
-        .expect("QSL fixture contains its model selection")
+        .expect("FSL fixture contains its model selection")
         .0;
     let source = format!(
         "{selection}\
@@ -386,7 +386,7 @@ fn relationless_production_flow_skips_export_and_sends_every_item_to_codegen() {
 
 #[test]
 #[trace("IT-013-SC-08")]
-fn real_qsl_export_refusal_is_withheld_before_codegen() {
+fn real_fsl_export_refusal_is_withheld_before_codegen() {
     let (source, packages) = mixed_model_source();
     let registry = kani_registry();
     let upstream = ExportVector::force_relation();
@@ -397,14 +397,14 @@ fn real_qsl_export_refusal_is_withheld_before_codegen() {
         None,
         generation_input(),
     )
-    .expect("real per-item QSL export refusal leaves siblings running");
+    .expect("real per-item FSL export refusal leaves siblings running");
     assert!(!QslCg.has_abstraction_relation(driven.package().package()));
     assert_eq!(upstream.export_calls(), 1);
     let results = upstream.export_results();
     assert_eq!(
         results.len(),
         3,
-        "QSL export results: {results:?}; driver items: {:?}",
+        "FSL export results: {results:?}; driver items: {:?}",
         driven.request_items
     );
     // FR-075 orders requests by occurrence key, not function source position.
@@ -548,7 +548,7 @@ fn qsl_integer_addition_reaches_a_supported_kani_harness() {
         "supported item retains the scalar harness"
     );
 
-    let qsl_limits = QslScalarLimits {
+    let qsl_limits = FslScalarLimits {
         integer_bits: 64,
         decimal_digits: 20,
         scale_expansion: 20,
@@ -569,7 +569,7 @@ fn qsl_integer_addition_reaches_a_supported_kani_harness() {
             &qsl_semantics::model::object_environment::ObjectEnvironment::default(),
             &mut Meter::new(qsl_limits),
         )
-        .expect("QSL evaluates the checked function");
+        .expect("FSL evaluates the checked function");
     assert!(matches!(
         native.outcome,
         FamilyOutcome::Evaluated(Outcome::Completed(Value::Integer(value)))
@@ -635,7 +635,7 @@ fn qsl_integer_addition_proves_and_matches_native_execution() {
             &QualifiedName::unqualified("step".to_owned()).expect("checked function name"),
             vec![Value::Integer(Integer::from(4_i64))],
             &qsl_semantics::model::object_environment::ObjectEnvironment::default(),
-            &mut Meter::new(QslScalarLimits {
+            &mut Meter::new(FslScalarLimits {
                 integer_bits: limits.integer_bits,
                 decimal_digits: limits.decimal_digits,
                 scale_expansion: limits.scale_expansion,
@@ -648,10 +648,10 @@ fn qsl_integer_addition_proves_and_matches_native_execution() {
                 result_units: limits.result_units,
             }),
         )
-        .expect("QSL evaluates the checked function");
+        .expect("FSL evaluates the checked function");
     let FamilyOutcome::Evaluated(Outcome::Completed(Value::Integer(qsl_value))) = qsl.outcome
     else {
-        panic!("QSL must complete integer addition");
+        panic!("FSL must complete integer addition");
     };
     assert_eq!(qsl_value, Integer::from(5_i64));
     let native_value = receipt

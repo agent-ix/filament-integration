@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-//! IT-012: a package QSL emits for a unit that selects a domain-package model
+//! IT-012: a package FSL emits for a unit that selects a domain-package model
 //! is admitted by contract IR's checked-package reader, and its model nodes
 //! are keyed by the content-only `ModelOwner`.
 //!
-//! The unit selects `acme/orders`, the domain package document QSL authors at
+//! The unit selects `acme/orders`, the domain package document FSL authors at
 //! `tests/fixtures/spine-model.semantic-ir.json`; that file is read from the
 //! `quire-spec-language` checkout Cargo resolved, never copied here.
 
@@ -32,16 +32,16 @@ use serde_json::Value;
 /// The version the authored domain package document carries.
 const AUTHORED_VERSION: &str = "1.0.0";
 
-/// The domain package identity and every ordinary object it declares. QSL FR-094
+/// The domain package identity and every ordinary object it declares. FSL FR-094
 /// "Model declaration nodes" roots every object of the selected document, including
-/// the unit's unused `Rock` (QSL `qsl-package` emit tests, `model_key("Rock")`).
+/// the unit's unused `Rock` (FSL `qsl-package` emit tests, `model_key("Rock")`).
 const IDENTITY: &str = "acme/orders";
 const DECLARATIONS: [&str; 3] = ["Gadget", "Rock", "Widget"];
 
-/// QSL's authored domain package document with only `package.version` set to
+/// FSL's authored domain package document with only `package.version` set to
 /// `version`.
 fn domain_package(version: &str) -> Vec<u8> {
-    let path = support::qsl_root().join("tests/fixtures/spine-model.semantic-ir.json");
+    let path = support::fsl_root().join("tests/fixtures/spine-model.semantic-ir.json");
     let text = fs::read_to_string(&path).unwrap_or_else(|error| panic!("{path:?}: {error}"));
     let mut document: Value = serde_json::from_str(&text).expect("the fixture is JSON");
     document["package"]["version"] = Value::from(version);
@@ -64,7 +64,7 @@ fn unit_selecting() -> String {
     )
 }
 
-/// QSL's emitted package for `unit`: parse, form, model intake, assemble,
+/// FSL's emitted package for `unit`: parse, form, model intake, assemble,
 /// check, link and emit, through the crates' public APIs.
 fn emit(unit: &str, document: &[u8]) -> Vec<u8> {
     let parsed = qsl_cst::parse(
@@ -202,11 +202,11 @@ fn generated_scalar_claims(
     generated.claim_map.items
 }
 
-/// IT-012-SC-01: IR's v2 reader admits the package QSL emitted for a unit
+/// IT-012-SC-01: IR's v2 reader admits the package FSL emitted for a unit
 /// that selects a domain-package model, and the lock names that selection.
 #[test]
 #[trace("IT-012-SC-01")]
-fn a_model_bearing_package_emitted_by_qsl_is_admitted_by_irs_reader() {
+fn a_model_bearing_package_emitted_by_fsl_is_admitted_by_irs_reader() {
     let package = admitted(AUTHORED_VERSION);
     assert_eq!(model_identities(&package), [IDENTITY]);
     let declared: Vec<&str> = package
@@ -234,7 +234,7 @@ fn a_domain_package_supplied_under_another_identity_is_refused() {
         .unwrap()
         .iter()
         .position(|node| node["owner"]["kind"] == "model_root")
-        .expect("QSL emitted its selected model root");
+        .expect("FSL emitted its selected model root");
     let expected_path = format!("/semantic_graph/nodes/{root_position}/owner/identity");
     let evidence = evidence(&bytes, "foreign/orders", &document);
     let CheckedPackageDispatchResult::Refused(refusal) = read(&bytes, &evidence) else {

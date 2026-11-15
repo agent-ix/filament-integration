@@ -1,19 +1,19 @@
 [package]
-name = "quire-integration"
+name = "filament-integration"
 version = "0.1.0"
 edition = "2021"
 rust-version = "1.98"
-description = "Version-locked composition and integration runtime for native Quire V1."
+description = "Version-locked composition and integration runtime for Filament V1."
 authors = ["Agent IX <agent@agent-ix.dev>"]
 license = "AGPL-3.0-or-later"
-repository = "https://github.com/agent-ix/quire-integration"
+repository = "https://github.com/agent-ix/filament-integration"
 publish = false
 
 [lints.clippy]
 undocumented_unsafe_blocks = "deny"
 
 [lib]
-name = "quire_integration"
+name = "filament_integration"
 path = "src/lib.rs"
 
 [dependencies]
@@ -37,7 +37,7 @@ thiserror = "2"
 qsv-failing-allocator = { git = "https://github.com/agent-ix/quire-semantic-value", branch = "main" }
 qsl-analyze = { git = "https://github.com/agent-ix/quire-spec-language", branch = "main" }
 quire-specification = { package = "quire-specification-qualification", git = "https://github.com/agent-ix/quire-specification", branch = "main" }
-# The composed QSL -> IR -> codegen tests live here, because nothing depends on
+# The composed FSL -> IR -> codegen tests live here, because nothing depends on
 # this crate. Every first-party crate is `branch = "main"`, so each resolves to one copy.
 qsl-foundation = { git = "https://github.com/agent-ix/quire-spec-language", branch = "main" }
 qsl-replay = { git = "https://github.com/agent-ix/quire-spec-language", branch = "main" }

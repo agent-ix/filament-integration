@@ -60,7 +60,7 @@ fn limits(integer_bits: u64, unit_edges: u64, work_units: u64, result_units: u64
     }
 }
 
-/// Require QSL's own completed value for `name` at a generous allowance: the QSpec-stated
+/// Require FSL's own completed value for `name` at a generous allowance: the FSpec-stated
 /// magnitude, and the declared unit when one is named.
 fn assert_value(
     original: &source::Original,
@@ -74,7 +74,7 @@ fn assert_value(
         evaluation.outcome
     else {
         panic!(
-            "{name}: QSL completes with a quantity: {:?}",
+            "{name}: FSL completes with a quantity: {:?}",
             evaluation.outcome
         );
     };
@@ -103,9 +103,9 @@ fn roomy(work_units: u64) -> ScalarLimits {
 #[trace(
     "TC-106",
     "IT-019-SC-04",
-    "QSpec-TC-187",
-    "QSpec-FR-142",
-    "QSpec-FR-142-AC-6"
+    "FSpec-TC-187",
+    "FSpec-FR-142",
+    "FSpec-FR-142-AC-6"
 )]
 #[test]
 fn u04_and_u09b_original_conversions_match_generated_native_oracles() {
@@ -133,9 +133,9 @@ fn u04_and_u09b_original_conversions_match_generated_native_oracles() {
 #[trace(
     "TC-106",
     "IT-019-SC-04",
-    "QSpec-TC-187",
-    "QSpec-FR-142",
-    "QSpec-FR-142-AC-6"
+    "FSpec-TC-187",
+    "FSpec-FR-142",
+    "FSpec-FR-142-AC-6"
 )]
 #[test]
 fn u10_original_exact_tuple_and_named_final_denial_match_generated_native_oracles() {
@@ -165,9 +165,9 @@ fn u10_original_exact_tuple_and_named_final_denial_match_generated_native_oracle
 #[trace(
     "TC-106",
     "IT-019-SC-04",
-    "QSpec-TC-187",
-    "QSpec-FR-142",
-    "QSpec-FR-142-AC-6"
+    "FSpec-TC-187",
+    "FSpec-FR-142",
+    "FSpec-FR-142-AC-6"
 )]
 #[test]
 fn u02_original_zero_power_normalizes_to_the_empty_dimension_in_generated_native_oracles() {
@@ -194,9 +194,9 @@ fn full(
 #[trace(
     "TC-106",
     "IT-019-SC-04",
-    "QSpec-TC-187",
-    "QSpec-FR-142",
-    "QSpec-FR-142-AC-6"
+    "FSpec-TC-187",
+    "FSpec-FR-142",
+    "FSpec-FR-142-AC-6"
 )]
 #[test]
 fn u22_original_compound_area_conversions_match_generated_native_oracles() {
@@ -228,9 +228,9 @@ fn u22_original_compound_area_conversions_match_generated_native_oracles() {
 #[trace(
     "TC-106",
     "IT-019-SC-04",
-    "QSpec-TC-187",
-    "QSpec-FR-142",
-    "QSpec-FR-142-AC-6"
+    "FSpec-TC-187",
+    "FSpec-FR-142",
+    "FSpec-FR-142-AC-6"
 )]
 #[test]
 fn u25_original_compound_to_joule_conversion_matches_generated_native_oracles() {
@@ -251,9 +251,9 @@ fn u25_original_compound_to_joule_conversion_matches_generated_native_oracles() 
 #[trace(
     "TC-106",
     "IT-019-SC-04",
-    "QSpec-TC-187",
-    "QSpec-FR-142",
-    "QSpec-FR-142-AC-6"
+    "FSpec-TC-187",
+    "FSpec-FR-142",
+    "FSpec-FR-142-AC-6"
 )]
 #[test]
 fn u02_original_product_quotient_normalizes_to_length_in_generated_native_oracles() {
@@ -268,9 +268,9 @@ fn u02_original_product_quotient_normalizes_to_length_in_generated_native_oracle
 #[trace(
     "TC-106",
     "IT-019-SC-04",
-    "QSpec-TC-187",
-    "QSpec-FR-142",
-    "QSpec-FR-142-AC-6"
+    "FSpec-TC-187",
+    "FSpec-FR-142",
+    "FSpec-FR-142-AC-6"
 )]
 #[test]
 fn quantity_comparison_operators_over_the_distance_and_time_grid_match_generated_native_oracles() {
@@ -281,9 +281,9 @@ fn quantity_comparison_operators_over_the_distance_and_time_grid_match_generated
 #[trace(
     "TC-106",
     "IT-019-SC-04",
-    "QSpec-TC-187",
-    "QSpec-FR-142",
-    "QSpec-FR-142-AC-6"
+    "FSpec-TC-187",
+    "FSpec-FR-142",
+    "FSpec-FR-142-AC-6"
 )]
 #[test]
 fn quantity_comparison_operators_over_the_affine_and_area_grid_match_generated_native_oracles() {
@@ -325,9 +325,9 @@ fn comparison_grid(grid: &[&str]) {
 #[trace(
     "TC-106",
     "IT-019-SC-04",
-    "QSpec-TC-187",
-    "QSpec-FR-142",
-    "QSpec-FR-142-AC-6"
+    "FSpec-TC-187",
+    "FSpec-FR-142",
+    "FSpec-FR-142-AC-6"
 )]
 #[test]
 fn quantity_arithmetic_operators_over_the_unit_grid_match_generated_native_oracles() {

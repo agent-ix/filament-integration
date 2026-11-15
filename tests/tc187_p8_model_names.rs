@@ -299,7 +299,7 @@ fn refusal(body: &str, documents: &[Vec<u8>], name: &str) {
     assert_eq!(&source[error.span.start..error.span.end], name);
 }
 
-#[trace("TC-110", "QSpec-TC-187", "QSpec-FR-142-AC-19")]
+#[trace("TC-110", "FSpec-TC-187", "FSpec-FR-142-AC-19")]
 #[test]
 fn source_and_model_ms_are_independent_and_tick_uses_model_rate() {
     public_row("U34");
@@ -345,7 +345,7 @@ fn source_and_model_ms_are_independent_and_tick_uses_model_rate() {
     );
 }
 
-#[trace("TC-110", "QSpec-TC-187", "QSpec-FR-142-AC-19")]
+#[trace("TC-110", "FSpec-TC-187", "FSpec-FR-142-AC-19")]
 #[test]
 fn unitless_imported_length_retains_original_first_refusal() {
     public_row("U34");
@@ -405,7 +405,7 @@ fn unitless_imported_length_retains_original_first_refusal() {
     );
 }
 
-#[trace("TC-110", "QSpec-TC-187", "QSpec-FR-142-AC-20")]
+#[trace("TC-110", "FSpec-TC-187", "FSpec-FR-142-AC-20")]
 #[test]
 fn three_time_owners_compose_and_missing_names_remain_missing() {
     public_row("U35");
@@ -481,7 +481,7 @@ fn three_time_owners_compose_and_missing_names_remain_missing() {
     );
 }
 
-#[trace("TC-110", "QSpec-TC-187")]
+#[trace("TC-110", "FSpec-TC-187")]
 #[test]
 fn duplicate_model_dimension_identity_characterizes_current_malformed_intake() {
     public_row("U35");

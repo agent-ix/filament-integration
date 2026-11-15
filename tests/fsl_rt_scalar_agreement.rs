@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-//! Run checked QSL scalar source against the public runtime operation.
+//! Run checked FSL scalar source against the public runtime operation.
 
 use ix_trace_rs::trace;
 use qsl_eval::value::{CheckedPackageEvaluation, QualifiedName};
@@ -30,28 +30,28 @@ const LIMITS: ScalarLimits = ScalarLimits {
     result_units: 1024,
 };
 
-fn assert_scalar_counters(qsl: &Meter, runtime: &Meter) {
+fn assert_scalar_counters(fsl: &Meter, runtime: &Meter) {
     assert_eq!(
-        qsl.admitted_charges()[0].point,
+        fsl.admitted_charges()[0].point,
         quire_exact::ChargePoint::FunctionCall
     );
     for counter in LimitKind::ALL {
         let call_work = u64::from(counter == LimitKind::WorkUnits);
         assert_eq!(
-            qsl.consumed(counter),
+            fsl.consumed(counter),
             runtime.consumed(counter) + call_work,
             "{counter:?}"
         );
     }
 }
 
-fn assert_qspec_row(id: &str) {
+fn assert_fspec_row(id: &str) {
     let rows: Vec<_> = quire_specification::vectors_of(quire_specification::TestCase::Tc192)
         .filter(|row| row.id == id)
         .collect();
     let [row] = rows.as_slice() else {
         panic!(
-            "QSpec TC-192 must offer exactly one {id} row; found {}",
+            "FSpec TC-192 must offer exactly one {id} row; found {}",
             rows.len()
         );
     };
@@ -59,7 +59,7 @@ fn assert_qspec_row(id: &str) {
     assert!(!row.expected.is_empty(), "{id} needs authored expectation");
 }
 
-fn pending_qsl_case(vector: &quire_specification::QualificationVector, ticket: &str, reason: &str) {
+fn pending_fsl_case(vector: &quire_specification::QualificationVector, ticket: &str, reason: &str) {
     assert!(
         !vector.inputs.is_empty(),
         "{} needs authored inputs",
@@ -80,7 +80,7 @@ fn tc192_dispatches_every_lock_selected_row() {
     for vector in quire_specification::vectors_of(quire_specification::TestCase::Tc192) {
         assert!(
             seen.insert(vector.id),
-            "duplicate QSpec TC-192 ID {}",
+            "duplicate FSpec TC-192 ID {}",
             vector.id
         );
         match vector.id {
@@ -88,21 +88,21 @@ fn tc192_dispatches_every_lock_selected_row() {
             "DIV-02" => modulus_does_not_follow_selected_division_law(),
             "DIV-03" | "DIV-09" => integer_division_definition_admission_precedes_evaluation(),
             "DIV-05" | "DIV-06" | "DIV-12" | "DIV-15" | "DIV-16" => {
-                pending_qsl_case(vector, "QSL-1389", "bounded result rejected at QSL S4")
+                pending_fsl_case(vector, "QSL-1389", "bounded result rejected at FSL S4")
             }
             "DIV-07" => {
                 div07_backend::inferred_modulus_domains_retain_renderer_refusal_without_execution();
-                pending_qsl_case(
+                pending_fsl_case(
                     vector,
                     "QSL-1389",
-                    "operand and intermediate bound requests blocked at QSL S4",
+                    "operand and intermediate bound requests blocked at FSL S4",
                 );
             }
             "DIV-08" => division_result_retain_denial_matches_runtime(),
             "DIV-10" => modulus_charge_prefix_and_denials_match_runtime(),
             "DIV-11" => zero_divisor_stops_after_operand_charge(),
             "DIV-13" => operand_size_denial_precedes_work_denial(),
-            "DIV-14" => pending_qsl_case(
+            "DIV-14" => pending_fsl_case(
                 vector,
                 "QSL-1391",
                 "SMT verdict and replay provider unavailable",
@@ -110,7 +110,7 @@ fn tc192_dispatches_every_lock_selected_row() {
             "DIV-17" => {
                 division_source_precedence_matches_selected_law();
                 integer_operator_source_spans_survive_form_building();
-                pending_qsl_case(
+                pending_fsl_case(
                     vector,
                     "QSL-1392",
                     "StateCore source rejects function before operator admission",
@@ -118,16 +118,16 @@ fn tc192_dispatches_every_lock_selected_row() {
             }
             "DIV-18" => {
                 rational_slash_never_becomes_integer_division();
-                pending_qsl_case(
+                pending_fsl_case(
                     vector,
                     "QSL-1392",
                     "StateCore source rejects function before operator admission",
                 );
             }
-            other => panic!("unimplemented QSpec TC-192 vector {other}"),
+            other => panic!("unimplemented FSpec TC-192 vector {other}"),
         }
     }
-    assert!(!seen.is_empty(), "QSpec TC-192 offers no vectors");
+    assert!(!seen.is_empty(), "FSpec TC-192 offers no vectors");
     generated_division_sweep_has_independent_integer_oracle();
     integer_arithmetic_size_charge_is_exact_and_one_under();
     arithmetic_charge_injection_stops_before_result_allocation();
@@ -150,7 +150,7 @@ fn checked_package(source: &str, profile: Option<DivisionProfile>) -> CheckedPac
     CheckedPackage::link(
         declarations
             .check(CheckingLimits::default())
-            .expect("QSL checks the scalar source"),
+            .expect("FSL checks the scalar source"),
     )
 }
 
@@ -165,9 +165,9 @@ fn assembled_source(source: &str, facet: &str) -> PackageDeclarations {
         source.as_bytes(),
         qsl_cst::Limits::default(),
     )
-    .expect("QSL parses the scalar source");
+    .expect("FSL parses the scalar source");
     assert!(parsed.is_admissible(), "{:?}", parsed.diagnostics());
-    let unit = qsl_forms::build_unit(&parsed).expect("QSL builds the source unit");
+    let unit = qsl_forms::build_unit(&parsed).expect("FSL builds the source unit");
     PackageDeclarations::assemble(
         parsed.source().reference().clone(),
         "ir-669".to_owned(),
@@ -175,17 +175,17 @@ fn assembled_source(source: &str, facet: &str) -> PackageDeclarations {
         SelectedModels::default(),
         Vec::new(),
     )
-    .expect("QSL assembles the source unit")
+    .expect("FSL assembles the source unit")
 }
 
 #[trace("TC-097", "IT-017-SC-02", "IT-017-SC-03")]
 #[test]
-fn modulo_through_qsl_matches_runtime() {
-    assert_qspec_row("DIV-02");
-    let (qsl, qsl_meter, runtime, runtime_meter) =
+fn modulo_through_fsl_matches_runtime() {
+    assert_fspec_row("DIV-02");
+    let (fsl, qsl_meter, runtime, runtime_meter) =
         checked_modulo(-7, 3, LIMITS, LIMITS, IntegerDomain::Mathematical);
-    let Outcome::Completed(Value::Integer(qsl_value)) = qsl else {
-        panic!("QSL completes modulo, got {qsl:?}");
+    let Outcome::Completed(Value::Integer(qsl_value)) = fsl else {
+        panic!("FSL completes modulo, got {fsl:?}");
     };
     let Outcome::Completed(runtime_value) = runtime else {
         panic!("runtime completes modulo, got {runtime:?}");
@@ -222,7 +222,7 @@ fn checked_modulo(
         None,
     );
     let mut qsl_meter = Meter::new(qsl_limits);
-    let qsl = package
+    let fsl = package
         .call(
             &QualifiedName::unqualified("modulo").expect("a function name"),
             vec![
@@ -241,8 +241,8 @@ fn checked_modulo(
         &domain,
         &mut runtime_meter,
     );
-    let FamilyOutcome::Evaluated(qsl_outcome) = qsl.outcome else {
-        panic!("QSL modulo did not reach evaluation: {:?}", qsl.outcome);
+    let FamilyOutcome::Evaluated(qsl_outcome) = fsl.outcome else {
+        panic!("FSL modulo did not reach evaluation: {:?}", fsl.outcome);
     };
     (qsl_outcome, qsl_meter, runtime, runtime_meter)
 }
@@ -273,7 +273,7 @@ fn checked_division_with_limits(
     );
     let package = checked_package(&source, Some(profile));
     let mut qsl_meter = Meter::new(qsl_limits);
-    let qsl = package
+    let fsl = package
         .call(
             &QualifiedName::unqualified("operation").expect("a function name"),
             vec![
@@ -284,8 +284,8 @@ fn checked_division_with_limits(
             &mut qsl_meter,
         )
         .expect("the checked division function evaluates");
-    let FamilyOutcome::Evaluated(qsl_outcome) = qsl.outcome else {
-        panic!("QSL division did not reach evaluation: {:?}", qsl.outcome);
+    let FamilyOutcome::Evaluated(qsl_outcome) = fsl.outcome else {
+        panic!("FSL division did not reach evaluation: {:?}", fsl.outcome);
     };
     let mut runtime_meter = Meter::new(runtime_limits);
     let runtime_outcome = quire_exact::divide(
@@ -302,13 +302,13 @@ fn checked_division_with_limits(
 #[trace("TC-097", "IT-017-SC-01", "IT-017-SC-02", "IT-017-SC-03")]
 #[test]
 fn integer_division_profile_rows_match_runtime() {
-    assert_qspec_row("DIV-01");
-    assert_qspec_row("DIV-04");
+    assert_fspec_row("DIV-01");
+    assert_fspec_row("DIV-04");
     for profile in DivisionProfile::ALL {
         for member in [DivisionMember::Quotient, DivisionMember::Remainder] {
-            let (qsl, qsl_meter, runtime, runtime_meter) = checked_division(profile, member, 7, 0);
+            let (fsl, qsl_meter, runtime, runtime_meter) = checked_division(profile, member, 7, 0);
             assert_eq!(
-                format!("{qsl:?}"),
+                format!("{fsl:?}"),
                 format!("{runtime:?}"),
                 "DIV-01 {profile:?} {member:?}"
             );
@@ -326,10 +326,10 @@ fn integer_division_profile_rows_match_runtime() {
             ),
             (DivisionMember::Remainder, Integer::from(0_i64)),
         ] {
-            let (qsl, qsl_meter, runtime, runtime_meter) =
+            let (fsl, qsl_meter, runtime, runtime_meter) =
                 checked_division(profile, member, i64::MIN, -1);
-            let Outcome::Completed(Value::Integer(qsl_value)) = qsl else {
-                panic!("DIV-04 QSL did not complete: {qsl:?}");
+            let Outcome::Completed(Value::Integer(qsl_value)) = fsl else {
+                panic!("DIV-04 FSL did not complete: {fsl:?}");
             };
             assert_eq!(qsl_value, expected, "DIV-04 {profile:?} {member:?}");
             assert_eq!(
@@ -349,7 +349,7 @@ fn integer_division_profile_rows_match_runtime() {
 #[trace("TC-097", "IT-017-SC-02", "IT-017-SC-03")]
 #[test]
 fn division_result_retain_denial_matches_runtime() {
-    assert_qspec_row("DIV-08");
+    assert_fspec_row("DIV-08");
     let limits = ScalarLimits {
         integer_bits: 3,
         decimal_digits: 0,
@@ -370,7 +370,7 @@ fn division_result_retain_denial_matches_runtime() {
             work_units: 5,
             ..limits
         };
-        let (qsl, qsl_meter, runtime, runtime_meter) = checked_division_with_limits(
+        let (fsl, qsl_meter, runtime, runtime_meter) = checked_division_with_limits(
             DivisionProfile::Truncating,
             member,
             7,
@@ -378,8 +378,8 @@ fn division_result_retain_denial_matches_runtime() {
             qsl_limits,
             limits,
         );
-        let Outcome::Completed(Value::Integer(qsl_value)) = qsl else {
-            panic!("DIV-08 QSL did not complete: {qsl:?}");
+        let Outcome::Completed(Value::Integer(qsl_value)) = fsl else {
+            panic!("DIV-08 FSL did not complete: {fsl:?}");
         };
         assert_eq!(qsl_value, expected);
         assert_eq!(runtime, Outcome::Completed(expected));
@@ -393,20 +393,20 @@ fn division_result_retain_denial_matches_runtime() {
             work_units: 3,
             ..limits
         };
-        let qsl_denied = ScalarLimits {
+        let fsl_denied = ScalarLimits {
             work_units: 4,
             ..limits
         };
-        let (qsl, qsl_meter, runtime, runtime_meter) = checked_division_with_limits(
+        let (fsl, qsl_meter, runtime, runtime_meter) = checked_division_with_limits(
             DivisionProfile::Truncating,
             member,
             7,
             3,
-            qsl_denied,
+            fsl_denied,
             denied,
         );
-        let Outcome::Incomplete(qsl_stop) = qsl else {
-            panic!("DIV-08 QSL denial: {qsl:?}");
+        let Outcome::Incomplete(qsl_stop) = fsl else {
+            panic!("DIV-08 FSL denial: {fsl:?}");
         };
         let Outcome::Incomplete(runtime_stop) = runtime else {
             panic!("DIV-08 RT denial: {runtime:?}");
@@ -427,7 +427,7 @@ fn division_result_retain_denial_matches_runtime() {
 #[trace("TC-097", "IT-017-SC-02", "IT-017-SC-03")]
 #[test]
 fn modulus_charge_prefix_and_denials_match_runtime() {
-    assert_qspec_row("DIV-10");
+    assert_fspec_row("DIV-10");
     let base = ScalarLimits {
         integer_bits: 3,
         decimal_digits: 0,
@@ -454,15 +454,15 @@ fn modulus_charge_prefix_and_denials_match_runtime() {
             work_units: work + 1,
             ..base
         };
-        let (qsl, qsl_meter, runtime, runtime_meter) = checked_modulo(
+        let (fsl, qsl_meter, runtime, runtime_meter) = checked_modulo(
             -7,
             3,
             qsl_limits,
             runtime_limits,
             IntegerDomain::Mathematical,
         );
-        let Outcome::Incomplete(qsl_stop) = qsl else {
-            panic!("DIV-10 QSL denial: {qsl:?}");
+        let Outcome::Incomplete(qsl_stop) = fsl else {
+            panic!("DIV-10 FSL denial: {fsl:?}");
         };
         let Outcome::Incomplete(runtime_stop) = runtime else {
             panic!("DIV-10 RT denial: {runtime:?}");
@@ -480,7 +480,7 @@ fn modulus_charge_prefix_and_denials_match_runtime() {
         );
         assert_scalar_counters(&qsl_meter, &runtime_meter);
     }
-    let (qsl, qsl_meter, runtime, runtime_meter) = checked_modulo(
+    let (fsl, qsl_meter, runtime, runtime_meter) = checked_modulo(
         -7,
         3,
         ScalarLimits {
@@ -490,8 +490,8 @@ fn modulus_charge_prefix_and_denials_match_runtime() {
         base,
         IntegerDomain::Mathematical,
     );
-    let Outcome::Completed(Value::Integer(qsl_value)) = qsl else {
-        panic!("DIV-10 QSL completion: {qsl:?}");
+    let Outcome::Completed(Value::Integer(qsl_value)) = fsl else {
+        panic!("DIV-10 FSL completion: {fsl:?}");
     };
     assert_eq!(qsl_value, Integer::from(2_i64));
     assert_eq!(runtime, Outcome::Completed(qsl_value));
@@ -505,7 +505,7 @@ fn modulus_charge_prefix_and_denials_match_runtime() {
 #[trace("TC-097", "IT-017-SC-02", "IT-017-SC-03")]
 #[test]
 fn zero_divisor_stops_after_operand_charge() {
-    assert_qspec_row("DIV-11");
+    assert_fspec_row("DIV-11");
     let base = ScalarLimits {
         integer_bits: 3,
         decimal_digits: 0,
@@ -542,16 +542,16 @@ fn zero_divisor_stops_after_operand_charge() {
             runtime_limits,
             IntegerDomain::Mathematical,
         );
-        for (qsl, qsl_meter, rt, rt_meter) in [
+        for (fsl, qsl_meter, rt, rt_meter) in [
             (qsl_div, qsl_div_meter, rt_div, rt_div_meter),
             (qsl_mod, qsl_mod_meter, rt_mod, rt_mod_meter),
         ] {
             if work == 1 {
-                assert_eq!(format!("{qsl:?}"), format!("{rt:?}"));
+                assert_eq!(format!("{fsl:?}"), format!("{rt:?}"));
                 assert!(matches!(rt, Outcome::Undefined(_)));
             } else {
-                let Outcome::Incomplete(qsl_stop) = qsl else {
-                    panic!("DIV-11 QSL denial: {qsl:?}");
+                let Outcome::Incomplete(qsl_stop) = fsl else {
+                    panic!("DIV-11 FSL denial: {fsl:?}");
                 };
                 let Outcome::Incomplete(rt_stop) = rt else {
                     panic!("DIV-11 RT denial: {rt:?}");
@@ -574,14 +574,14 @@ fn zero_divisor_stops_after_operand_charge() {
 #[trace("TC-097", "IT-017-SC-02", "IT-017-SC-03")]
 #[test]
 fn operand_size_denial_precedes_work_denial() {
-    assert_qspec_row("DIV-13");
+    assert_fspec_row("DIV-13");
     let limits = ScalarLimits {
         integer_bits: 2,
         work_units: 0,
         ..LIMITS
     };
     for member in [DivisionMember::Quotient, DivisionMember::Remainder] {
-        let (qsl, qsl_meter, runtime, runtime_meter) = checked_division_with_limits(
+        let (fsl, qsl_meter, runtime, runtime_meter) = checked_division_with_limits(
             DivisionProfile::Truncating,
             member,
             7,
@@ -592,8 +592,8 @@ fn operand_size_denial_precedes_work_denial() {
             },
             limits,
         );
-        let Outcome::Incomplete(qsl_stop) = qsl else {
-            panic!("DIV-13 QSL: {qsl:?}");
+        let Outcome::Incomplete(qsl_stop) = fsl else {
+            panic!("DIV-13 FSL: {fsl:?}");
         };
         let Outcome::Incomplete(runtime_stop) = runtime else {
             panic!("DIV-13 RT: {runtime:?}");
@@ -611,14 +611,14 @@ fn operand_size_denial_precedes_work_denial() {
 #[trace("TC-097", "IT-017-SC-02", "IT-017-SC-03")]
 #[test]
 fn modulus_does_not_follow_selected_division_law() {
-    assert_qspec_row("DIV-02");
+    assert_fspec_row("DIV-02");
     for profile in DivisionProfile::ALL {
         let package = checked_package(
             "function op using v(a: Integer, b: Integer): Integer pure { a mod b }",
             Some(profile),
         );
         let mut qsl_meter = Meter::new(LIMITS);
-        let qsl = package
+        let fsl = package
             .call(
                 &QualifiedName::unqualified("op").expect("function name"),
                 vec![
@@ -629,9 +629,9 @@ fn modulus_does_not_follow_selected_division_law() {
                 &mut qsl_meter,
             )
             .expect("checked mod evaluates");
-        let FamilyOutcome::Evaluated(Outcome::Completed(Value::Integer(value))) = qsl.outcome
+        let FamilyOutcome::Evaluated(Outcome::Completed(Value::Integer(value))) = fsl.outcome
         else {
-            panic!("DIV-02 QSL result under {profile:?}: {:?}", qsl.outcome);
+            panic!("DIV-02 FSL result under {profile:?}: {:?}", fsl.outcome);
         };
         let mut rt_meter = Meter::new(LIMITS);
         let rt = quire_eval::modulo(
@@ -653,8 +653,8 @@ fn modulus_does_not_follow_selected_division_law() {
 #[trace("TC-097", "IT-017-SC-04")]
 #[test]
 fn integer_division_definition_admission_precedes_evaluation() {
-    assert_qspec_row("DIV-03");
-    assert_qspec_row("DIV-09");
+    assert_fspec_row("DIV-03");
+    assert_fspec_row("DIV-09");
     use qsl_semantics::value::{admit_integer_division, DefinitionRole};
     use quire_semantic_value::definition::{PackageCause, PackageRefusal};
 
@@ -679,7 +679,7 @@ fn integer_division_definition_admission_precedes_evaluation() {
 #[trace("TC-097", "IT-017-SC-02")]
 #[test]
 fn division_source_precedence_matches_selected_law() {
-    assert_qspec_row("DIV-17");
+    assert_fspec_row("DIV-17");
     let package = checked_package(
         "function op using v(): Integer pure { 1 + 7 div 3 * 2 }",
         Some(DivisionProfile::Truncating),
@@ -698,10 +698,10 @@ fn division_source_precedence_matches_selected_law() {
     };
     assert_eq!(value, Integer::from(5_i64));
 
-    let (qsl, qsl_meter, runtime, runtime_meter) =
+    let (fsl, qsl_meter, runtime, runtime_meter) =
         checked_division(DivisionProfile::Truncating, DivisionMember::Remainder, 7, 3);
-    let Outcome::Completed(Value::Integer(remainder)) = qsl else {
-        panic!("DIV-17 rem result: {qsl:?}");
+    let Outcome::Completed(Value::Integer(remainder)) = fsl else {
+        panic!("DIV-17 rem result: {fsl:?}");
     };
     assert_eq!(remainder, Integer::from(1_i64));
     assert_eq!(runtime, Outcome::Completed(remainder));
@@ -731,7 +731,7 @@ fn division_source_precedence_matches_selected_law() {
 #[trace("TC-097", "IT-017-SC-04")]
 #[test]
 fn integer_operator_source_spans_survive_form_building() {
-    assert_qspec_row("DIV-17");
+    assert_fspec_row("DIV-17");
     for expression in ["7 rem 3", "-7 mod 3"] {
         let source = format!(
             "language \"ix:native\" edition \"1-draft\";\n\
@@ -765,7 +765,7 @@ fn integer_operator_source_spans_survive_form_building() {
 #[trace("TC-097", "IT-017-SC-02")]
 #[test]
 fn rational_slash_never_becomes_integer_division() {
-    assert_qspec_row("DIV-18");
+    assert_fspec_row("DIV-18");
     let no_rational_expectation = assembled_source(
         "function op using v(): Integer pure { 7 / 3 }",
         "quire.value.complete/v1",
@@ -845,10 +845,10 @@ fn generated_division_sweep_has_independent_integer_oracle() {
                     (DivisionMember::Quotient, quotient),
                     (DivisionMember::Remainder, remainder),
                 ] {
-                    let (qsl, qsl_meter, runtime, runtime_meter) =
+                    let (fsl, qsl_meter, runtime, runtime_meter) =
                         checked_division(profile, member, a, b);
-                    let Outcome::Completed(Value::Integer(qsl_value)) = qsl else {
-                        panic!("sweep QSL {a} {profile:?} {member:?} {b}: {qsl:?}");
+                    let Outcome::Completed(Value::Integer(qsl_value)) = fsl else {
+                        panic!("sweep FSL {a} {profile:?} {member:?} {b}: {fsl:?}");
                     };
                     assert_eq!(qsl_value, Integer::from(expected));
                     assert_eq!(runtime, Outcome::Completed(qsl_value));
@@ -859,10 +859,10 @@ fn generated_division_sweep_has_independent_integer_oracle() {
                     assert_scalar_counters(&qsl_meter, &runtime_meter);
                 }
             }
-            let (qsl, qsl_meter, runtime, runtime_meter) =
+            let (fsl, qsl_meter, runtime, runtime_meter) =
                 checked_modulo(a, b, LIMITS, LIMITS, IntegerDomain::Mathematical);
-            let Outcome::Completed(Value::Integer(qsl_value)) = qsl else {
-                panic!("sweep QSL {a} mod {b}: {qsl:?}");
+            let Outcome::Completed(Value::Integer(qsl_value)) = fsl else {
+                panic!("sweep FSL {a} mod {b}: {fsl:?}");
             };
             assert_eq!(qsl_value, Integer::from(a.rem_euclid(b)));
             assert_eq!(runtime, Outcome::Completed(qsl_value));
@@ -894,10 +894,10 @@ fn integer_arithmetic_size_charge_is_exact_and_one_under() {
             ),
             checked_modulo(7, 3, limits, limits, IntegerDomain::Mathematical),
         ];
-        for (qsl, qsl_meter, runtime, runtime_meter) in cases {
+        for (fsl, qsl_meter, runtime, runtime_meter) in cases {
             if bits == 2 {
-                let Outcome::Incomplete(qsl_stop) = qsl else {
-                    panic!("QSL one-under: {qsl:?}");
+                let Outcome::Incomplete(qsl_stop) = fsl else {
+                    panic!("FSL one-under: {fsl:?}");
                 };
                 let Outcome::Incomplete(runtime_stop) = runtime else {
                     panic!("RT one-under: {runtime:?}");
@@ -905,7 +905,7 @@ fn integer_arithmetic_size_charge_is_exact_and_one_under() {
                 assert_eq!(qsl_stop, runtime_stop);
                 assert_eq!(runtime_stop.limit_kind, LimitKind::IntegerBits);
             } else {
-                assert!(matches!(qsl, Outcome::Completed(Value::Integer(_))));
+                assert!(matches!(fsl, Outcome::Completed(Value::Integer(_))));
                 assert!(matches!(runtime, Outcome::Completed(_)));
                 let arithmetic = runtime_meter
                     .admitted_charges()
@@ -950,9 +950,9 @@ fn arithmetic_charge_injection_stops_before_result_allocation() {
                 &ObjectEnvironment::default(),
                 &mut qsl_meter,
             )
-            .expect("injected QSL operation evaluates to incomplete");
+            .expect("injected FSL operation evaluates to incomplete");
         let FamilyOutcome::Evaluated(Outcome::Incomplete(qsl_stop)) = evaluation.outcome else {
-            panic!("injected QSL {operator}: {:?}", evaluation.outcome);
+            panic!("injected FSL {operator}: {:?}", evaluation.outcome);
         };
         let mut runtime_meter = Meter::new(LIMITS).with_injected_denial(denial);
         let runtime = if operator == "div" {

@@ -445,6 +445,43 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "da7c62ceae207dd37ea5b845da6a0696c799f85e97da1ab5b7910be3c1c80223"
 
 [[package]]
+name = "filament-integration"
+version = "0.1.0"
+dependencies = [
+ "ix-trace-rs",
+ "qsl-analyze",
+ "qsl-cst",
+ "qsl-eval",
+ "qsl-forms",
+ "qsl-foundation",
+ "qsl-package",
+ "qsl-replay",
+ "qsl-route",
+ "qsl-semantics",
+ "qsv-failing-allocator",
+ "quire-canonical",
+ "quire-checked",
+ "quire-contract-codegen",
+ "quire-contract-model",
+ "quire-contract-runtime",
+ "quire-driver",
+ "quire-eval",
+ "quire-exact",
+ "quire-mltl",
+ "quire-observation",
+ "quire-semantic-value",
+ "quire-spec-language",
+ "quire-specification-qualification",
+ "serde",
+ "serde_json",
+ "sha2",
+ "tempfile",
+ "thiserror",
+ "tl-mltl",
+ "tl-syntax",
+]
+
+[[package]]
 name = "find-msvc-tools"
 version = "0.1.15"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1579,43 +1616,6 @@ dependencies = [
  "thiserror",
  "triomphe",
  "unicode-normalization",
-]
-
-[[package]]
-name = "quire-integration"
-version = "0.1.0"
-dependencies = [
- "ix-trace-rs",
- "qsl-analyze",
- "qsl-cst",
- "qsl-eval",
- "qsl-forms",
- "qsl-foundation",
- "qsl-package",
- "qsl-replay",
- "qsl-route",
- "qsl-semantics",
- "qsv-failing-allocator",
- "quire-canonical",
- "quire-checked",
- "quire-contract-codegen",
- "quire-contract-model",
- "quire-contract-runtime",
- "quire-driver",
- "quire-eval",
- "quire-exact",
- "quire-mltl",
- "quire-observation",
- "quire-semantic-value",
- "quire-spec-language",
- "quire-specification-qualification",
- "serde",
- "serde_json",
- "sha2",
- "tempfile",
- "thiserror",
- "tl-mltl",
- "tl-syntax",
 ]
 
 [[package]]

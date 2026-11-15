@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-//! TC-200 through the composed pipeline: QSL source -> producer plan -> driver `prepare_monitor`
+//! TC-200 through the composed pipeline: FSL source -> producer plan -> driver `prepare_monitor`
 //! -> RT `Program` -> bounded event/watermark executor, on a 20-bit, 1 MHz counter.
 //!
 //! The expected outcomes are the TC-200 expected results, not the output of
@@ -9,7 +9,7 @@
 //! needs an API or machinery that does not exist; none is built here, and the missing API is
 //! named.
 //!
-//! Covered in this file, through QSL source -> producer -> `prepare_monitor` -> RT:
+//! Covered in this file, through FSL source -> producer -> `prepare_monitor` -> RT:
 //! - Steps 1-3, 6-9: the `step_1_` .. `step_9_` tests (AC-1, AC-3, AC-8 .. AC-11).
 //! - Step 3 / AC-4: `step_3_equal_tick_events_without_an_admitted_order_are_refused`
 //!   offers both arrival orders without the required order; every input is refused before
@@ -167,7 +167,7 @@ fn millisecond_target(max_reading_gap: u64) -> MonitorTarget {
     }
 }
 
-/// What the QSL reference evaluator needs, owned so it outlives the consumed plan root.
+/// What the FSL reference evaluator needs, owned so it outlives the consumed plan root.
 struct Reference {
     formula: CheckedFormula,
     activation: Activation,
@@ -721,7 +721,7 @@ fn pending_stays_distinct_from_indeterminate_while_the_window_is_open() {
 }
 
 // ---------------------------------------------------------------------------
-// The QSL reference evaluator as the independent oracle (TC-200 steps 2, 3 and 6).
+// The FSL reference evaluator as the independent oracle (TC-200 steps 2, 3 and 6).
 
 /// One obligation's outcome with its payload, comparable across RT and the reference.
 #[derive(Clone, Debug, Eq, Ord, PartialEq, PartialOrd)]
@@ -809,7 +809,7 @@ enum In {
     Watermark(u64),
 }
 
-/// Drive RT and the QSL reference evaluator through the same inputs, returning the
+/// Drive RT and the FSL reference evaluator through the same inputs, returning the
 /// per-input rows of each.
 fn run_both(prepared: &Prepared, inputs: &[In]) -> (Vec<Vec<Row>>, Vec<Vec<Row>>) {
     let mut run = Run::new(prepared);
@@ -864,7 +864,7 @@ fn assert_agree(prepared: &Prepared, inputs: &[In]) -> Vec<Vec<Row>> {
     let (runtime, oracle) = run_both(prepared, inputs);
     assert_eq!(
         runtime, oracle,
-        "RT and the QSL reference evaluator agree per input"
+        "RT and the FSL reference evaluator agree per input"
     );
     runtime
 }

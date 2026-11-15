@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-//! Public TC-187 U11 dimension-term first refusals through QSL intake.
+//! Public TC-187 U11 dimension-term first refusals through FSL intake.
 
 use ix_trace_rs::trace;
 use qsl_semantics::check::{AssemblyCause, AssemblyRefusal, PackageDeclarations};
@@ -65,8 +65,8 @@ fn edge(from: &str, to: &str) -> (String, String) {
     (from.to_owned(), to.to_owned())
 }
 
-/// Trace: QSpec-TC-187 and QSpec-FR-142-AC-17. A's term cycle beats its unit.
-#[trace("QSpec-TC-187", "QSpec-FR-142-AC-17")]
+/// Trace: FSpec-TC-187 and FSpec-FR-142-AC-17. A's term cycle beats its unit.
+#[trace("FSpec-TC-187", "FSpec-FR-142-AC-17")]
 #[test]
 fn public_u11n_two_dimension_cycle_retains_ordered_term_edges() {
     let declarations = vector(
@@ -85,8 +85,8 @@ fn public_u11n_two_dimension_cycle_retains_ordered_term_edges() {
     );
 }
 
-/// Trace: QSpec-TC-187 and QSpec-FR-142-AC-17. D's own term is a self-cycle.
-#[trace("QSpec-TC-187", "QSpec-FR-142-AC-17")]
+/// Trace: FSpec-TC-187 and FSpec-FR-142-AC-17. D's own term is a self-cycle.
+#[trace("FSpec-TC-187", "FSpec-FR-142-AC-17")]
 #[test]
 fn public_u11o_self_cycle_refuses_at_owning_dimension() {
     let declarations = vector(
@@ -105,8 +105,8 @@ fn public_u11o_self_cycle_refuses_at_owning_dimension() {
     );
 }
 
-/// Trace: QSpec-TC-187 and QSpec-FR-142-AC-17. D's unknown term wins at D.
-#[trace("QSpec-TC-187", "QSpec-FR-142-AC-17")]
+/// Trace: FSpec-TC-187 and FSpec-FR-142-AC-17. D's unknown term wins at D.
+#[trace("FSpec-TC-187", "FSpec-FR-142-AC-17")]
 #[test]
 fn public_u11p_unknown_term_refuses_after_anchored_l() {
     let declarations = vector(
@@ -126,8 +126,8 @@ fn public_u11p_unknown_term_refuses_after_anchored_l() {
     );
 }
 
-/// Trace: QSpec-TC-187 and QSpec-FR-142-AC-17. Unknown term beats A/B cycle.
-#[trace("QSpec-TC-187", "QSpec-FR-142-AC-17")]
+/// Trace: FSpec-TC-187 and FSpec-FR-142-AC-17. Unknown term beats A/B cycle.
+#[trace("FSpec-TC-187", "FSpec-FR-142-AC-17")]
 #[test]
 fn public_u11w_unknown_term_precedes_two_dimension_cycle() {
     let declarations = vector(

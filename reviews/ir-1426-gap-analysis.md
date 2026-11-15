@@ -3,10 +3,10 @@ id: SR-002
 title: "Scoped trace and gap review of monitor denial controls"
 type: SpecReview
 analysis: gap-analysis
-scope: "agent-ix/quire-integration; IR-1426; PR 100; new monitor_tick_producer denial tests"
+scope: "agent-ix/filament-integration; IR-1426; PR 100; new monitor_tick_producer denial tests"
 review_set: subset
 relationships:
-  - {target: "ix://agent-ix/quire-integration/IT-018", type: references}
+  - {target: "ix://agent-ix/filament-integration/IT-018", type: references}
 ---
 
 ## Summary

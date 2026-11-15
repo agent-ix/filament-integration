@@ -3,9 +3,9 @@ id: TC-095
 title: "Negotiate layer witnesses over the real backends"
 type: TC
 relationships:
-  - target: ix://agent-ix/quire-spec-language/FR-345
+  - target: ix://agent-ix/filament-spec-language/FR-345
     type: verifies
-  - target: ix://agent-ix/quire-integration/IT-015
+  - target: ix://agent-ix/filament-integration/IT-015
     type: references
 ---
 # TC-095: Negotiate layer witnesses over the real backends
@@ -13,7 +13,7 @@ relationships:
 ## Description
 
 Execute every step of [IT-015](../integration/IT-015-negotiate-layer-witnesses-over-real-backends.md)
-against the real backend registry and quire-contract-codegen's `negotiate_*`.
+against the real backend registry and filament-contract-codegen's `negotiate_*`.
 
 ## Test Procedure
 

@@ -481,7 +481,7 @@ fn identity_worklist_storage_stops_before_exceeding_zero_or_one_slot() {
 
 #[test]
 fn deep_caller_keys_return_typed_stops_on_a_small_stack() {
-    const CHILD: &str = "QUIRE_DRIVER_MONITOR_KEY_STACK_CHILD";
+    const CHILD: &str = "FILAMENT_DRIVER_MONITOR_KEY_STACK_CHILD";
     if std::env::var_os(CHILD).is_none() {
         let output = Command::new(std::env::current_exe().unwrap())
             .args([

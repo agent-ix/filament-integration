@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-//! TC-193 binary32 addition through checked QSL source and the exact runtime.
+//! TC-193 binary32 addition through checked FSL source and the exact runtime.
 
 use ix_trace_rs::trace;
 use qsl_eval::value::{CheckedPackageEvaluation, QualifiedName};
@@ -35,13 +35,13 @@ const LIMITS: ScalarLimits = ScalarLimits {
 };
 
 fn selected_vector(id: &str) -> &'static QualificationVector {
-    // Branch-gating string comparison: only these explicit QSpec IDs own this slice.
+    // Branch-gating string comparison: only these explicit FSpec IDs own this slice.
     let rows: Vec<_> = vectors_of(TestCase::Tc193)
         .filter(|vector| vector.id == id)
         .collect();
     let [row] = rows.as_slice() else {
         panic!(
-            "QSpec TC-193 must contain exactly one {id} row; found {}",
+            "FSpec TC-193 must contain exactly one {id} row; found {}",
             rows.len()
         );
     };
@@ -57,7 +57,7 @@ fn hex_bits(text: &str) -> Vec<u32> {
                 .take_while(|ch| ch.is_ascii_hexdigit())
                 .collect();
             assert!(!digits.is_empty(), "missing hexadecimal digits in {text:?}");
-            u32::from_str_radix(&digits, 16).expect("QSpec binary32 bits fit u32")
+            u32::from_str_radix(&digits, 16).expect("FSpec binary32 bits fit u32")
         })
         .collect()
 }
@@ -71,7 +71,7 @@ fn hex_bits64(text: &str) -> Vec<u64> {
                 .take_while(|ch| ch.is_ascii_hexdigit())
                 .collect();
             assert!(!digits.is_empty(), "missing hexadecimal digits in {text:?}");
-            u64::from_str_radix(&digits, 16).expect("QSpec IEEE bits fit u64")
+            u64::from_str_radix(&digits, 16).expect("FSpec IEEE bits fit u64")
         })
         .collect()
 }
@@ -79,11 +79,11 @@ fn hex_bits64(text: &str) -> Vec<u64> {
 fn add_row(row: &QualificationVector) -> (u32, u32, u32, IeeeFlags) {
     let input_bits = hex_bits(row.inputs);
     let expected_bits = hex_bits(row.expected);
-    // Branch-gating QSpec ID match: fail when a new row reaches this dispatcher.
+    // Branch-gating FSpec ID match: fail when a new row reaches this dispatcher.
     let (input_count, expected_count) = match row.id {
         "F03" | "F04" => (2, 1),
         "F04b" => (5, 2),
-        other => panic!("unsupported QSpec TC-193 ADD vector {other}"),
+        other => panic!("unsupported FSpec TC-193 ADD vector {other}"),
     };
     assert_eq!(input_bits.len(), input_count, "{} input shape", row.id);
     assert_eq!(
@@ -92,7 +92,7 @@ fn add_row(row: &QualificationVector) -> (u32, u32, u32, IeeeFlags) {
         "{} expected shape",
         row.id
     );
-    // Branch-gating QSpec expectation spelling: unknown flag prose fails closed.
+    // Branch-gating FSpec expectation spelling: unknown flag prose fails closed.
     let flags = if row.expected.contains("no flag") {
         IeeeFlags::EMPTY
     } else if row.expected.contains("{invalid}") {
@@ -191,7 +191,7 @@ fn observed_binary(
         .expect("S6a calls the checked IEEE function");
     let FamilyOutcome::Evaluated(outcome) = evaluation.outcome else {
         panic!(
-            "QSL did not reach IEEE evaluation: {:?}",
+            "FSL did not reach IEEE evaluation: {:?}",
             evaluation.outcome
         );
     };
@@ -264,7 +264,7 @@ fn observed_sqrt(
         .expect("S6a calls the checked square-root function");
     let FamilyOutcome::Evaluated(outcome) = evaluation.outcome else {
         panic!(
-            "QSL did not reach square-root evaluation: {:?}",
+            "FSL did not reach square-root evaluation: {:?}",
             evaluation.outcome
         );
     };
@@ -292,7 +292,7 @@ fn observed_float_source(
         .expect("S6a calls the checked IEEE callable");
     let FamilyOutcome::Evaluated(outcome) = evaluation.outcome else {
         panic!(
-            "QSL did not reach IEEE callable evaluation: {:?}",
+            "FSL did not reach IEEE callable evaluation: {:?}",
             evaluation.outcome
         );
     };
@@ -356,21 +356,21 @@ fn assert_ieee_carrier(function: &str, identity: &str, expected_count: usize) {
     assert_eq!(count, expected_count, "{identity} checked-package carrier");
 }
 
-fn assert_scalar_charge_suffix(id: &str, qsl: &Meter, runtime: &Meter) {
+fn assert_scalar_charge_suffix(id: &str, fsl: &Meter, runtime: &Meter) {
     assert_eq!(
-        qsl.admitted_charges()[0].point,
+        fsl.admitted_charges()[0].point,
         ChargePoint::FunctionCall,
         "{id}"
     );
     assert_eq!(
-        &qsl.admitted_charges()[1..],
+        &fsl.admitted_charges()[1..],
         runtime.admitted_charges(),
         "{id}"
     );
     for counter in LimitKind::ALL {
         let envelope = u64::from(counter == LimitKind::WorkUnits);
         assert_eq!(
-            qsl.consumed(counter),
+            fsl.consumed(counter),
             runtime.consumed(counter) + envelope,
             "{id} {counter:?}"
         );
@@ -412,28 +412,28 @@ fn assert_float_conversion(
         work_units: limits.work_units.saturating_add(1),
         ..limits
     };
-    let (qsl, losses, qsl_meter) =
+    let (fsl, losses, qsl_meter) =
         observed_float_source(&function, vec![source_value], Meter::new(source_limits));
     let mut native_meter = Meter::new(limits);
     let runtime = native(&mut native_meter);
-    match (expected, qsl, runtime) {
+    match (expected, fsl, runtime) {
         (
             ConversionExpectation::Completed(bits, flags),
-            Outcome::Completed(Value::Float(qsl_value)),
+            Outcome::Completed(Value::Float(fsl_value)),
             Outcome::Completed(native),
         ) => {
-            assert_eq!(qsl_value, native.value(), "{id} result agreement");
+            assert_eq!(fsl_value, native.value(), "{id} result agreement");
             assert_eq!(
-                format!("{qsl_value:?}"),
+                format!("{fsl_value:?}"),
                 format!("{:?}", native.value()),
                 "{id} Debug rendering"
             );
-            assert_eq!(qsl_value.bits(), bits, "{id} QSpec result");
-            assert_eq!(native.flags(), flags, "{id} QSpec flags");
+            assert_eq!(fsl_value.bits(), bits, "{id} FSpec result");
+            assert_eq!(native.flags(), flags, "{id} FSpec flags");
             if flags.is_empty() {
                 assert!(losses.is_empty(), "{id} has no flags");
             } else {
-                assert_eq!(losses, vec![ValueLoss::IeeeFlags(flags)], "{id} QSL flags");
+                assert_eq!(losses, vec![ValueLoss::IeeeFlags(flags)], "{id} FSL flags");
             }
         }
         (
@@ -451,9 +451,9 @@ fn assert_float_conversion(
             Outcome::Incomplete(qsl_shortage),
             Outcome::Incomplete(native_shortage),
         ) => {
-            assert_eq!(qsl_shortage.limit_kind, kind, "{id} QSL limit kind");
+            assert_eq!(qsl_shortage.limit_kind, kind, "{id} FSL limit kind");
             assert_eq!(native_shortage.limit_kind, kind, "{id} runtime limit kind");
-            assert_eq!(qsl_shortage.charge_point, point, "{id} QSL charge point");
+            assert_eq!(qsl_shortage.charge_point, point, "{id} FSL charge point");
             assert_eq!(
                 native_shortage.charge_point, point,
                 "{id} runtime charge point"
@@ -474,17 +474,17 @@ fn assert_float_conversion(
             assert_eq!(
                 qsl_shortage.limit,
                 asserted_limit(source_limits, kind),
-                "{id} QSL limit"
+                "{id} FSL limit"
             );
             assert_eq!(
                 qsl_shortage.next_charge,
                 Integer::from(next),
-                "{id} QSL next charge"
+                "{id} FSL next charge"
             );
             assert!(losses.is_empty(), "{id} incomplete without flags");
         }
-        (expected, qsl, runtime) => {
-            panic!("{id} expected {expected:?}; QSL {qsl:?}; runtime {runtime:?}")
+        (expected, fsl, runtime) => {
+            panic!("{id} expected {expected:?}; FSL {fsl:?}; runtime {runtime:?}")
         }
     }
     assert_scalar_charge_suffix(id, &qsl_meter, &native_meter);
@@ -518,18 +518,18 @@ fn assert_rational_conversion(
         work_units: limits.work_units.saturating_add(1),
         ..limits
     };
-    let (qsl, losses, qsl_meter) = observed_float_source(
+    let (fsl, losses, qsl_meter) = observed_float_source(
         &function,
         vec![Value::Float(value)],
         Meter::new(source_limits),
     );
     let mut native_meter = Meter::new(limits);
     let native = ieee_to_exact(value, domain, &mut native_meter);
-    match (&qsl, &native) {
-        (Outcome::Completed(Value::Rational(qsl_value)), Outcome::Completed(native)) => {
-            assert_eq!(qsl_value, native.value(), "{id} exact value");
+    match (&fsl, &native) {
+        (Outcome::Completed(Value::Rational(fsl_value)), Outcome::Completed(native)) => {
+            assert_eq!(fsl_value, native.value(), "{id} exact value");
             assert_eq!(
-                format!("{qsl_value:?}"),
+                format!("{fsl_value:?}"),
                 format!("{:?}", native.value()),
                 "{id} Debug rendering"
             );
@@ -543,15 +543,15 @@ fn assert_rational_conversion(
                 assert!(losses.is_empty(), "{id} lossless conversion");
             }
         }
-        (Outcome::Undefined(qsl_value), Outcome::Undefined(native_value)) => {
-            assert_eq!(qsl_value, native_value, "{id} undefined cause");
+        (Outcome::Undefined(fsl_value), Outcome::Undefined(native_value)) => {
+            assert_eq!(fsl_value, native_value, "{id} undefined cause");
             assert!(losses.is_empty());
         }
-        (Outcome::Refused(qsl_value), Outcome::Refused(native_value)) => {
-            assert_eq!(qsl_value, native_value, "{id} typed refusal");
+        (Outcome::Refused(fsl_value), Outcome::Refused(native_value)) => {
+            assert_eq!(fsl_value, native_value, "{id} typed refusal");
             assert!(losses.is_empty());
         }
-        (Outcome::Incomplete(qsl_value), Outcome::Incomplete(native_value)) => {
+        (Outcome::Incomplete(fsl_value), Outcome::Incomplete(native_value)) => {
             let (kind, point, consumed, next): (LimitKind, ChargePoint, u64, u64) = match id {
                 "F27 tiny bit denial" => (
                     LimitKind::IntegerBits,
@@ -571,9 +571,9 @@ fn assert_rational_conversion(
                 ),
                 other => panic!("unexpected rational conversion shortage {other}"),
             };
-            assert_eq!(native_value.limit_kind, kind, "{id} QSpec limit kind");
-            assert_eq!(native_value.charge_point, point, "{id} QSpec charge point");
-            assert_eq!(native_value.consumed, consumed, "{id} QSpec consumed");
+            assert_eq!(native_value.limit_kind, kind, "{id} FSpec limit kind");
+            assert_eq!(native_value.charge_point, point, "{id} FSpec charge point");
+            assert_eq!(native_value.consumed, consumed, "{id} FSpec consumed");
             assert_eq!(
                 native_value.limit,
                 asserted_limit(limits, kind),
@@ -582,48 +582,48 @@ fn assert_rational_conversion(
             assert_eq!(
                 native_value.next_charge,
                 Integer::from(next),
-                "{id} QSpec next charge"
+                "{id} FSpec next charge"
             );
             assert_eq!(
-                qsl_value.limit_kind, native_value.limit_kind,
+                fsl_value.limit_kind, native_value.limit_kind,
                 "{id} limit kind"
             );
             assert_eq!(
-                qsl_value.charge_point, native_value.charge_point,
+                fsl_value.charge_point, native_value.charge_point,
                 "{id} charge point"
             );
             assert_eq!(
-                qsl_value.consumed,
+                fsl_value.consumed,
                 native_value.consumed + u64::from(native_value.limit_kind == LimitKind::WorkUnits)
             );
-            assert_eq!(qsl_value.next_charge, native_value.next_charge);
+            assert_eq!(fsl_value.next_charge, native_value.next_charge);
             assert_eq!(
-                qsl_value.limit,
+                fsl_value.limit,
                 asserted_limit(source_limits, kind),
-                "{id} QSL limit"
+                "{id} FSL limit"
             );
             assert_eq!(
-                qsl_value.next_charge,
+                fsl_value.next_charge,
                 Integer::from(next),
-                "{id} QSL next charge"
+                "{id} FSL next charge"
             );
             assert!(losses.is_empty());
         }
-        _ => panic!("{id} QSL {qsl:?}; native {native:?}"),
+        _ => panic!("{id} FSL {fsl:?}; native {native:?}"),
     }
     if let Some(expected) = expected {
-        match (qsl, expected) {
+        match (fsl, expected) {
             (
                 Outcome::Completed(Value::Rational(actual)),
                 Outcome::Completed(Value::Rational(expected)),
-            ) => assert_eq!(actual, expected, "{id} QSpec result"),
+            ) => assert_eq!(actual, expected, "{id} FSpec result"),
             (Outcome::Undefined(actual), Outcome::Undefined(expected)) => {
-                assert_eq!(actual, expected, "{id} QSpec undefined")
+                assert_eq!(actual, expected, "{id} FSpec undefined")
             }
             (Outcome::Refused(actual), Outcome::Refused(expected)) => {
-                assert_eq!(actual, expected, "{id} QSpec refusal")
+                assert_eq!(actual, expected, "{id} FSpec refusal")
             }
-            (actual, expected) => panic!("{id} QSpec expected {expected:?}, got {actual:?}"),
+            (actual, expected) => panic!("{id} FSpec expected {expected:?}, got {actual:?}"),
         }
     }
     assert_scalar_charge_suffix(id, &qsl_meter, &native_meter);
@@ -634,7 +634,7 @@ fn assert_fma_agreement(id: &str, inputs: [u32; 3], expected_bits: u32, expected
                     c: Float32[nearest-even]): Float32[nearest-even] pure \
                     { quire::value::ieee::fma(a, b, c) }";
     let operands = inputs.map(IeeeValue::binary32);
-    let (qsl, losses, qsl_meter) = observed_float_source(
+    let (fsl, losses, qsl_meter) = observed_float_source(
         function,
         operands.into_iter().map(Value::Float).collect(),
         Meter::new(LIMITS),
@@ -646,20 +646,20 @@ fn assert_fma_agreement(id: &str, inputs: [u32; 3], expected_bits: u32, expected
         &mut runtime_meter,
     )
     .expect("binary32 FMA operands type-check");
-    let (Outcome::Completed(Value::Float(qsl_value)), Outcome::Completed(runtime_value)) =
-        (qsl, runtime)
+    let (Outcome::Completed(Value::Float(fsl_value)), Outcome::Completed(runtime_value)) =
+        (fsl, runtime)
     else {
         panic!("{id} FMA must complete on both sides");
     };
-    assert_eq!(qsl_value, runtime_value.value(), "{id} FMA bits agree");
+    assert_eq!(fsl_value, runtime_value.value(), "{id} FMA bits agree");
     assert_eq!(
-        qsl_value.bits(),
+        fsl_value.bits(),
         u64::from(expected_bits),
-        "{id} QSpec bits"
+        "{id} FSpec bits"
     );
-    assert_eq!(runtime_value.flags(), expected_flags, "{id} QSpec flags");
+    assert_eq!(runtime_value.flags(), expected_flags, "{id} FSpec flags");
     if expected_flags.is_empty() {
-        assert!(losses.is_empty(), "{id} QSL flags");
+        assert!(losses.is_empty(), "{id} FSL flags");
     } else {
         assert_eq!(losses, vec![ValueLoss::IeeeFlags(expected_flags)]);
     }
@@ -691,7 +691,7 @@ fn assert_intrinsic_comparison(
         "function f using v(a: {ty}, b: {ty}): Boolean pure \
          {{ quire::value::ieee::{intrinsic}(a, b) }}"
     );
-    let (qsl, losses, qsl_meter) = observed_float_source(
+    let (fsl, losses, qsl_meter) = observed_float_source(
         &function,
         vec![Value::Float(left), Value::Float(right)],
         Meter::new(LIMITS),
@@ -699,13 +699,13 @@ fn assert_intrinsic_comparison(
     let mut runtime_meter = Meter::new(LIMITS);
     let runtime = compare_ieee(comparison, left, right, &mut runtime_meter)
         .expect("same-width IEEE comparison type-checks");
-    let (Outcome::Completed(Value::Boolean(qsl_value)), Outcome::Completed(runtime_value)) =
-        (qsl, runtime)
+    let (Outcome::Completed(Value::Boolean(fsl_value)), Outcome::Completed(runtime_value)) =
+        (fsl, runtime)
     else {
         panic!("{id} intrinsic comparison must complete on both sides");
     };
-    assert_eq!(qsl_value, runtime_value, "{id} two-sided comparison");
-    assert_eq!(qsl_value, expected, "{id} QSpec result");
+    assert_eq!(fsl_value, runtime_value, "{id} two-sided comparison");
+    assert_eq!(fsl_value, expected, "{id} FSpec result");
     assert!(losses.is_empty(), "{id} comparison has no IEEE flag");
     assert_scalar_charge_suffix(id, &qsl_meter, &runtime_meter);
 }
@@ -744,13 +744,13 @@ fn assert_float_relation(
     let ty = float_type(left.width());
     let symbol = relation.symbol();
     let function = format!("function f using v(a: {ty}, b: {ty}): Boolean pure {{ a {symbol} b }}");
-    let (qsl, losses, _qsl_meter) = observed_float_source(
+    let (fsl, losses, _fsl_meter) = observed_float_source(
         &function,
         vec![Value::Float(left), Value::Float(right)],
         Meter::new(LIMITS),
     );
-    let Outcome::Completed(Value::Boolean(qsl_value)) = qsl else {
-        panic!("{id} Float relation must complete: {qsl:?}");
+    let Outcome::Completed(Value::Boolean(fsl_value)) = fsl else {
+        panic!("{id} Float relation must complete: {fsl:?}");
     };
     let mut equality_meter = Meter::new(LIMITS);
     let equality = compare_ieee(
@@ -784,8 +784,8 @@ fn assert_float_relation(
         FloatRelation::Greater => ordinary && reverse && !equal,
         FloatRelation::GreaterOrEqual => ordinary && (reverse || equal),
     };
-    assert_eq!(qsl_value, runtime_value, "{id} QSL versus RT relation");
-    assert_eq!(qsl_value, expected, "{id} QSpec relation");
+    assert_eq!(fsl_value, runtime_value, "{id} FSL versus RT relation");
+    assert_eq!(fsl_value, expected, "{id} FSpec relation");
     assert!(losses.is_empty(), "{id} relation has no IEEE flag");
 }
 
@@ -797,15 +797,15 @@ fn checked_add(left: u32, right: u32, mode: RoundingMode) -> (IeeeValue, IeeeFla
         LIMITS,
     );
     let Outcome::Completed(Value::Float(value)) = outcome else {
-        panic!("QSL did not complete binary32 ADD: {outcome:?}");
+        panic!("FSL did not complete binary32 ADD: {outcome:?}");
     };
     let flags = match losses.as_slice() {
         [] => IeeeFlags::EMPTY,
         [loss] => match loss {
             ValueLoss::IeeeFlags(flags) => *flags,
-            other => panic!("QSL returned a non-IEEE loss: {other:?}"),
+            other => panic!("FSL returned a non-IEEE loss: {other:?}"),
         },
-        other => panic!("QSL returned multiple loss records: {other:?}"),
+        other => panic!("FSL returned multiple loss records: {other:?}"),
     };
     (value, flags, meter)
 }
@@ -818,7 +818,7 @@ fn assert_add_agreement(
     expected_bits: u32,
     expected_flags: IeeeFlags,
 ) {
-    let (qsl_value, qsl_flags, qsl_meter) = checked_add(left, right, mode);
+    let (fsl_value, qsl_flags, qsl_meter) = checked_add(left, right, mode);
     let mut runtime_meter = Meter::new(LIMITS);
     let runtime = evaluate_ieee(
         IeeeOperation::Add(IeeeValue::binary32(left), IeeeValue::binary32(right)),
@@ -829,14 +829,14 @@ fn assert_add_agreement(
     let Outcome::Completed(runtime_result) = runtime else {
         panic!("runtime did not complete {id}: {runtime:?}");
     };
-    assert_eq!(qsl_value, runtime_result.value(), "{id} bits disagree");
+    assert_eq!(fsl_value, runtime_result.value(), "{id} bits disagree");
     assert_eq!(qsl_flags, runtime_result.flags(), "{id} flags disagree");
     assert_eq!(
-        qsl_value.bits(),
+        fsl_value.bits(),
         u64::from(expected_bits),
-        "{id} QSpec bits"
+        "{id} FSpec bits"
     );
-    assert_eq!(qsl_flags, expected_flags, "{id} QSpec flags");
+    assert_eq!(qsl_flags, expected_flags, "{id} FSpec flags");
     assert_eq!(
         qsl_meter.admitted_charges()[0].point,
         ChargePoint::FunctionCall
@@ -864,24 +864,24 @@ fn assert_binary_observation(
     mode: RoundingMode,
     expected: Result<(u64, IeeeFlags), IeeeFlags>,
 ) {
-    let (qsl, losses, qsl_meter) =
+    let (fsl, losses, qsl_meter) =
         observed_binary(operation, left, right, mode, Meter::new(LIMITS));
     let mut runtime_meter = Meter::new(LIMITS);
     let runtime = evaluate_ieee(operation.runtime(left, right), mode, &mut runtime_meter)
         .expect("same-width IEEE operands type-check");
-    match (expected, qsl, runtime) {
+    match (expected, fsl, runtime) {
         (
             Ok((bits, flags)),
-            Outcome::Completed(Value::Float(qsl_value)),
+            Outcome::Completed(Value::Float(fsl_value)),
             Outcome::Completed(runtime_value),
         ) => {
-            assert_eq!(qsl_value, runtime_value.value(), "{id} bits disagree");
-            assert_eq!(qsl_value.bits(), bits, "{id} QSpec bits");
-            assert_eq!(runtime_value.flags(), flags, "{id} QSpec flags");
+            assert_eq!(fsl_value, runtime_value.value(), "{id} bits disagree");
+            assert_eq!(fsl_value.bits(), bits, "{id} FSpec bits");
+            assert_eq!(runtime_value.flags(), flags, "{id} FSpec flags");
             if flags.is_empty() {
-                assert!(losses.is_empty(), "{id} QSL flags");
+                assert!(losses.is_empty(), "{id} FSL flags");
             } else {
-                assert_eq!(losses, vec![ValueLoss::IeeeFlags(flags)], "{id} QSL flags");
+                assert_eq!(losses, vec![ValueLoss::IeeeFlags(flags)], "{id} FSL flags");
             }
         }
         (
@@ -895,14 +895,14 @@ fn assert_binary_observation(
                 would_be: runtime_flags,
             }),
         ) => {
-            assert_eq!(qsl_width, left.width(), "{id} QSL target width");
+            assert_eq!(qsl_width, left.width(), "{id} FSL target width");
             assert_eq!(runtime_width, left.width(), "{id} runtime target width");
-            assert_eq!(qsl_flags, would_be, "{id} QSL would-be flags");
+            assert_eq!(qsl_flags, would_be, "{id} FSL would-be flags");
             assert_eq!(runtime_flags, would_be, "{id} runtime would-be flags");
             assert!(losses.is_empty(), "{id} refusal carries no result loss");
         }
-        (expected, qsl, runtime) => {
-            panic!("{id} expected {expected:?}; QSL {qsl:?}; runtime {runtime:?}")
+        (expected, fsl, runtime) => {
+            panic!("{id} expected {expected:?}; FSL {fsl:?}; runtime {runtime:?}")
         }
     }
     assert_eq!(
@@ -943,24 +943,24 @@ fn assert_sqrt_observation(
     expected_flags: IeeeFlags,
 ) {
     let operand = IeeeValue::binary32(operand);
-    let (qsl, losses, qsl_meter) = observed_sqrt(operand, mode, Meter::new(LIMITS));
+    let (fsl, losses, qsl_meter) = observed_sqrt(operand, mode, Meter::new(LIMITS));
     let mut runtime_meter = Meter::new(LIMITS);
     let runtime = evaluate_ieee(IeeeOperation::SquareRoot(operand), mode, &mut runtime_meter)
         .expect("binary32 square root type-checks");
-    let (Outcome::Completed(Value::Float(qsl_value)), Outcome::Completed(runtime_value)) =
-        (qsl, runtime)
+    let (Outcome::Completed(Value::Float(fsl_value)), Outcome::Completed(runtime_value)) =
+        (fsl, runtime)
     else {
         panic!("{id} square root must complete on both sides");
     };
-    assert_eq!(qsl_value, runtime_value.value(), "{id} two-sided bits");
+    assert_eq!(fsl_value, runtime_value.value(), "{id} two-sided bits");
     assert_eq!(
-        qsl_value.bits(),
+        fsl_value.bits(),
         u64::from(expected_bits),
-        "{id} QSpec bits"
+        "{id} FSpec bits"
     );
-    assert_eq!(runtime_value.flags(), expected_flags, "{id} QSpec flags");
+    assert_eq!(runtime_value.flags(), expected_flags, "{id} FSpec flags");
     if expected_flags.is_empty() {
-        assert!(losses.is_empty(), "{id} has no QSL flags");
+        assert!(losses.is_empty(), "{id} has no FSL flags");
     } else {
         assert_eq!(losses, vec![ValueLoss::IeeeFlags(expected_flags)]);
     }
@@ -1028,20 +1028,20 @@ fn assert_bounded_binary(
         source_meter = source_meter.with_injected_denial(injected);
         runtime_meter = runtime_meter.with_injected_denial(injected);
     }
-    let (qsl, losses, qsl_meter) = observed_binary(operation, left, right, mode, source_meter);
+    let (fsl, losses, qsl_meter) = observed_binary(operation, left, right, mode, source_meter);
     let runtime = evaluate_ieee(operation.runtime(left, right), mode, &mut runtime_meter)
         .expect("same-width IEEE operands type-check");
-    match (expected, qsl, runtime) {
+    match (expected, fsl, runtime) {
         (
             BoundedExpectation::Completed(bits, flags),
-            Outcome::Completed(Value::Float(qsl_value)),
+            Outcome::Completed(Value::Float(fsl_value)),
             Outcome::Completed(runtime_value),
         ) => {
-            assert_eq!(qsl_value, runtime_value.value(), "{id} bits agree");
-            assert_eq!(qsl_value.bits(), bits, "{id} QSpec bits");
-            assert_eq!(runtime_value.flags(), flags, "{id} QSpec flags");
+            assert_eq!(fsl_value, runtime_value.value(), "{id} bits agree");
+            assert_eq!(fsl_value.bits(), bits, "{id} FSpec bits");
+            assert_eq!(runtime_value.flags(), flags, "{id} FSpec flags");
             if flags.is_empty() {
-                assert!(losses.is_empty(), "{id} QSL flags");
+                assert!(losses.is_empty(), "{id} FSL flags");
             } else {
                 assert_eq!(losses, vec![ValueLoss::IeeeFlags(flags)]);
             }
@@ -1057,7 +1057,7 @@ fn assert_bounded_binary(
                 ..
             }),
         ) => {
-            assert_eq!(qsl_flags, would_be, "{id} QSL would-be flags");
+            assert_eq!(qsl_flags, would_be, "{id} FSL would-be flags");
             assert_eq!(runtime_flags, would_be, "{id} runtime would-be flags");
             assert!(losses.is_empty(), "{id} refusal has no result loss");
         }
@@ -1066,7 +1066,7 @@ fn assert_bounded_binary(
             Outcome::Incomplete(qsl_shortage),
             Outcome::Incomplete(runtime_shortage),
         ) => {
-            assert_eq!(qsl_shortage.charge_point, point, "{id} QSL denial");
+            assert_eq!(qsl_shortage.charge_point, point, "{id} FSL denial");
             assert_eq!(runtime_shortage.charge_point, point, "{id} runtime denial");
             assert_eq!(qsl_shortage.limit_kind, LimitKind::WorkUnits);
             assert_eq!(runtime_shortage.limit_kind, LimitKind::WorkUnits);
@@ -1075,8 +1075,8 @@ fn assert_bounded_binary(
             assert_eq!(qsl_shortage.next_charge, runtime_shortage.next_charge);
             assert!(losses.is_empty(), "{id} incomplete has no result loss");
         }
-        (expected, qsl, runtime) => {
-            panic!("{id} expected bounded {expected:?}; QSL {qsl:?}; runtime {runtime:?}")
+        (expected, fsl, runtime) => {
+            panic!("{id} expected bounded {expected:?}; FSL {fsl:?}; runtime {runtime:?}")
         }
     }
     assert_eq!(
@@ -1119,30 +1119,30 @@ fn assert_bounded_sqrt(
         source_meter = source_meter.with_injected_denial(denial);
         runtime_meter = runtime_meter.with_injected_denial(denial);
     }
-    let (qsl, losses, qsl_meter) = observed_sqrt(operand, RoundingMode::NearestEven, source_meter);
+    let (fsl, losses, qsl_meter) = observed_sqrt(operand, RoundingMode::NearestEven, source_meter);
     let runtime = evaluate_ieee(
         IeeeOperation::SquareRoot(operand),
         RoundingMode::NearestEven,
         &mut runtime_meter,
     )
     .expect("binary32 square root type-checks");
-    match (expected, qsl, runtime) {
+    match (expected, fsl, runtime) {
         (
             Ok((bits, flags)),
-            Outcome::Completed(Value::Float(qsl_value)),
+            Outcome::Completed(Value::Float(fsl_value)),
             Outcome::Completed(runtime_value),
         ) => {
-            assert_eq!(qsl_value, runtime_value.value(), "{id} bits agree");
-            assert_eq!(qsl_value.bits(), bits, "{id} QSpec bits");
-            assert_eq!(runtime_value.flags(), flags, "{id} QSpec flags");
+            assert_eq!(fsl_value, runtime_value.value(), "{id} bits agree");
+            assert_eq!(fsl_value.bits(), bits, "{id} FSpec bits");
+            assert_eq!(runtime_value.flags(), flags, "{id} FSpec flags");
             if flags.is_empty() {
-                assert!(losses.is_empty(), "{id} QSL flags");
+                assert!(losses.is_empty(), "{id} FSL flags");
             } else {
                 assert_eq!(losses, vec![ValueLoss::IeeeFlags(flags)]);
             }
         }
         (Err(point), Outcome::Incomplete(qsl_shortage), Outcome::Incomplete(runtime_shortage)) => {
-            assert_eq!(qsl_shortage.charge_point, point, "{id} QSL denial");
+            assert_eq!(qsl_shortage.charge_point, point, "{id} FSL denial");
             assert_eq!(runtime_shortage.charge_point, point, "{id} runtime denial");
             assert_eq!(qsl_shortage.limit_kind, LimitKind::WorkUnits);
             assert_eq!(runtime_shortage.limit_kind, LimitKind::WorkUnits);
@@ -1151,8 +1151,8 @@ fn assert_bounded_sqrt(
             assert_eq!(qsl_shortage.next_charge, runtime_shortage.next_charge);
             assert!(losses.is_empty(), "{id} denial has no result loss");
         }
-        (expected, qsl, runtime) => {
-            panic!("{id} expected bounded {expected:?}; QSL {qsl:?}; runtime {runtime:?}")
+        (expected, fsl, runtime) => {
+            panic!("{id} expected bounded {expected:?}; FSL {fsl:?}; runtime {runtime:?}")
         }
     }
     assert_eq!(
@@ -1217,7 +1217,7 @@ fn observed_numeric_equal(left: u32, right: u32, mut meter: Meter) -> (Outcome<V
         .expect("S6a calls the checked IEEE comparison function");
     let FamilyOutcome::Evaluated(outcome) = evaluation.outcome else {
         panic!(
-            "QSL did not reach IEEE comparison: {:?}",
+            "FSL did not reach IEEE comparison: {:?}",
             evaluation.outcome
         );
     };
@@ -1228,7 +1228,7 @@ fn observed_numeric_equal(left: u32, right: u32, mut meter: Meter) -> (Outcome<V
 fn checked_numeric_equal(left: u32, right: u32) -> (bool, Meter) {
     let (outcome, meter) = observed_numeric_equal(left, right, Meter::new(LIMITS));
     let Outcome::Completed(Value::Boolean(equal)) = outcome else {
-        panic!("QSL did not complete IEEE comparison: {outcome:?}");
+        panic!("FSL did not complete IEEE comparison: {outcome:?}");
     };
     (equal, meter)
 }
@@ -1250,7 +1250,7 @@ fn assert_numeric_equal(id: &str, left: u32, right: u32, expected: bool) {
         qsl_equal, runtime_equal,
         "{id} numeric equality disagreement"
     );
-    assert_eq!(qsl_equal, expected, "{id} QSpec numeric equality");
+    assert_eq!(qsl_equal, expected, "{id} FSpec numeric equality");
     assert_eq!(
         qsl_meter.admitted_charges()[0].point,
         ChargePoint::FunctionCall
@@ -1312,7 +1312,7 @@ fn tc193_f17_numeric_equality_accounts_for_named_charges() {
             qsl_meter = qsl_meter.with_injected_denial(injected);
             runtime_meter = runtime_meter.with_injected_denial(injected);
         }
-        let (qsl, qsl_meter) = observed_numeric_equal(f17_bits[0], f17_bits[1], qsl_meter);
+        let (fsl, qsl_meter) = observed_numeric_equal(f17_bits[0], f17_bits[1], qsl_meter);
         let runtime = compare_ieee(
             IeeeComparison::NumericEqual,
             IeeeValue::binary32(f17_bits[0]),
@@ -1320,13 +1320,13 @@ fn tc193_f17_numeric_equality_accounts_for_named_charges() {
             &mut runtime_meter,
         )
         .expect("same-width IEEE comparison type-checks");
-        match (denial, qsl, runtime) {
+        match (denial, fsl, runtime) {
             (
                 None,
                 Outcome::Completed(Value::Boolean(qsl_equal)),
                 Outcome::Completed(runtime_equal),
             ) => {
-                assert!(!qsl_equal, "F17 QSpec false");
+                assert!(!qsl_equal, "F17 FSpec false");
                 assert_eq!(qsl_equal, runtime_equal, "F17 two-sided Boolean");
             }
             (
@@ -1334,7 +1334,7 @@ fn tc193_f17_numeric_equality_accounts_for_named_charges() {
                 Outcome::Incomplete(qsl_shortage),
                 Outcome::Incomplete(runtime_shortage),
             ) => {
-                assert_eq!(qsl_shortage.charge_point, point, "F17 QSL named denial");
+                assert_eq!(qsl_shortage.charge_point, point, "F17 FSL named denial");
                 assert_eq!(
                     runtime_shortage.charge_point, point,
                     "F17 runtime named denial"
@@ -1353,8 +1353,8 @@ fn tc193_f17_numeric_equality_accounts_for_named_charges() {
                 assert_eq!(qsl_shortage.limit, runtime_shortage.limit + 1);
                 assert_eq!(qsl_shortage.next_charge, runtime_shortage.next_charge);
             }
-            (denial, qsl, runtime) => {
-                panic!("F17 denial {denial:?}: QSL {qsl:?}, runtime {runtime:?}")
+            (denial, fsl, runtime) => {
+                panic!("F17 denial {denial:?}: FSL {fsl:?}, runtime {runtime:?}")
             }
         }
         assert_eq!(
@@ -1403,9 +1403,9 @@ fn tc193_f07_f08_rounding_modes_agree_from_checked_source_to_runtime() {
         let expected = hex_bits(row.expected);
         assert_eq!(inputs.len(), 2, "{id} has two binary32 inputs");
         assert_eq!(expected.len(), 2, "{id} has two expected bit patterns");
-        // Branch-gating QSpec expectation spelling: every mode raises inexact.
+        // Branch-gating FSpec expectation spelling: every mode raises inexact.
         assert!(row.expected.contains("{inexact}"), "{id} flags inexact");
-        // Branch-gating QSpec ID match: the rounded-up direction differs by sign.
+        // Branch-gating FSpec ID match: the rounded-up direction differs by sign.
         let up_mode = match id {
             "F07" => RoundingMode::TowardPositive,
             "F08" => RoundingMode::TowardNegative,
@@ -1441,7 +1441,7 @@ fn tc193_f06_cross_width_comparison_refuses_before_evaluation() {
                 .chars()
                 .take_while(|ch| ch.is_ascii_hexdigit())
                 .collect();
-            u64::from_str_radix(&digits, 16).expect("QSpec IEEE bits are hexadecimal")
+            u64::from_str_radix(&digits, 16).expect("FSpec IEEE bits are hexadecimal")
         })
         .collect();
     let [left, right] = operands.as_slice() else {
@@ -1608,7 +1608,7 @@ fn tc193_f09_f14_f23_f29_exact_refusal_and_rounding_agree() {
     let f09 = selected_vector("F09");
     let f09_bits = hex_bits(f09.inputs);
     assert!(f09_bits.contains(&0x3400_0000), "F09 supplies one full ulp");
-    // Branch-gating QSpec expectation: F09's first branch must remain a refusal.
+    // Branch-gating FSpec expectation: F09's first branch must remain a refusal.
     assert!(f09.expected.contains("refused"));
     assert!(hex_bits(f09.expected).contains(&0x3f80_0001));
     assert_add_observation(
@@ -1706,7 +1706,7 @@ fn tc193_f09_f14_f23_f29_exact_refusal_and_rounding_agree() {
 #[test]
 fn tc193_f26_signed_zero_arithmetic_agrees_in_every_mode() {
     let f26 = selected_vector("F26");
-    // Branch-gating QSpec input and expectation spelling: the source row must
+    // Branch-gating FSpec input and expectation spelling: the source row must
     // retain the signed-zero cases that this selected test evaluates.
     for operand in ["0x80000000", "0x00000000", "0x3f800000", "0xbf800000"] {
         assert!(f26.inputs.contains(operand), "F26 lacks {operand}");
@@ -1788,19 +1788,19 @@ fn tc193_f32_ieee_negation_preserves_bits_and_rounding_independence() {
         assert_ieee_carrier(&source, "quire.op.ieee.float32.negate", 1);
         for &(input_bits, expected_bits) in &binary32 {
             let input = IeeeValue::binary32(input_bits);
-            let (qsl, losses, qsl_meter) =
+            let (fsl, losses, qsl_meter) =
                 observed_float_source(&source, vec![Value::Float(input)], Meter::new(LIMITS));
             let mut runtime_meter = Meter::new(LIMITS);
             let runtime = evaluate_ieee(IeeeOperation::Negate(input), mode, &mut runtime_meter)
                 .expect("IEEE negation admits a selected width");
-            let (Outcome::Completed(Value::Float(qsl_value)), Outcome::Completed(native)) =
-                (qsl, runtime)
+            let (Outcome::Completed(Value::Float(fsl_value)), Outcome::Completed(native)) =
+                (fsl, runtime)
             else {
                 panic!("F32 negation must complete for {input_bits:#010x} in {mode:?}");
             };
-            assert_eq!(qsl_value, native.value());
-            assert_eq!(format!("{qsl_value:?}"), format!("{:?}", native.value()));
-            assert_eq!(qsl_value.bits(), u64::from(expected_bits));
+            assert_eq!(fsl_value, native.value());
+            assert_eq!(format!("{fsl_value:?}"), format!("{:?}", native.value()));
+            assert_eq!(fsl_value.bits(), u64::from(expected_bits));
             assert!(native.flags().is_empty());
             assert!(losses.is_empty());
             assert_scalar_charge_suffix("F32", &qsl_meter, &runtime_meter);
@@ -1809,7 +1809,7 @@ fn tc193_f32_ieee_negation_preserves_bits_and_rounding_independence() {
         assert_ieee_carrier(&doubled, "quire.op.ieee.float32.negate", 2);
         for &(input_bits, _) in &binary32 {
             let input = IeeeValue::binary32(input_bits);
-            let (qsl, losses, qsl_meter) =
+            let (fsl, losses, qsl_meter) =
                 observed_float_source(&doubled, vec![Value::Float(input)], Meter::new(LIMITS));
             let mut native_meter = Meter::new(LIMITS);
             let Outcome::Completed(first) =
@@ -1826,7 +1826,7 @@ fn tc193_f32_ieee_negation_preserves_bits_and_rounding_independence() {
             .expect("second negation admits") else {
                 panic!("F32 second native negation must complete");
             };
-            let Outcome::Completed(Value::Float(value)) = qsl else {
+            let Outcome::Completed(Value::Float(value)) = fsl else {
                 panic!("F32 double negation must complete for {input_bits:#010x}");
             };
             assert_eq!(value, second.value());
@@ -1840,7 +1840,7 @@ fn tc193_f32_ieee_negation_preserves_bits_and_rounding_independence() {
         let wide_source = format!("function f using v(a: {wide_ty}): {wide_ty} pure {{ -a }}");
         assert_ieee_carrier(&wide_source, "quire.op.ieee.float64.negate", 1);
         let wide_input = IeeeValue::binary64(0x7ff0_0000_0000_0001);
-        let (qsl, losses, qsl_meter) = observed_float_source(
+        let (fsl, losses, qsl_meter) = observed_float_source(
             &wide_source,
             vec![Value::Float(wide_input)],
             Meter::new(LIMITS),
@@ -1848,20 +1848,20 @@ fn tc193_f32_ieee_negation_preserves_bits_and_rounding_independence() {
         let mut runtime_meter = Meter::new(LIMITS);
         let runtime = evaluate_ieee(IeeeOperation::Negate(wide_input), mode, &mut runtime_meter)
             .expect("binary64 negation admits");
-        let (Outcome::Completed(Value::Float(qsl_value)), Outcome::Completed(native)) =
-            (qsl, runtime)
+        let (Outcome::Completed(Value::Float(fsl_value)), Outcome::Completed(native)) =
+            (fsl, runtime)
         else {
             panic!("F32 binary64 negation must complete");
         };
-        assert_eq!(qsl_value, native.value());
-        assert_eq!(format!("{qsl_value:?}"), format!("{:?}", native.value()));
-        assert_eq!(qsl_value.bits(), 0xfff0_0000_0000_0001);
+        assert_eq!(fsl_value, native.value());
+        assert_eq!(format!("{fsl_value:?}"), format!("{:?}", native.value()));
+        assert_eq!(fsl_value.bits(), 0xfff0_0000_0000_0001);
         assert!(native.flags().is_empty());
         assert!(losses.is_empty());
         assert_scalar_charge_suffix("F32 binary64", &qsl_meter, &runtime_meter);
         let wide_doubled = format!("function f using v(a: {wide_ty}): {wide_ty} pure {{ -(-a) }}");
         assert_ieee_carrier(&wide_doubled, "quire.op.ieee.float64.negate", 2);
-        let (qsl, losses, qsl_meter) = observed_float_source(
+        let (fsl, losses, qsl_meter) = observed_float_source(
             &wide_doubled,
             vec![Value::Float(wide_input)],
             Meter::new(LIMITS),
@@ -1881,7 +1881,7 @@ fn tc193_f32_ieee_negation_preserves_bits_and_rounding_independence() {
         .expect("second binary64 negation admits") else {
             panic!("F32 second native binary64 negation must complete");
         };
-        let Outcome::Completed(Value::Float(value)) = qsl else {
+        let Outcome::Completed(Value::Float(value)) = fsl else {
             panic!("F32 binary64 double negation must complete");
         };
         assert_eq!(value, second.value());
@@ -1932,7 +1932,7 @@ fn tc193_f33_negation_meter_agrees() {
             work_units: limits.work_units + 1,
             ..limits
         };
-        let (qsl, losses, qsl_meter) = observed_float_source(
+        let (fsl, losses, qsl_meter) = observed_float_source(
             function,
             vec![Value::Float(input)],
             Meter::new(source_limits),
@@ -1944,19 +1944,19 @@ fn tc193_f33_negation_meter_agrees() {
             &mut runtime_meter,
         )
         .expect("negation admits");
-        match (expected, qsl, native) {
+        match (expected, fsl, native) {
             (
                 ConversionExpectation::Completed(bits, flags),
-                Outcome::Completed(Value::Float(qsl_value)),
+                Outcome::Completed(Value::Float(fsl_value)),
                 Outcome::Completed(native),
             ) => {
-                assert_eq!(qsl_value, native.value(), "{id} two-sided value");
+                assert_eq!(fsl_value, native.value(), "{id} two-sided value");
                 assert_eq!(
-                    format!("{qsl_value:?}"),
+                    format!("{fsl_value:?}"),
                     format!("{:?}", native.value()),
                     "{id} Debug rendering"
                 );
-                assert_eq!(qsl_value.bits(), bits, "{id} QSpec bits");
+                assert_eq!(fsl_value.bits(), bits, "{id} FSpec bits");
                 assert_eq!(native.flags(), flags);
                 assert!(losses.is_empty());
             }
@@ -1984,17 +1984,17 @@ fn tc193_f33_negation_meter_agrees() {
                 assert_eq!(
                     qsl_shortage.limit,
                     asserted_limit(source_limits, kind),
-                    "{id} QSL limit"
+                    "{id} FSL limit"
                 );
                 assert_eq!(
                     qsl_shortage.next_charge,
                     Integer::from(next),
-                    "{id} QSL next charge"
+                    "{id} FSL next charge"
                 );
                 assert!(losses.is_empty());
             }
-            (expected, qsl, native) => {
-                panic!("{id} expected {expected:?}; QSL {qsl:?}; native {native:?}")
+            (expected, fsl, native) => {
+                panic!("{id} expected {expected:?}; FSL {fsl:?}; native {native:?}")
             }
         }
         assert_scalar_charge_suffix(id, &qsl_meter, &runtime_meter);
@@ -2592,7 +2592,7 @@ fn tc193_f18_f21_f22_metered_arithmetic_agrees() {
     }
 
     let f22 = selected_vector("F22");
-    // Branch-gating QSpec cross-row reference: F22 must remain the F09 first sum.
+    // Branch-gating FSpec cross-row reference: F22 must remain the F09 first sum.
     assert!(f22.inputs.contains("F09"));
     let f07_bits = hex_bits(selected_vector("F07").inputs);
     assert_eq!(f07_bits.len(), 2);
@@ -2705,7 +2705,7 @@ fn tc193_f12_invalid_arithmetic_agrees_in_every_mode() {
 #[test]
 fn tc193_f13_division_flags_are_operation_local() {
     let row = selected_vector("F13");
-    // Branch-gating QSpec expectation: the exceptional flag remains authored.
+    // Branch-gating FSpec expectation: the exceptional flag remains authored.
     assert!(
         row.expected.contains("divide_by_zero"),
         "F13 flag expectation"
@@ -2810,7 +2810,7 @@ fn tc193_f04b_f11_fma_agrees_with_runtime_and_separate_rounding() {
     let a = IeeeValue::binary32(*a);
     let b = IeeeValue::binary32(*b);
     let c = IeeeValue::binary32(*c);
-    let (qsl, losses, qsl_meter) = observed_float_source(
+    let (fsl, losses, qsl_meter) = observed_float_source(
         function,
         vec![Value::Float(a), Value::Float(b), Value::Float(c)],
         Meter::new(LIMITS),
@@ -2831,11 +2831,11 @@ fn tc193_f04b_f11_fma_agrees_with_runtime_and_separate_rounding() {
         &mut runtime_meter,
     )
     .expect("binary32 sum type-checks");
-    let (Outcome::Completed(Value::Float(qsl_value)), Outcome::Completed(sum)) = (qsl, sum) else {
+    let (Outcome::Completed(Value::Float(fsl_value)), Outcome::Completed(sum)) = (fsl, sum) else {
         panic!("F11 separate path must complete on both sides");
     };
-    assert_eq!(qsl_value, sum.value(), "F11 separate two-sided bits");
-    assert_eq!(qsl_value.bits(), 0, "F11 separate QSpec bits");
+    assert_eq!(fsl_value, sum.value(), "F11 separate two-sided bits");
+    assert_eq!(fsl_value.bits(), 0, "F11 separate FSpec bits");
     let runtime_losses: Vec<_> = [product.flags(), sum.flags()]
         .into_iter()
         .filter(|flags| !flags.is_empty())
@@ -2849,7 +2849,7 @@ fn tc193_f04b_f11_fma_agrees_with_runtime_and_separate_rounding() {
 #[test]
 fn tc193_f05_infinities_and_finite_extrema_agree() {
     let row = selected_vector("F05");
-    // Branch-gating QSpec prose: the selected comparison class must stay authored.
+    // Branch-gating FSpec prose: the selected comparison class must stay authored.
     assert!(row.inputs.contains("infinity"));
     assert!(row.inputs.contains("finite extrema"));
     for (low, high) in [
@@ -3068,7 +3068,7 @@ fn run_f26_signed_zero_agreement() {
 }
 
 fn f_case(id: &str) -> fn() {
-    // Branch-gating QSpec F-ID dispatch: an unknown or newly authored ID fails closed.
+    // Branch-gating FSpec F-ID dispatch: an unknown or newly authored ID fails closed.
     match id {
         "F01" | "F02" => run_f01_f02_available,
         "F02b" => tc193_f01_f02_f02b_order_and_identity_agree,
@@ -3094,7 +3094,7 @@ fn f_case(id: &str) -> fn() {
         "F32" => tc193_f32_ieee_negation_preserves_bits_and_rounding_independence,
         "F33" => tc193_f33_negation_meter_agrees,
         "F34" => tc193_f34_float_relations_agree_at_both_widths,
-        other => panic!("unrouted QSpec TC-193 F vector {other}"),
+        other => panic!("unrouted FSpec TC-193 F vector {other}"),
     }
 }
 

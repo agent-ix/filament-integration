@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-//! Locate QSL's authored fixtures from Cargo's resolved dependency graph.
+//! Locate FSL's authored fixtures from Cargo's resolved dependency graph.
 
 use std::{
     path::{Path, PathBuf},
@@ -21,7 +21,7 @@ struct MetadataPackage {
     manifest_path: PathBuf,
 }
 
-pub fn qsl_root() -> &'static Path {
+pub fn fsl_root() -> &'static Path {
     static ROOT: OnceLock<PathBuf> = OnceLock::new();
     ROOT.get_or_init(|| {
         let manifest = Path::new(env!("CARGO_MANIFEST_DIR")).join("Cargo.toml");
@@ -41,11 +41,11 @@ pub fn qsl_root() -> &'static Path {
             .packages
             .into_iter()
             .find(|package| package.name == "quire-spec-language")
-            .expect("QSL is in the resolved dependency graph");
+            .expect("FSL is in the resolved dependency graph");
         package
             .manifest_path
             .parent()
-            .expect("QSL manifest has a parent")
+            .expect("FSL manifest has a parent")
             .to_path_buf()
     })
 }

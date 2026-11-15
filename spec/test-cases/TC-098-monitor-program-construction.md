@@ -3,9 +3,9 @@ id: TC-098
 title: "Monitor construction with admitted semantic identities"
 type: TC
 relationships:
-  - target: ix://agent-ix/quire-integration/IT-018
+  - target: ix://agent-ix/filament-integration/IT-018
     type: verifies
-  - target: ix://agent-ix/quire-contract-ir/FR-357
+  - target: ix://agent-ix/filament-contract-ir/FR-357
     type: verifies
 ---
 # TC-098: Monitor construction with admitted semantic identities
@@ -17,14 +17,14 @@ and FR-357-AC-9's separate explicit selected-fact boundary through the public IR
 
 ## Test Procedure
 
-Run the complete `monitor_program` integration target. Emit authored QSL source,
+Run the complete `monitor_program` integration target. Emit authored FSL source,
 admit it with the strict IR reader, and obtain every source identity from the
 admitted package. Exercise the retained owner, exact premises, malformed closure,
 shared-DAG and compatible-entry controls specified by IT-018.
 
 For IT-018-SC-16, run the fallible-type-construction cases in the dedicated
 `monitor_program` test binary, which uses the owner's thread-local failing allocator.
-Compile the authored QSL fixture and strictly admit its unchanged emission before arming
+Compile the authored FSL fixture and strictly admit its unchanged emission before arming
 denial. Obtain every declaration, field, source location and type identity through the
 existing checked-package lookup; unavailable or refused lookup fails the test. Construct
 all input parts and expected native request observations before denial. Refuse the first
@@ -41,10 +41,10 @@ exhaustion evidence. Do not introduce a test identity constructor, bypass an ide
 or claim that a controlled arena is a genuine emitted temporal program.
 
 Run `monitor_selected_facts` separately for FR-357-AC-9. Obtain a real final
-QSL `PlanRoot.emission`, admit its bytes strictly, and select model declaration,
+FSL `PlanRoot.emission`, admit its bytes strictly, and select model declaration,
 field and equality application/occurrence IDs from that same emission. The
 selected record model document is authored by this test; the monitor subject
-uses QSL's ConfigVersion document by reference. Translate
+uses FSL's ConfigVersion document by reference. Translate
 its closed equality-row vocabulary through the producer-owned public
 `equality_witness` adapter without changing values. Compare exact model
 rows and field order, presence and type, then compare the public selected-fact

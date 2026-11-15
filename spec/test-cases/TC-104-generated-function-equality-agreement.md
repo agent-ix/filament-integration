@@ -1,18 +1,18 @@
 ---
 id: TC-104
-title: "Execute equality generators against independent public QSL authority"
+title: "Execute equality generators against independent public FSL authority"
 type: TC
 relationships:
-  - target: ix://agent-ix/quire-integration/IT-019
+  - target: ix://agent-ix/filament-integration/IT-019
     type: references
-  - target: ix://agent-ix/quire-contract-codegen/FR-018
+  - target: ix://agent-ix/filament-contract-codegen/FR-018
     type: references
-  - target: ix://agent-ix/quire-contract-codegen/FR-021
+  - target: ix://agent-ix/filament-contract-codegen/FR-021
     type: references
-  - target: ix://agent-ix/quire-spec-language/FR-485
+  - target: ix://agent-ix/filament-spec-language/FR-485
     type: references
 ---
-# TC-104: Execute equality generators against independent public QSL authority
+# TC-104: Execute equality generators against independent public FSL authority
 
 ## Description
 
@@ -24,7 +24,7 @@ receives only its own measured credit; full family completion remains Planned.
 ## Test Procedure
 
 1. Author ten pure equality functions and ten separate exercise calls.
-   Acquire the original source through QSL, strictly admit its emission, and
+   Acquire the original source through FSL, strictly admit its emission, and
    select actual declaration, body, call, argument and scalar type handles.
    Lower the actual requested roots and authenticate the contract against its
    source. Generate public CompositeEquality Equal and NotEqual declarations
@@ -57,9 +57,9 @@ receives only its own measured credit; full family completion remains Planned.
 6. Separately qualify the public FR-018 composite equality generator for
    closed Boolean literal Equal/NotEqual truth tables and Integer equal,
    less and greater literal pairs. Derive operand semantic types and expression
-   IDs from original QSL emission, authenticate actual lowered contract bytes,
+   IDs from original FSL emission, authenticate actual lowered contract bytes,
    and invoke returned native environment/oracle symbols. Evaluate each same
-   source body through a fresh independently checked public QSL evaluator.
+   source body through a fresh independently checked public FSL evaluator.
    Compare complete typed outcome, all losses, ordered charges and all counters
    at work 0, 1 and 1024 without constructor-charge subtraction. Independently
    require explicit Boolean answers and exact EqualityPlanForm stops (next
@@ -95,7 +95,7 @@ receives only its own measured credit; full family completion remains Planned.
 passes 96 whole-call comparisons, 38 input refusals and twelve changed-owner
 refusals. Each work stop and completed Boolean has an independent required
 shape, and both sides compare full typed outcome, location, located loss,
-ordered admitted charges and every counter. The original QSL constructors
+ordered admitted charges and every counter. The original FSL constructors
 supply external nominal input Values; their separate session meters contribute
 nothing to the compared equality calls. The same test observes eight typed
 generation-boundary refusals, each retaining a healthy nominal sibling, and

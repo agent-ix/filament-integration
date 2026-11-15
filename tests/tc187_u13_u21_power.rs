@@ -130,8 +130,8 @@ fn limits(integer_bits: u64, work_units: u64, result_units: u64) -> ScalarLimits
     }
 }
 
-/// Trace: QSpec-TC-187 U13 and QSpec-FR-142. A larger-than-u64 exponent retains its exact denied amount.
-#[trace("QSpec-TC-187", "QSpec-FR-142")]
+/// Trace: FSpec-TC-187 U13 and FSpec-FR-142. A larger-than-u64 exponent retains its exact denied amount.
+#[trace("FSpec-TC-187", "FSpec-FR-142")]
 #[test]
 fn public_u13_power_reports_the_exact_over_u64_denied_charge() {
     bind_vector("U13", U13_INPUTS, U13_EXPECTED);
@@ -199,8 +199,8 @@ fn run_power(exponent: i64, work_units: u64, result_units: u64) -> (Outcome<Valu
     (outcome, meter)
 }
 
-/// Trace: QSpec-TC-187 U21 and QSpec-FR-142. Zero powers and read denial retain distinct outcomes.
-#[trace("QSpec-TC-187", "QSpec-FR-142")]
+/// Trace: FSpec-TC-187 U21 and FSpec-FR-142. Zero powers and read denial retain distinct outcomes.
+#[trace("FSpec-TC-187", "FSpec-FR-142")]
 #[test]
 fn public_u21_zero_powers_observe_value_undefined_and_first_read_denial() {
     bind_vector("U21", U21_INPUTS, U21_EXPECTED);
@@ -259,7 +259,7 @@ fn public_u21_zero_powers_observe_value_undefined_and_first_read_denial() {
     assert!(meter.admitted_charges().is_empty());
 }
 
-#[trace("TC-106", "IT-019-SC-04", "QSpec-TC-187")]
+#[trace("TC-106", "IT-019-SC-04", "FSpec-TC-187")]
 #[test]
 fn public_u13_huge_and_u21_zero_power_match_generated_native_oracles() {
     bind_vector("U13", U13_INPUTS, U13_EXPECTED);

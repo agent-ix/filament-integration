@@ -3,10 +3,10 @@ id: SR-001
 title: "Code and Rust review of monitor denial controls"
 type: SpecReview
 analysis: code-review
-scope: "agent-ix/quire-integration; IR-1426; PR 100; tests/monitor_tick_producer.rs"
+scope: "agent-ix/filament-integration; IR-1426; PR 100; tests/monitor_tick_producer.rs"
 review_set: subset
 relationships:
-  - {target: "ix://agent-ix/quire-integration/IT-018", type: references}
+  - {target: "ix://agent-ix/filament-integration/IT-018", type: references}
 ---
 
 ## Summary

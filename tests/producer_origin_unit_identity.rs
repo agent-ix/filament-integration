@@ -42,21 +42,21 @@ fn retained_graph(context: &qsl_replay::AdmittedContext) -> UnitGraph {
         .map(|dimension| {
             let nominal = table
                 .nominal_node(dimension.node())
-                .expect("QSL held dimension");
+                .expect("FSL held dimension");
             let NominalUnitForm::Dimension { terms, .. } = &nominal.form else {
-                panic!("QSL dimension has dimension facts")
+                panic!("FSL dimension has dimension facts")
             };
             (
                 nominal.key.clone(),
                 DimensionNode::checked(terms.clone(), nominal.declaration.clone())
-                    .expect("QSL checked the dimension"),
+                    .expect("FSL checked the dimension"),
             )
         })
         .collect::<BTreeMap<_, _>>();
     let units = context
         .units()
         .map(|unit| {
-            let nominal = table.nominal_node(unit.node()).expect("QSL held unit");
+            let nominal = table.nominal_node(unit.node()).expect("FSL held unit");
             let NominalUnitForm::Unit {
                 dimension,
                 target,
@@ -64,7 +64,7 @@ fn retained_graph(context: &qsl_replay::AdmittedContext) -> UnitGraph {
                 offset,
             } = &nominal.form
             else {
-                panic!("QSL unit has unit facts")
+                panic!("FSL unit has unit facts")
             };
             (
                 nominal.key.clone(),
@@ -75,11 +75,11 @@ fn retained_graph(context: &qsl_replay::AdmittedContext) -> UnitGraph {
                     offset.clone(),
                     nominal.declaration.clone(),
                 )
-                .expect("QSL checked the unit"),
+                .expect("FSL checked the unit"),
             )
         })
         .collect::<BTreeMap<_, _>>();
-    UnitGraph::from_checked_nodes(&dimensions, &units).expect("retained QSL graph is valid")
+    UnitGraph::from_checked_nodes(&dimensions, &units).expect("retained FSL graph is valid")
 }
 
 fn meter() -> Meter {
@@ -99,7 +99,7 @@ fn meter() -> Meter {
 
 #[test]
 #[trace("IT-016-SC-03", "IT-016-SC-05", "TC-096", "FR-275-AC-23")]
-fn retained_qsl_roots_refuse_only_at_exact_identity_handoff() {
+fn retained_fsl_roots_refuse_only_at_exact_identity_handoff() {
     let package_name = "p".repeat(16_777_216 / 32);
     let source = source();
     let compiled = qsl_replay::compile_admitted(
@@ -114,7 +114,7 @@ fn retained_qsl_roots_refuse_only_at_exact_identity_handoff() {
         StageLimits::default(),
         ReplayLimits::default(),
     )
-    .expect("QSL admits the authored source");
+    .expect("FSL admits the authored source");
     let context = compiled.context();
     let mut roots = context
         .units()
@@ -140,7 +140,7 @@ fn retained_qsl_roots_refuse_only_at_exact_identity_handoff() {
     let target = QuantityUnit::Compound(
         graph
             .compound_unit(&terms)
-            .expect("QSL roots form a compound target"),
+            .expect("FSL roots form a compound target"),
     );
     assert!(target.dimension().is_dimensionless());
     let source_unit = QuantityUnit::Compound(graph.compound_unit(&[]).expect("empty unit"));

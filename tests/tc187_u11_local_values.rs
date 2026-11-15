@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-//! Public TC-187 U11 local values and derived dimensions through QSL intake.
+//! Public TC-187 U11 local values and derived dimensions through FSL intake.
 
 use std::collections::BTreeMap;
 
@@ -145,8 +145,8 @@ fn assert_derived_dimension(
     assert_eq!(derived_unit.dimension(), dimension, "{id}");
 }
 
-/// Trace: QSpec-TC-187 and QSpec-FR-142-AC-15. Both authored U11e forms refuse.
-#[trace("QSpec-TC-187", "QSpec-FR-142-AC-15")]
+/// Trace: FSpec-TC-187 and FSpec-FR-142-AC-15. Both authored U11e forms refuse.
+#[trace("FSpec-TC-187", "FSpec-FR-142-AC-15")]
 #[test]
 fn public_u11e_nonidentity_roots_retain_scale_and_offset() {
     assert_non_identity_root(
@@ -163,8 +163,8 @@ fn public_u11e_nonidentity_roots_retain_scale_and_offset() {
     );
 }
 
-/// Trace: QSpec-TC-187 and QSpec-FR-142-AC-16. The base check precedes units.
-#[trace("QSpec-TC-187", "QSpec-FR-142-AC-16")]
+/// Trace: FSpec-TC-187 and FSpec-FR-142-AC-16. The base check precedes units.
+#[trace("FSpec-TC-187", "FSpec-FR-142-AC-16")]
 #[test]
 fn public_u11g_derived_maps_refuse_unanchored_l_and_admit_anchored_controls() {
     vector("U11g1", "m2", "L^2");

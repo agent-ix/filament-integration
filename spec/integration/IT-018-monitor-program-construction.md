@@ -3,31 +3,31 @@ id: IT-018
 title: "Retain monitor construction parts with producer-origin identities"
 type: IT
 relationships:
-  - target: ix://agent-ix/quire-contract-runtime/interface_002
+  - target: ix://agent-ix/filament-contract-runtime/interface_002
     type: verifies
-  - target: ix://agent-ix/quire-contract-runtime/interface_006
+  - target: ix://agent-ix/filament-contract-runtime/interface_006
     type: verifies
-  - target: ix://agent-ix/quire-contract-runtime/interface_005
+  - target: ix://agent-ix/filament-contract-runtime/interface_005
     type: verifies
-  - target: ix://agent-ix/quire-contract-runtime/interface_004
+  - target: ix://agent-ix/filament-contract-runtime/interface_004
     type: verifies
-  - target: ix://agent-ix/quire-contract-runtime/interface_003
+  - target: ix://agent-ix/filament-contract-runtime/interface_003
     type: verifies
-  - target: ix://agent-ix/quire-contract-runtime/FR-012
+  - target: ix://agent-ix/filament-contract-runtime/FR-012
     type: verifies
-  - target: ix://agent-ix/quire-contract-runtime/interface_007
+  - target: ix://agent-ix/filament-contract-runtime/interface_007
     type: verifies
-  - target: ix://agent-ix/quire-contract-runtime/interface_008
+  - target: ix://agent-ix/filament-contract-runtime/interface_008
     type: verifies
-  - target: ix://agent-ix/quire-contract-runtime/interface_009
+  - target: ix://agent-ix/filament-contract-runtime/interface_009
     type: verifies
-  - target: ix://agent-ix/quire-contract-runtime/interface_010
+  - target: ix://agent-ix/filament-contract-runtime/interface_010
     type: verifies
-  - target: ix://agent-ix/quire-contract-runtime/FR-276
+  - target: ix://agent-ix/filament-contract-runtime/FR-276
     type: verifies
-  - target: ix://agent-ix/quire-contract-runtime/interface_012
+  - target: ix://agent-ix/filament-contract-runtime/interface_012
     type: verifies
-  - target: ix://agent-ix/quire-contract-runtime/interface_011
+  - target: ix://agent-ix/filament-contract-runtime/interface_011
     type: verifies
 ---
 # IT-018: Retain monitor construction parts with producer-origin identities
@@ -41,7 +41,7 @@ semantics, or the complete FR-276 monitor.
 
 ## Target Integration
 
-Live QSL source emission → IR strict reader → retained structural identity → shared
+Live FSL source emission → IR strict reader → retained structural identity → shared
 value/type declarations → RT `monitor::Program::try_new` → bounded ordinary initializer.
 
 ## Preconditions
@@ -49,7 +49,7 @@ value/type declarations → RT `monitor::Program::try_new` → bounded ordinary 
 Run the emitter and reader selected by Cargo.lock. Missing tools, refused source,
 refused package, missing declarations, and incompatible dependencies fail the target.
 No checked-package bytes or derived identity values are copied as fixtures. RT retains
-its dependency boundary and does not import QSL or IR.
+its dependency boundary and does not import FSL or IR.
 
 ## Inputs
 
@@ -57,7 +57,7 @@ Author a source containing the declaration identities needed by the construction
 controls. Obtain every key from its uniquely selected admitted declaration. Construct
 controlled ordinary expression arenas and shared nominal values, then vary references,
 types, ownership, source locations and exact premises. These controlled arenas are not
-represented as the temporal program emitted by QSL. Their ordinary diagnostic records
+represented as the temporal program emitted by FSL. Their ordinary diagnostic records
 use `born` and `amount` fields and do not instantiate FR-487 activation/result records.
 A genuinely admitted derived sequence key supplies the nested-key storage probe; its
 placement in the controlled layout grants no temporal-root admission or execution credit.
@@ -71,7 +71,7 @@ placement in the controlled layout grants no temporal-root admission or executio
    zero and values above host width, and admitted affine/negative-scale Time units retain
    their values; invalid widths, out-of-width gaps, negative uncertainty/capacity and a
    foreign dimension refuse construction. Retain the required final Integer
-   event_position with initial literal value 0 under QSpec #595, including after
+   event_position with initial literal value 0 under FSpec #595, including after
    two ordered buffers. Missing, Boolean/text, optional, extra or misordered State
    fields, noncanonical buffer names/types and buffer-count mismatches refuse at
    State before later entry-signature checks. A complete otherwise valid closure
@@ -122,10 +122,10 @@ placement in the controlled layout grants no temporal-root admission or executio
    refuse. Tight scratch budgets charge retained projection addresses; a deep
    chain executes on a small native stack and releases every temporary tuple
    owner without copying a projected subtree. A separate native conformance
-   diagnostic uses QSL/IR declaration keys and shapes with explicitly test-owned
+   diagnostic uses FSL/IR declaration keys and shapes with explicitly test-owned
    supertype edges. It exercises dynamic positional meaning and bounded scalar
    slot admission, including its native work refusal. This does not assert that
-   QSL emitted those edges. No temporal outcome is qualified.
+   FSL emitted those edges. No temporal outcome is qualified.
 
 9. Execute required record diagnostics. IT-018-SC-09: original node-owned member
    identities select distinct State fields despite their declaration order.

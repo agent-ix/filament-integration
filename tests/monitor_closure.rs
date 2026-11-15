@@ -137,7 +137,7 @@ fn the_step_one_monitor_declarations_admit_into_a_type_environment() {
             (environment, expected)
         })
         .expect("closure reads");
-    let environment = environment.expect("QSL's declarations admit as the retained environment");
+    let environment = environment.expect("FSL's declarations admit as the retained environment");
     assert!(expected > 0);
     assert_eq!(environment.composites().count(), expected);
 }
@@ -461,7 +461,7 @@ fn environment_ceilings_and_denials_map_to_work_and_storage_codes() {
     );
 }
 
-/// Lowering relies on QSL declaring every source-record member required.
+/// Lowering relies on FSL declaring every source-record member required.
 #[trace("TC-033", "FR-017-AC-1")]
 #[test]
 fn the_producers_source_records_declare_every_member_required() {

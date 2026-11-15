@@ -102,8 +102,8 @@ fn edge(from: &str, to: &str) -> (String, String) {
     (from.to_owned(), to.to_owned())
 }
 
-/// Trace: QSpec-TC-187 and QSpec-FR-142-AC-17. Document order wins over offsets.
-#[trace("QSpec-TC-187", "QSpec-FR-142-AC-17")]
+/// Trace: FSpec-TC-187 and FSpec-FR-142-AC-17. Document order wins over offsets.
+#[trace("FSpec-TC-187", "FSpec-FR-142-AC-17")]
 #[test]
 fn public_u11q_document_order_selects_the_first_documents_defect() {
     vector("U11q", U11Q_INPUTS, U11Q_EXPECTED);
@@ -152,8 +152,8 @@ fn public_u11q_document_order_selects_the_first_documents_defect() {
     }
 }
 
-/// Trace: QSpec-TC-187 and QSpec-FR-142-AC-17. E's unit can precede D's term.
-#[trace("QSpec-TC-187", "QSpec-FR-142-AC-17")]
+/// Trace: FSpec-TC-187 and FSpec-FR-142-AC-17. E's unit can precede D's term.
+#[trace("FSpec-TC-187", "FSpec-FR-142-AC-17")]
 #[test]
 fn public_u11x_transitive_unknown_term_and_earlier_unit_defect() {
     vector("U11x", U11X_INPUTS, U11X_EXPECTED);
@@ -183,8 +183,8 @@ fn public_u11x_transitive_unknown_term_and_earlier_unit_defect() {
     );
 }
 
-/// Trace: QSpec-TC-187 and QSpec-FR-142-AC-17. E's unit precedes A's cycle.
-#[trace("QSpec-TC-187", "QSpec-FR-142-AC-17")]
+/// Trace: FSpec-TC-187 and FSpec-FR-142-AC-17. E's unit precedes A's cycle.
+#[trace("FSpec-TC-187", "FSpec-FR-142-AC-17")]
 #[test]
 fn public_u11z3_transitive_cycle_follows_the_earlier_unit_defect() {
     vector("U11z3", U11Z3_INPUTS, U11Z3_EXPECTED);

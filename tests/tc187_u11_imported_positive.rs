@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-//! Public TC-187 U11r admission through QSL's selected model package.
+//! Public TC-187 U11r admission through FSL's selected model package.
 
 mod support;
 
@@ -27,9 +27,9 @@ const DIMENSION_ID: &str = "ix://acme/orders/dimension/L";
 const ROOT_ID: &str = "ix://acme/orders/unit/m";
 
 fn selected_model_document() -> Vec<u8> {
-    let path = support::qsl_root().join(MODEL_PATH);
+    let path = support::fsl_root().join(MODEL_PATH);
     let bytes = fs::read(&path).unwrap_or_else(|error| panic!("{path:?}: {error}"));
-    let mut document: Value = serde_json::from_slice(&bytes).expect("the QSL model is JSON");
+    let mut document: Value = serde_json::from_slice(&bytes).expect("the FSL model is JSON");
     assert_eq!(document["package"]["identity"], MODEL_IDENTITY);
     let origin = document["types"][0]["origin"].clone();
     document["dimensions"] = json!([{
@@ -67,8 +67,8 @@ fn public_u11r() {
     );
 }
 
-/// Trace: QSpec-TC-187 and QSpec-FR-142-AC-18. Imported root and local unit agree.
-#[trace("QSpec-TC-187", "QSpec-FR-142-AC-18")]
+/// Trace: FSpec-TC-187 and FSpec-FR-142-AC-18. Imported root and local unit agree.
+#[trace("FSpec-TC-187", "FSpec-FR-142-AC-18")]
 #[test]
 fn public_u11r_imported_root_checks_and_emits_with_exact_scale() {
     public_u11r();

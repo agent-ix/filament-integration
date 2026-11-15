@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-//! IT-016-SC-03: checked equality uses a QSL-emitted composite declaration.
+//! IT-016-SC-03: checked equality uses a FSL-emitted composite declaration.
 
 #[path = "support/producer_origin.rs"]
 mod producer_origin_support;
@@ -40,11 +40,11 @@ const SOURCE_BODY: &str = "\
 const MODEL_IDENTITY: &str = "acme/orders";
 
 fn model_document_path() -> std::path::PathBuf {
-    support::qsl_root().join("tests/fixtures/spine-model.semantic-ir.json")
+    support::fsl_root().join("tests/fixtures/spine-model.semantic-ir.json")
 }
 
 fn model_document() -> Vec<u8> {
-    fs::read(model_document_path()).expect("read QSL's authoritative model document")
+    fs::read(model_document_path()).expect("read FSL's authoritative model document")
 }
 
 fn source() -> String {
@@ -154,23 +154,23 @@ fn admitted_model_type(name: &str) -> (NodeKey, EffectiveId) {
 
 fn model_supertypes(name: &str) -> Vec<String> {
     let document: JsonValue =
-        serde_json::from_slice(&model_document()).expect("QSL model document JSON");
+        serde_json::from_slice(&model_document()).expect("FSL model document JSON");
     let identity = format!("ix://{MODEL_IDENTITY}/{name}");
     let matches: Vec<_> = document["types"]
         .as_array()
-        .expect("QSL model type list")
+        .expect("FSL model type list")
         .iter()
         .filter(|entry| entry["identity"].as_str() == Some(identity.as_str()))
         .collect();
     let [entry] = matches.as_slice() else {
         panic!(
-            "expected one QSL model type {identity}, found {}",
+            "expected one FSL model type {identity}, found {}",
             matches.len()
         );
     };
     entry["supertypes"]
         .as_array()
-        .expect("QSL model supertypes")
+        .expect("FSL model supertypes")
         .iter()
         .map(|value| value.as_str().expect("supertype identity").to_owned())
         .collect()
@@ -501,7 +501,7 @@ fn admitted_composites_with_different_declarations_compare_unequal() {
         ],
         [],
     )
-    .expect("the two QSL-admitted record declarations are distinct");
+    .expect("the two FSL-admitted record declarations are distinct");
     let fields = || {
         (0..6)
             .map(|index| {

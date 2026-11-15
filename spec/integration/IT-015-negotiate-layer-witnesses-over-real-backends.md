@@ -3,11 +3,11 @@ id: IT-015
 title: "Negotiate each profile layer's witness item over the real backends"
 type: IT
 relationships:
-  - target: ix://agent-ix/quire-spec-language/FR-345
+  - target: ix://agent-ix/filament-spec-language/FR-345
     type: verifies
-  - target: ix://agent-ix/quire-spec-language/FR-280
+  - target: ix://agent-ix/filament-spec-language/FR-280
     type: references
-  - target: ix://agent-ix/quire-specification/FR-331
+  - target: ix://agent-ix/filament-specification/FR-331
     type: references
 ---
 # IT-015: Negotiate each profile layer's witness item over the real backends
@@ -16,23 +16,23 @@ relationships:
 
 Show that, over the real backend registry, the witness item of each of the five
 AD-003 profile layers settles `supported` under at least one candidate backend,
-using quire-contract-codegen's `negotiate_*` as the negotiation function of
-QSL's profile-layering gate. This is the real-backend half of FR-345-AC-6 and
-of the witness half of FR-345-AC-9. QSL's own run passes no negotiation
-function, because QSL takes no dependency on quire-contract-codegen
+using filament-contract-codegen's `negotiate_*` as the negotiation function of
+FSL's profile-layering gate. This is the real-backend half of FR-345-AC-6 and
+of the witness half of FR-345-AC-9. FSL's own run passes no negotiation
+function, because FSL takes no dependency on filament-contract-codegen
 (FR-280-AC-3).
 
 ## Target Integration
 
-QSL `xtask::refinement::layering::compare` over `REAL_CORPUS` with the FR-278
+FSL `xtask::refinement::layering::compare` over `REAL_CORPUS` with the FR-278
 composition and the real backend registry → one `WitnessRequest` per layer and
-candidate → quire-contract-codegen `negotiate_*` (QSpec FR-331-AC-4) → the
-`qsl_route::Disposition` returned to `compare`.
+candidate → filament-contract-codegen `negotiate_*` (FSpec FR-331-AC-4) → the
+`fsl_route::Disposition` returned to `compare`.
 
 ## Preconditions
 
-`xtask` is a dev dependency of quire-integration, taken from the same QSL
-source as its other QSL dependencies, so `REAL_CORPUS` is the corpus of the QSL
+`xtask` is a dev dependency of filament-integration, taken from the same FSL
+source as its other FSL dependencies, so `REAL_CORPUS` is the corpus of the FSL
 revision under test. A local build is enough. A missing registry, a missing
 corpus entry or an unresolvable dependency fails the test; none counts as a
 skipped case.
@@ -41,7 +41,7 @@ skipped case.
 
 The corpus at `REAL_CORPUS`, the FR-278 composition, the real backend registry,
 and a negotiation function that forwards each `WitnessRequest` (candidate,
-`witness_request` kind and extent, compiled clause) to quire-contract-codegen's
+`witness_request` kind and extent, compiled clause) to filament-contract-codegen's
 `negotiate_*` and returns its disposition.
 
 ## Test Procedure

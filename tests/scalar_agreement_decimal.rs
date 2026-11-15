@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-//! TC-185 decimal qualification, composed through QSL and the exact kernel.
+//! TC-185 decimal qualification, composed through FSL and the exact kernel.
 //!
-//! QSpec owns the vector identities. The assertions below execute each
+//! FSpec owns the vector identities. The assertions below execute each
 //! vector; they do not derive expected behavior by parsing its prose.
 
 use ix_trace_rs::trace;
@@ -85,8 +85,8 @@ fn rt(
     (outcome, meter)
 }
 
-/// A direct QSL function call. Parameters keep operand construction outside
-/// the measured operation; QSL charges one extra `function.call` work unit.
+/// A direct FSL function call. Parameters keep operand construction outside
+/// the measured operation; FSL charges one extra `function.call` work unit.
 fn qsl_binary(
     operator: &str,
     left_type: &str,
@@ -283,7 +283,7 @@ fn conversion_agreement(input: Decimal, input_type: &str, result_type: &str, tar
 
 fn assert_scalar_meter_agreement(qsl: &Meter, kernel: &Meter) {
     let Some(call) = qsl.admitted_charges().first() else {
-        panic!("checked QSL call must charge function.call before scalar evaluation");
+        panic!("checked FSL call must charge function.call before scalar evaluation");
     };
     assert_eq!(call.point, ChargePoint::FunctionCall);
     assert_eq!(
@@ -376,7 +376,7 @@ fn assert_decimal_agreement(
             assert_eq!(actual.consumed, expected.consumed + offset);
         }
         (expected, actual) => {
-            panic!("QSL/RT decimal disagreement: RT {expected:?}, QSL {actual:?}")
+            panic!("FSL/RT decimal disagreement: RT {expected:?}, FSL {actual:?}")
         }
     }
     assert_scalar_meter_agreement(qsl_meter, kernel_meter);
@@ -389,7 +389,7 @@ fn tc185_decimal_vectors() {
     for vector in vectors_of(TestCase::Tc185) {
         assert!(
             seen.insert(vector.id),
-            "duplicate QSpec vector {}",
+            "duplicate FSpec vector {}",
             vector.id
         );
         match vector.id {
@@ -441,7 +441,7 @@ fn tc185_decimal_vectors() {
             other => panic!("unimplemented TC-185 vector {other}"),
         }
     }
-    assert!(!seen.is_empty(), "QSpec TC-185 offers no vectors");
+    assert!(!seen.is_empty(), "FSpec TC-185 offers no vectors");
 }
 
 fn limits(
@@ -565,7 +565,7 @@ fn d03() {
             Outcome::Refused(Refusal::InexactDecimal { .. })
         ));
     }
-    d03_exact_qsl_agreement();
+    d03_exact_fsl_agreement();
 }
 
 fn d04() {
@@ -648,7 +648,7 @@ fn d07() {
     ));
     assert_eq!(meter.consumed(LimitKind::WorkUnits), 4);
     assert_eq!(meter.consumed(LimitKind::ResultUnits), 0);
-    d07_qsl_agreement();
+    d07_fsl_agreement();
 }
 
 fn d08() {
@@ -669,7 +669,7 @@ fn d08() {
             Outcome::Refused(Refusal::DecimalOutOfDomain { .. })
         ));
     }
-    d08_qsl_agreement();
+    d08_fsl_agreement();
 }
 
 fn d09() {
@@ -1060,7 +1060,7 @@ fn d16() {
         3,
         1,
     );
-    d16_qsl_agreement();
+    d16_fsl_agreement();
 }
 
 fn d17() {
@@ -1204,7 +1204,7 @@ fn ordering(
         qsl_short_limits,
     );
     let Outcome::Incomplete(qsl_stop) = &qsl_short else {
-        panic!("ordering QSL must stop at arithmetic: {qsl_short:?}");
+        panic!("ordering FSL must stop at arithmetic: {qsl_short:?}");
     };
     assert_eq!(*qsl_stop, kernel_stop);
     denied(
@@ -1657,7 +1657,7 @@ fn d28() {
     assert!(matches!(outcome, Outcome::Completed(Value::Decimal(_))));
 }
 
-fn d03_exact_qsl_agreement() {
+fn d03_exact_fsl_agreement() {
     let ty = target(-9, 9, 0, 0, RoundingMode::Exact);
     for value in [decimal(25, 1), decimal(-25, 1)] {
         conversion_agreement(
@@ -1786,7 +1786,7 @@ fn d29() {
 
 #[test]
 #[ignore = "QSL-1393: S4 CheckCause::Unproved(Nonzero) for a zero divisor"]
-fn d06_qsl_probe() {
+fn d06_fsl_probe() {
     let ty = target(-1000, 1000, 0, 2, RoundingMode::NearestEven);
     agreement(
         "/",
@@ -1800,7 +1800,7 @@ fn d06_qsl_probe() {
     );
 }
 
-fn d07_qsl_agreement() {
+fn d07_fsl_agreement() {
     let ty = target(-2, 2, 0, 0, RoundingMode::NearestAway);
     conversion_agreement(
         decimal(25, 1),
@@ -1810,7 +1810,7 @@ fn d07_qsl_agreement() {
     );
 }
 
-fn d08_qsl_agreement() {
+fn d08_fsl_agreement() {
     let ty = target(-2, 2, 0, 0, RoundingMode::Exact);
     for coefficient in [-2, 2, -3, 3] {
         conversion_agreement(
@@ -1824,7 +1824,7 @@ fn d08_qsl_agreement() {
 
 #[test]
 #[ignore = "QSL-1393: S4 CheckCause::Unproved(Nonzero) for a zero divisor"]
-fn d15_qsl_probe() {
+fn d15_fsl_probe() {
     let ty = target(-1000, 1000, 0, 2, RoundingMode::NearestEven);
     agreement(
         "/",
@@ -1838,7 +1838,7 @@ fn d15_qsl_probe() {
     );
 }
 
-fn d16_qsl_agreement() {
+fn d16_fsl_agreement() {
     let ty = target(-2, 2, 0, 0, RoundingMode::NearestAway);
     let base = limits(5, 2, 0, 1, 4, 0);
     for limit in [

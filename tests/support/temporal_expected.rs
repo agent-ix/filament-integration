@@ -5,12 +5,12 @@
 
 #![allow(dead_code)] // Each target uses a different subset of these helpers.
 
+use filament_integration::temporal::{TlInput, ValidatedTlProjection};
 use qsl_eval::temporal::{
     evidence::{EvidenceRef, ExecutionDisposition},
     ProgressClosure, ProgressCompleteness,
 };
 use qsl_package::checked_views::Closure;
-use quire_integration::temporal::{TlInput, ValidatedTlProjection};
 use serde::Serialize;
 use serde_json::{json, Map, Value};
 
@@ -140,7 +140,7 @@ pub(crate) fn expected_members(
         })
         .collect::<Vec<_>>();
     let value = json!({
-        "profile": "quire.native-temporal-correspondence/v1",
+        "profile": "filament.native-temporal-correspondence/v1",
         "bridgeDefinition": hex(case.selection.bridge_definition.bytes()),
         "package": case.package.name(),
         "lock": ir(case.package.lock()),

@@ -3,14 +3,14 @@ id: TC-101
 title: "Checked occurrence to TL owner formula controls"
 type: TC
 relationships:
-  - target: ix://agent-ix/quire-integration/IT-020
+  - target: ix://agent-ix/filament-integration/IT-020
     type: verifies
 ---
 # TC-101: Checked occurrence to TL owner formula controls
 
 ## Description
 
-Exercise IT-020 through authored QSL emission, strict IR admission and genuine TL
+Exercise IT-020 through authored FSL emission, strict IR admission and genuine TL
 owner admission. No copied producer output or replacement wire schema is used.
 
 ## Test Procedure

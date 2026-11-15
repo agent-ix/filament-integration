@@ -5,12 +5,12 @@
 
 #![allow(dead_code)] // Each target uses a different subset of these helpers.
 
+use filament_integration::temporal::ValidatedTlProjection;
 use qsl_eval::temporal::evidence::{EvaluatedEvidence, EvidencePackage};
 use qsl_package::BarePackage;
 use qsl_package::NativeJoinBudget;
 use quire_eval::CallFailure;
 use quire_exact::{Meter, ScalarLimits};
-use quire_integration::temporal::ValidatedTlProjection;
 use quire_mltl::{
     contract_ir::{self, MappingSelection, ValidatedMappedResult},
     report::{self, ResultRelationInput, ValidatedTemporalResult},

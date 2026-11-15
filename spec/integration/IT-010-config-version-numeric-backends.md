@@ -3,19 +3,19 @@ id: IT-010
 title: "Execute ConfigVersion through numeric verification backends"
 type: IT
 relationships:
-  - target: ix://agent-ix/quire-spec-language/FR-032
+  - target: ix://agent-ix/filament-spec-language/FR-032
     type: verifies
-  - target: ix://agent-ix/quire-spec-language/FR-033
+  - target: ix://agent-ix/filament-spec-language/FR-033
     type: verifies
-  - target: ix://agent-ix/quire-spec-language/FR-034
+  - target: ix://agent-ix/filament-spec-language/FR-034
     type: verifies
-  - target: ix://agent-ix/quire-contract-codegen/FR-001
+  - target: ix://agent-ix/filament-contract-codegen/FR-001
     type: references
-  - target: ix://agent-ix/quire-contract-codegen/FR-003
+  - target: ix://agent-ix/filament-contract-codegen/FR-003
     type: references
-  - target: ix://agent-ix/quire-contract-codegen/FR-008
+  - target: ix://agent-ix/filament-contract-codegen/FR-008
     type: references
-  - target: ix://agent-ix/quire-contract-codegen/FR-013
+  - target: ix://agent-ix/filament-contract-codegen/FR-013
     type: references
 ---
 # IT-010: Execute ConfigVersion through numeric verification backends
@@ -23,20 +23,20 @@ relationships:
 ## Current Status
 
 The V1 `lowering::lower_for` and `integer-ir/v1` command export inputs were
-retired by design; QSL does not expose those APIs in the current cohort. The
-V2 replacement is `qsl_package::export_bindings` → driver → CG, exercised by
+retired by design; FSL does not expose those APIs in the current cohort. The
+V2 replacement is `fsl_package::export_bindings` → driver → CG, exercised by
 IT-013-SC-07 and SC-08. This restores the command-export composition check,
-including a real QSL per-item refusal at the driver seam, but it does not
+including a real FSL per-item refusal at the driver seam, but it does not
 restore the former ConfigVersion numeric/backend procedure. IT-010-SC-02 has
 only a partial V2 scalar-claim control in IT-013-SC-02. IT-013-SC-04 and SC-05 additionally retain and prove
-one V2 integer scalar harness and compare its native result with QSL; they do
+one V2 integer scalar harness and compare its native result with FSL; they do
 not exercise the ConfigVersion clauses. IT-010-SC-03 through IT-010-SC-05
 have no current test. This document retains the desired ConfigVersion
 integration behavior, not a claim that the historical procedure remains
 executable.
 The authored-relation production path remains untested: the current SC-08
 fixture forces `has_abstraction_relation` at the seam because compilation
-emits no relation, then calls QSL's actual export function.
+emits no relation, then calls FSL's actual export function.
 
 ## Objective
 
@@ -49,20 +49,20 @@ input into a Boolean result.
 
 The public Rust path is native model/source parsing, linking, checking and packaging →
 `lowering::lower_for` with `integer-ir/v1` or `state-scalar-ir/v1` → the contract IR reader →
-quire-contract-codegen's public generation APIs → compiled generated Rust, proptest and
+filament-contract-codegen's public generation APIs → compiled generated Rust, proptest and
 `cargo kani`. `runtime::execute` supplies the native verdict for the same immutable input.
 
 ## Preconditions
 
-QSL, contract IR and quire-contract-codegen each resolve to one copy in this crate's dependency
-graph, so QSL's lowering and codegen's generation share one set of IR types. Generated code builds
-against the `quire-contract-runtime` that codegen's generated manifests name. Rust, proptest and
+FSL, contract IR and filament-contract-codegen each resolve to one copy in this crate's dependency
+graph, so FSL's lowering and codegen's generation share one set of IR types. Generated code builds
+against the `filament-contract-runtime` that codegen's generated manifests name. Rust, proptest and
 `cargo kani` are available locally. Missing prerequisites fail the test. No hosted workflow is
 dispatched.
 
 ## Inputs
 
-Use QSL's ConfigVersion model (read from the resolved `quire-spec-language` checkout) with this
+Use FSL's ConfigVersion model (read from the resolved `filament-spec-language` checkout) with this
 repository's own inputs: a `VersionUnchanged`-shaped native postcondition,
 `self.versionNumber = pre(self.versionNumber)` on `attemptUpdate`, over
 `versionNumber: 0..1000`, run against a two-object root/child version history; plus a plain
@@ -82,7 +82,7 @@ the current cohort until replacement tests exercise equivalent V2 inputs.
 
 1. Compile the ConfigVersion postcondition and plain-integer native programs, lower them through their
    explicit targets and pass the emitted bytes through the public strict IR reader to codegen.
-   The plain-integer bytes are exported through QSL's `lower` command path.
+   The plain-integer bytes are exported through FSL's `lower` command path.
    IT-010-SC-02: the numeric oracle, strategy bundle and Kani bundle retain the authored clause,
    requirement, model bounds, pre/post observation identities and original source spans; a
    later unsupported clause exports nothing.
@@ -100,8 +100,8 @@ the current cohort until replacement tests exercise equivalent V2 inputs.
    playback enabled.
    IT-010-SC-05: codegen classifies the identity run `Verified` and the changed run `Falsified`;
    codegen's `decode_falsification` decodes the counterexample against the obligation's own
-   argument schema; codegen's `replay_counterexample` replays it through `qsl_replay::replay`
-   against a QSL function mirroring the clause over the changed subject and QSL settles it
+   argument schema; codegen's `replay_counterexample` replays it through `fsl_replay::replay`
+   against a FSL function mirroring the clause over the changed subject and FSL settles it
    `Reproduced`, while the same counterexample against the identity mirror is evidence failure;
    and `runtime::execute` of the authored clause over the decoded pre/post returns false.
 
@@ -121,7 +121,7 @@ through native execution with the same verdict.
 
 ## Dependencies
 
-**Upstream:** QSL FR-032, FR-033 and FR-034; quire-contract-codegen's numeric oracle, strategy and
+**Upstream:** FSL FR-032, FR-033 and FR-034; filament-contract-codegen's numeric oracle, strategy and
 Kani generation.
 
 ## Notes

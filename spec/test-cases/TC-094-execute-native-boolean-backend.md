@@ -3,9 +3,9 @@ id: TC-094
 title: "Compare generated Boolean truth and source activation"
 type: TC
 relationships:
-  - target: ix://agent-ix/quire-spec-language/FR-009
+  - target: ix://agent-ix/filament-spec-language/FR-009
     type: verifies
-  - target: ix://agent-ix/quire-integration/IT-008
+  - target: ix://agent-ix/filament-integration/IT-008
     type: references
 ---
 # TC-094: Compare generated Boolean truth and source activation

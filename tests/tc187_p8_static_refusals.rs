@@ -41,7 +41,7 @@ fn vector(id: &str, inputs: &str, expected: &str) {
 
 fn model_document() -> Vec<u8> {
     let bytes =
-        std::fs::read(support::qsl_root().join("tests/fixtures/spine-model.semantic-ir.json"))
+        std::fs::read(support::fsl_root().join("tests/fixtures/spine-model.semantic-ir.json"))
             .expect("owner model fixture");
     let mut model: Value = serde_json::from_slice(&bytes).expect("owner model JSON");
     assert_eq!(model["package"]["identity"], "acme/orders");
@@ -223,7 +223,7 @@ fn native(
     }
 }
 
-#[trace("QSpec-TC-187", "TC-108")]
+#[trace("FSpec-TC-187", "TC-108")]
 #[test]
 fn incompatible_length_and_time_refuse_at_original_addition() {
     vector(
@@ -243,7 +243,7 @@ fn incompatible_length_and_time_refuse_at_original_addition() {
     check(&text, package, expression, IllTypedCause::TypeMismatch);
 }
 
-#[trace("QSpec-TC-187", "TC-108")]
+#[trace("FSpec-TC-187", "TC-108")]
 #[test]
 fn all_ten_affine_arithmetic_cases_refuse_before_value_charges() {
     vector("U05", "Add, subtract, multiply, divide or raise a `degC`/`degF` value to a power", "`refused { code: ill_typed }` because nonzero-offset points have no implicit difference-unit arithmetic");
@@ -294,7 +294,7 @@ fn all_ten_affine_arithmetic_cases_refuse_before_value_charges() {
     }
 }
 
-#[trace("QSpec-TC-187", "TC-108")]
+#[trace("FSpec-TC-187", "TC-108")]
 #[test]
 fn same_named_base_dimensions_keep_distinct_actual_owners() {
     vector(

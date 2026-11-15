@@ -1,16 +1,16 @@
 ---
 id: TC-103
-title: "Execute selected generated function operations against fresh QSL sessions"
+title: "Execute selected generated function operations against fresh FSL sessions"
 type: TC
 relationships:
-  - target: ix://agent-ix/quire-integration/IT-019
+  - target: ix://agent-ix/filament-integration/IT-019
     type: references
-  - target: ix://agent-ix/quire-contract-codegen/FR-021
+  - target: ix://agent-ix/filament-contract-codegen/FR-021
     type: references
-  - target: ix://agent-ix/quire-spec-language/FR-485
+  - target: ix://agent-ix/filament-spec-language/FR-485
     type: references
 ---
-# TC-103: Execute selected generated function operations against fresh QSL sessions
+# TC-103: Execute selected generated function operations against fresh FSL sessions
 
 ## Description
 
@@ -25,7 +25,7 @@ FR-014 operation-oracle or FR-018 equality-oracle agreement credit.
 1. Author ordinary pure subtraction, multiplication and relay functions with
    two `Int[0,9]` parameters and an `Integer` result. The relay calls the actual
    subtraction declaration. Separate exercise functions supply genuine selected
-   call occurrences. Acquire the source through public QSL checking/emission,
+   call occurrences. Acquire the source through public FSL checking/emission,
    strictly admit its exact V2 bytes, and derive original declarations, body
    roots, ordered argument references and scalar type handles. Do not substitute
    manually authored IR, source identities or a copied fixture.
@@ -101,7 +101,7 @@ row is unexecuted; source-only classification is not agreement.
 The subtraction, multiplication and subtraction-callee rows pass at work 0,
 1 and 1024, including the distinct nested FunctionCall stop and source function
 origins. Their argument arity, kind and Integer-10 out-of-domain refusals match
-fresh QSL admission with zero charges/counters. A separately checked and
+fresh FSL admission with zero charges/counters. A separately checked and
 strictly admitted addition-source substitution is refused as the original
 OwnerIdentityMismatch before each healthy symbol executes. The body classifier's
 scalar Integer descriptor does not widen the actual source Int[0,9] signature.

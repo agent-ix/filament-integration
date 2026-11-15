@@ -7,15 +7,15 @@ mod owners;
 mod projection_support;
 mod support;
 
+use filament_integration::temporal::{
+    join_tl, read_tl_join, read_tl_projection, ExpectedTlJoin, ExpectedTlProjection, TlInput,
+    TlJoinCause, TlJoinDecision, TlLimits,
+};
 use ix_trace_rs::trace;
 use owners::{evaluate_mapped, evaluate_native, native_budget};
 use projection_support::with_case;
 use qsl_eval::temporal::evidence::Truth;
 use qsl_eval::temporal::{evidence::native_atom_operands, Valuation};
-use quire_integration::temporal::{
-    join_tl, read_tl_join, read_tl_projection, ExpectedTlJoin, ExpectedTlProjection, TlInput,
-    TlJoinCause, TlJoinDecision, TlLimits,
-};
 use quire_mltl::{contract_ir::MappedOutcome, report::TemporalTruth};
 use tl_syntax::PropositionId;
 

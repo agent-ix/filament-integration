@@ -10,6 +10,11 @@ mod fixture;
 mod projection_support;
 mod support;
 
+use filament_integration::temporal::{
+    project_tl, read_tl_projection, ExpectedTlProjection, NativeProjectionInput, TlLimits,
+    TlMissingPremise, TlProjectionCode, TlProjectionError, TlProjectionPremise,
+    ValidatedTlProjection,
+};
 use ix_trace_rs::trace;
 use qsl_eval::temporal::evidence::{CaptureFact, CapturedValue, ObligationKey, Payload};
 use qsl_eval::temporal::{
@@ -19,11 +24,6 @@ use qsl_eval::temporal::{
 use qsl_package::BarePackage;
 use qsl_package::NativeJoinBudget;
 use quire_exact::{Meter, ScalarLimits};
-use quire_integration::temporal::{
-    project_tl, read_tl_projection, ExpectedTlProjection, NativeProjectionInput, TlLimits,
-    TlMissingPremise, TlProjectionCode, TlProjectionError, TlProjectionPremise,
-    ValidatedTlProjection,
-};
 use serde_json::{json, Value};
 
 fn evaluate(projection: &ValidatedTlProjection<'_>) -> EvaluatedEvidence {
@@ -448,8 +448,8 @@ fn a_genuine_retained_capture_cannot_be_replayed_under_another_admitted_anchor()
 #[trace("IT-022-SC-08", "FR-350-AC-9")]
 #[test]
 fn retained_native_capture_faults_preserve_original_kind_and_named_subject() {
+    use filament_integration::temporal::TlProjectionCode;
     use qsl_eval::temporal::evidence::{FaultKind, FaultSubject};
-    use quire_integration::temporal::TlProjectionCode;
     fixture::with_source(
         &fixture::declarations("capture saved: Boolean = true; holds(saved)"),
         "Due",
@@ -522,8 +522,8 @@ fn retained_native_capture_faults_preserve_original_kind_and_named_subject() {
 #[trace("IT-022-SC-08", "FR-350-AC-9")]
 #[test]
 fn retained_native_guard_and_delivery_anchor_faults_keep_distinct_subjects() {
+    use filament_integration::temporal::TlProjectionCode;
     use qsl_eval::temporal::evidence::{FaultKind, FaultSubject, Receipt, TriggerDelivery};
-    use quire_integration::temporal::TlProjectionCode;
     let source = "temporal Due using t over (g: M::Gadget) clock \"events\" on each (trigger: M::Gadget) when (true) { holds(true) }";
     fixture::with_source(source, "Due", &[], |case| {
         for (guard, anchor, kind, subject, code) in [
@@ -671,7 +671,7 @@ fn records_equal_the_independently_built_expected_bytes_for_future_past_and_samp
             assert_eq!(projection.request().subject_identity(), "Due");
             assert_eq!(
                 projection.request().correspondence_identity(),
-                "quire.native-temporal-correspondence/v1"
+                "filament.native-temporal-correspondence/v1"
             );
             let record_bytes = projection.bytes();
             assert!(
@@ -1052,7 +1052,7 @@ fn native_capture_projection_preserves_original_budget_denial_and_prior_work() {
                 .err()
                 .expect("one short refuses the actual owner capture projection");
             let mut shared = prepare();
-            let error = quire_integration::temporal::join_tl(
+            let error = filament_integration::temporal::join_tl(
                 &projection,
                 Some(&issued),
                 None,
@@ -1061,7 +1061,7 @@ fn native_capture_projection_preserves_original_budget_denial_and_prior_work() {
                 &mut shared,
             )
             .unwrap_err();
-            let quire_integration::temporal::TlJoinError::NativePackage(actual) = error else {
+            let filament_integration::temporal::TlJoinError::NativePackage(actual) = error else {
                 panic!("original typed native package budget refusal: {error:?}");
             };
             assert_eq!(actual, expected);

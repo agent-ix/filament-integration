@@ -26,7 +26,7 @@ mod record;
 pub(in crate::temporal) use record::{hex, hex_string};
 
 /// Public bridge profile name supplied directly to the request owner.
-pub const PROFILE: &str = "quire.native-temporal-correspondence/v1";
+pub const PROFILE: &str = "filament.native-temporal-correspondence/v1";
 
 /// Original native owner values for one selected occurrence and instance.
 #[derive(Clone, Copy)]
@@ -143,7 +143,7 @@ pub struct TlProjectionUsage {
 pub enum TlProjectionCode {
     /// Package, subject or classification admission differs.
     Binding,
-    /// QSL classifies the selected subject as unsupported.
+    /// FSL classifies the selected subject as unsupported.
     Unsupported,
     /// A required input fact is missing.
     Incomplete,

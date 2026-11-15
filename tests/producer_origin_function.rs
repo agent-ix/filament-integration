@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-//! IT-016-SC-04 / TC-096: TC-194 function observations from QSL-admitted IDs.
+//! IT-016-SC-04 / TC-096: TC-194 function observations from FSL-admitted IDs.
 
 #[path = "support/producer_origin.rs"]
 mod producer_origin_support;
@@ -51,11 +51,11 @@ fn meter() -> Meter {
     Meter::new(LIMITS)
 }
 
-/// The model document remains in the QSL checkout selected by Cargo.lock.
+/// The model document remains in the FSL checkout selected by Cargo.lock.
 fn admitted() -> &'static CheckedPackageV2 {
     static PACKAGE: OnceLock<CheckedPackageV2> = OnceLock::new();
     PACKAGE.get_or_init(|| {
-        let model = support::qsl_root().join(MODEL_PATH);
+        let model = support::fsl_root().join(MODEL_PATH);
         let source = format!(
             "language \"ix:native\" edition \"1-draft\";\n\
              profile v = \"quire.value.complete/v1\";\n\
@@ -113,7 +113,7 @@ fn declaration_key(name: &str) -> NodeKey {
 }
 
 fn model_object() -> (EffectiveId, UniverseId) {
-    // Model nodes are owned by their domain declaration. They are not QSL
+    // Model nodes are owned by their domain declaration. They are not FSL
     // source declarations and therefore have no `declaration` member.
     let original = format!("ix://{MODEL_IDENTITY}/Widget");
     let nodes: Vec<_> = admitted()
@@ -411,7 +411,7 @@ fn admitted_function_arguments_keep_precedence_and_zero_charge() {
     assert!(charged.admitted_charges().is_empty());
 }
 
-/// The union declaration is QSL-authored; its member payload is a reference
+/// The union declaration is FSL-authored; its member payload is a reference
 /// to the admitted model Widget, so the nested target must still be checked.
 #[test]
 #[trace(
@@ -425,7 +425,7 @@ fn admitted_function_arguments_keep_precedence_and_zero_charge() {
 fn admitted_union_argument_refuses_nested_dangling_reference() {
     let union = declaration_key("RefChoice");
     let member =
-        UnionMember::from_admitted(union.clone(), "WithRef").expect("QSL-authored union member");
+        UnionMember::from_admitted(union.clone(), "WithRef").expect("FSL-authored union member");
     let (effective, _) = model_object();
     let environment = TypeEnvironment::new(
         [CompositeDeclaration::new(

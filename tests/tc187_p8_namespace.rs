@@ -19,7 +19,7 @@ fn u32() {
     );
 }
 
-#[trace("TC-107", "QSpec-TC-187", "QSpec-FR-142-AC-13")]
+#[trace("TC-107", "FSpec-TC-187", "FSpec-FR-142-AC-13")]
 #[test]
 fn ordinary_ms_type_and_quantity_ms_select_distinct_original_nodes() {
     u32();
@@ -109,7 +109,7 @@ fn ordinary_ms_type_and_quantity_ms_select_distinct_original_nodes() {
     }
 }
 
-#[trace("TC-107", "QSpec-TC-187", "QSpec-FR-142-AC-13")]
+#[trace("TC-107", "FSpec-TC-187", "FSpec-FR-142-AC-13")]
 #[test]
 fn linked_duplicate_ms_units_expose_the_quantity_type_location_blocker() {
     u32();
@@ -167,7 +167,7 @@ fn linked_duplicate_ms_units_expose_the_quantity_type_location_blocker() {
     assert_ne!((error.span.start, error.span.end), (required, required + "Quantity<ms>".len()), "U32 remains incomplete: owner refuses the duplicate declaration before resolving the quantity type");
 }
 
-#[trace("TC-107", "QSpec-TC-187", "QSpec-FR-142-AC-13")]
+#[trace("TC-107", "FSpec-TC-187", "FSpec-FR-142-AC-13")]
 #[test]
 fn quantity_is_reserved_at_the_record_name() {
     u32();

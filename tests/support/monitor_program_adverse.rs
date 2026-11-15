@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-//! Original AC3 inputs passed through the public QSL producer and strict IR reader.
+//! Original AC3 inputs passed through the public FSL producer and strict IR reader.
 
 use qsl_analyze::{
     monitor_entries::{names, render, spec_from_plan, WIRE_FIELD_NAMES},
@@ -74,9 +74,9 @@ fn read_result(
 impl Produced {
     pub fn healthy() -> Self {
         let document = std::fs::read(
-            super::support::qsl_root().join("examples/config-version/model.semantic-ir.json"),
+            super::support::fsl_root().join("examples/config-version/model.semantic-ir.json"),
         )
-        .expect("read the QSL-owned model by reference");
+        .expect("read the FSL-owned model by reference");
         let domain: serde_json::Value = serde_json::from_slice(&document).unwrap();
         let identity = domain["package"]["identity"].as_str().unwrap().to_owned();
         let source = format!(

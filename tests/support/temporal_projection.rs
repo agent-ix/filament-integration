@@ -5,6 +5,10 @@
 mod observation;
 use crate::support;
 
+use filament_integration::temporal::{
+    project_tl, read_observation_revision, NativeProjectionInput, ObservationAdmissionLimits,
+    TlLimits, TlProjectionError, TlProjectionSelection, ValidatedTlProjection,
+};
 use qsl_eval::temporal::{evidence::native_atom_operands, Valuation};
 use qsl_eval::temporal::{
     evidence::{
@@ -28,10 +32,6 @@ use quire_contract_ir::{
     read_checked_package, CheckedNodeId, CheckedNodeKind, CheckedPackageDispatchResult,
     CheckedPackageEvidence, CheckedPackageReadLimits, CheckedPackageV2, ClockConfiguration,
     ClockExactNumber, TemporalForm,
-};
-use quire_integration::temporal::{
-    project_tl, read_observation_revision, NativeProjectionInput, ObservationAdmissionLimits,
-    TlLimits, TlProjectionError, TlProjectionSelection, ValidatedTlProjection,
 };
 use quire_mltl::request::ObservationInputs;
 use quire_observation::authority::{self as a, bundle, Limits, OpenClosed};
@@ -201,8 +201,8 @@ pub(crate) fn packages(
     profile: &str,
 ) -> (CheckedPackageV2, CheckedPackageV2, CheckedNodeId) {
     let document =
-        std::fs::read(support::qsl_root().join("tests/fixtures/spine-model.semantic-ir.json"))
-            .expect("the selected QSL owner fixture exists");
+        std::fs::read(support::fsl_root().join("tests/fixtures/spine-model.semantic-ir.json"))
+            .expect("the selected FSL owner fixture exists");
     let graph = checked_formula(formula, profile, &document).expect("the temporal package checks");
     let selections: Vec<_> = graph
         .temporal_clauses()
@@ -350,8 +350,8 @@ pub(crate) fn with_case_watermark(
     let subject = temporal_subject(&package, &clause).expect("checked temporal subject");
     let classification = mapping_support(&subject, surrounding).expect("classification");
     let occurrence = &subject.occurrences()[0];
-    let bridge_definition = quire_integration::temporal::read_tl_bridge_definition(
-        quire_integration::temporal::TL_BRIDGE_DEFINITION,
+    let bridge_definition = filament_integration::temporal::read_tl_bridge_definition(
+        filament_integration::temporal::TL_BRIDGE_DEFINITION,
         TlLimits::default(),
     )
     .expect("original integration bridge definition");

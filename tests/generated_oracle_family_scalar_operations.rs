@@ -126,7 +126,7 @@ fn source(rows: &[Row]) -> String {
 
 #[trace("TC-102", "IT-019-SC-05")]
 #[test]
-fn selected_scalar_operations_match_independently_checked_qsl_bodies() {
+fn selected_scalar_operations_match_independently_checked_fsl_bodies() {
     let rows = rows();
     let source = source(&rows);
     let producer = checked(&source);

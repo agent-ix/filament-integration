@@ -17,9 +17,9 @@ use quire_exact::{ChargePoint, Incomplete, Integer, LimitKind, Outcome, Rational
 #[trace(
     "TC-106",
     "IT-019-SC-04",
-    "QSpec-TC-187",
-    "QSpec-FR-142-AC-1",
-    "QSpec-FR-142-AC-7"
+    "FSpec-TC-187",
+    "FSpec-FR-142-AC-1",
+    "FSpec-FR-142-AC-7"
 )]
 #[test]
 fn original_additions_retain_their_units_and_exact_unpaid_retention() {

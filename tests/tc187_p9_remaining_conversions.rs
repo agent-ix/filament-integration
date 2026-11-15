@@ -264,11 +264,11 @@ fn observe(name: &str, allowance: ScalarLimits, original: &source::Original) {
 #[trace(
     "TC-106",
     "IT-019-SC-04",
-    "QSpec-TC-187",
-    "QSpec-FR-142-AC-1",
-    "QSpec-FR-142-AC-3",
-    "QSpec-FR-142-AC-5",
-    "QSpec-FR-142-AC-7"
+    "FSpec-TC-187",
+    "FSpec-FR-142-AC-1",
+    "FSpec-FR-142-AC-3",
+    "FSpec-FR-142-AC-5",
+    "FSpec-FR-142-AC-7"
 )]
 #[test]
 fn original_conversion_boundaries_preserve_values_losses_and_unpaid_events() {

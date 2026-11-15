@@ -1,10 +1,10 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 //! Strict admission to the original integration-owned bridge definition.
 
-use ix_trace_rs::trace;
-use quire_integration::temporal::{
+use filament_integration::temporal::{
     read_tl_bridge_definition, TlBridgeDefinitionError as Refusal, TlLimits, TL_BRIDGE_DEFINITION,
 };
+use ix_trace_rs::trace;
 
 fn limits(max_bytes: u64) -> TlLimits {
     TlLimits {
@@ -18,11 +18,11 @@ fn limits(max_bytes: u64) -> TlLimits {
 fn authored_definition_selects_exact_members_and_canonical_bytes() {
     let exact = u64::try_from(TL_BRIDGE_DEFINITION.len()).unwrap();
     let admitted = read_tl_bridge_definition(TL_BRIDGE_DEFINITION, limits(exact)).unwrap();
-    assert_eq!(admitted.authority(), "agent-ix/quire-integration");
+    assert_eq!(admitted.authority(), "agent-ix/filament-integration");
     assert_eq!(admitted.identity(), "native-temporal-correspondence/v1");
     assert_eq!(
         admitted.profile(),
-        "quire.native-temporal-correspondence/v1"
+        "filament.native-temporal-correspondence/v1"
     );
     assert_eq!(admitted.version(), 1);
     assert_eq!(admitted.bytes(), TL_BRIDGE_DEFINITION);
@@ -68,7 +68,7 @@ fn authored_definition_selects_exact_members_and_canonical_bytes() {
         Err(Refusal::Canonical)
     );
     let duplicate = [
-        b"{\"authority\":\"agent-ix/quire-integration\",".as_slice(),
+        b"{\"authority\":\"agent-ix/filament-integration\",".as_slice(),
         &TL_BRIDGE_DEFINITION[1..],
     ]
     .concat();

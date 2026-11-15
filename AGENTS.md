@@ -18,7 +18,7 @@ version they ran.
   `/spec-review` cycle for C10 through C14 before production implementation.
 - First-party production, test, qualification, generator, validator, adapter,
   and audit code is Rust. Data fixtures and schemas are not executable paths.
-- Keep composition separate from domain authority: consume QSL,
+- Keep composition separate from domain authority: consume FSL,
   TL, QObs, Protocol, Verification, IR, and codegen artifacts without duplicating
   their semantics.
 - Preserve every independent domain disposition and provenance axis. Missing,
