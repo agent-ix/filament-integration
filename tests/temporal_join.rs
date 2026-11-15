@@ -7,6 +7,10 @@ mod owners;
 mod projection_support;
 mod support;
 
+use filament_integration::temporal::{
+    join_tl, project_tl, read_tl_join, ExpectedTlJoin, NativeProjectionInput, TlJoinCause,
+    TlJoinDecision, TlJoinError, TlLimits, TlProjectionLimit, ValidatedTlProjection,
+};
 use ix_trace_rs::trace;
 use owners::*;
 use projection_support::{with_case, with_case_scopes};
@@ -16,10 +20,6 @@ use qsl_package::checked_views::Closure;
 use qsl_package::BarePackage;
 use quire_eval::CallFailure;
 use quire_exact::Meter;
-use quire_integration::temporal::{
-    join_tl, project_tl, read_tl_join, ExpectedTlJoin, NativeProjectionInput, TlJoinCause,
-    TlJoinDecision, TlJoinError, TlLimits, TlProjectionLimit, ValidatedTlProjection,
-};
 use quire_mltl::report::{self, AssessmentExecution, ResultRelationInput};
 use quire_observation::authority::OpenClosed;
 use serde_json::{json, Value};
@@ -1159,8 +1159,8 @@ fn foreign_corrected_native_and_tl_reads_remain_refused_before_correction_author
                     assert!(matches!(
                         refused_native.owner_refusals().native(),
                         Some(
-                            quire_integration::temporal::TlNativeMismatch::Subject
-                                | quire_integration::temporal::TlNativeMismatch::Input
+                            filament_integration::temporal::TlNativeMismatch::Subject
+                                | filament_integration::temporal::TlNativeMismatch::Input
                         )
                     ));
                     assert!(!refused_native.native_admitted());
@@ -1327,7 +1327,7 @@ fn each_lineage_condition_reaches_conflict_in_its_own_case() {
         )
         .expect("original join");
         let conflict =
-            |joined: Result<quire_integration::temporal::ValidatedTlJoin<'_>, TlJoinError>,
+            |joined: Result<filament_integration::temporal::ValidatedTlJoin<'_>, TlJoinError>,
              name: &str| {
                 let joined = joined.unwrap_or_else(|error| panic!("{name}: {error:?}"));
                 assert_eq!(joined.decision(), TlJoinDecision::Conflict, "{name}");

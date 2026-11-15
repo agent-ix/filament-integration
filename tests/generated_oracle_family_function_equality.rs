@@ -25,7 +25,7 @@ mod family_function_equality_source;
 
 #[trace("TC-104", "IT-019-SC-05")]
 #[test]
-fn primitive_and_nominal_function_equality_matches_fresh_qsl_sessions() {
+fn primitive_and_nominal_function_equality_matches_fresh_fsl_sessions() {
     let (_, package) = family_function_equality_source::acquire(
         family_function_equality_source::SOURCE.as_bytes(),
     );
@@ -505,7 +505,7 @@ fn primitive_composite_generator_matches_independent_checked_bodies() {
     let profile = quire_contract_ir::CompleteLoweringProfileV2 {
         reference: quire_contract_ir::LoweringProfileRef {
             authority: "agent-ix".into(),
-            identity: "quire.codegen.composite-equality/v1".into(),
+            identity: "filament.codegen.composite-equality/v1".into(),
         },
         required_source_selections: Vec::new(),
         supported_tags: [

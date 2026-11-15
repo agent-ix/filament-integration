@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-//! Live QSL checked-package producer and IR reader for IT-016 tests.
+//! Live FSL checked-package producer and IR reader for IT-016 tests.
 
 use std::{fs, path::Path};
 
@@ -9,16 +9,16 @@ use quire_contract_ir::{
 };
 use serde_json::Value;
 
-use crate::support::{cargo_command::command as cargo_child_command, qsl_root};
+use crate::support::{cargo_command::command as cargo_child_command, fsl_root};
 
-/// A QSL-owned model document selected by the producer and supplied as the
-/// same bytes to the IR reader. The document stays in QSL's checkout.
+/// A FSL-owned model document selected by the producer and supplied as the
+/// same bytes to the IR reader. The document stays in FSL's checkout.
 pub struct ModelInput<'a> {
     pub identity: &'a str,
     pub path: &'a Path,
 }
 
-/// Inputs to one live QSL source → checked-package V2 → IR readback.
+/// Inputs to one live FSL source → checked-package V2 → IR readback.
 pub struct CheckedProducerRequest<'a> {
     pub source_path: &'a str,
     pub source: &'a str,
@@ -32,7 +32,7 @@ pub struct CheckedProducerRequest<'a> {
 pub fn emit_and_read_checked_v2(request: CheckedProducerRequest<'_>) -> CheckedPackageV2 {
     let directory = tempfile::tempdir().expect("test source directory");
     fs::write(directory.path().join(request.source_path), request.source)
-        .expect("write authored QSL source");
+        .expect("write authored FSL source");
     let mut command = cargo_child_command();
     command
         .current_dir(directory.path())
@@ -41,7 +41,7 @@ pub fn emit_and_read_checked_v2(request: CheckedProducerRequest<'_>) -> CheckedP
             Path::new(env!("CARGO_MANIFEST_DIR")).join("target"),
         )
         .args(["run", "--locked", "--quiet", "--manifest-path"])
-        .arg(qsl_root().join("Cargo.toml"))
+        .arg(fsl_root().join("Cargo.toml"))
         .args(["--example", "emit_checked_v2", "--"]);
     for model in request.models {
         command.arg("--model").arg(model.path);
@@ -52,13 +52,13 @@ pub fn emit_and_read_checked_v2(request: CheckedProducerRequest<'_>) -> CheckedP
     let output = command
         .args(["--package-name", request.package_name, request.source_path])
         .output()
-        .expect("lock-selected QSL emitter starts");
+        .expect("lock-selected FSL emitter starts");
     assert!(
         output.status.success(),
-        "QSL emitter refused: {}",
+        "FSL emitter refused: {}",
         String::from_utf8_lossy(&output.stderr)
     );
-    let wire: Value = serde_json::from_slice(&output.stdout).expect("QSL emits JSON");
+    let wire: Value = serde_json::from_slice(&output.stdout).expect("FSL emits JSON");
     let mut evidence = CheckedPackageEvidence::new();
     for feature in wire["lock"]["required_features"]
         .as_array()
@@ -67,10 +67,10 @@ pub fn emit_and_read_checked_v2(request: CheckedProducerRequest<'_>) -> CheckedP
         evidence.support_feature(feature.as_str().expect("feature name"));
     }
     for model in request.models {
-        let bytes = fs::read(model.path).expect("QSL-owned model document is present");
+        let bytes = fs::read(model.path).expect("FSL-owned model document is present");
         evidence
             .insert_domain_package_document(model.identity, bytes.as_slice())
-            .expect("QSL model document is valid reader evidence");
+            .expect("FSL model document is valid reader evidence");
     }
     let package = match read_checked_package(
         &output.stdout,
@@ -78,7 +78,7 @@ pub fn emit_and_read_checked_v2(request: CheckedProducerRequest<'_>) -> CheckedP
         &evidence,
     ) {
         CheckedPackageDispatchResult::AdmittedV2(package) => *package,
-        other => panic!("IR refused QSL's checked package: {other:?}"),
+        other => panic!("IR refused FSL's checked package: {other:?}"),
     };
     eprintln!(
         "producer=cargo run --locked --example emit_checked_v2; application={}; \

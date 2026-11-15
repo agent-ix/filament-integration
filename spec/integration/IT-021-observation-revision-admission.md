@@ -3,7 +3,7 @@ id: IT-021
 title: "Admit an exact observation revision from a genuine authority bundle"
 type: IT
 relationships:
-  - target: ix://agent-ix/quire-contract-ir/FR-350
+  - target: ix://agent-ix/filament-contract-ir/FR-350
     type: verifies
 ---
 # IT-021: Admit an exact observation revision from a genuine authority bundle
@@ -59,7 +59,7 @@ work claims. Previous receipts are borrowed without recursive copying or travers
 ## Expected Results
 
 The public component returns only a partial observation revision receipt. Selected
-observation-document lineage, QSL capture/native binding, duplicate valuation evidence,
+observation-document lineage, FSL capture/native binding, duplicate valuation evidence,
 complete correspondence, native/TL result predecessors, `ValidatedTlJoin`, `join_tl`,
 `read_tl_join` and complete FR-350 resource accounting remain Planned. No final Boolean
 or agreement is established. This evidence does not complete any whole FR-350 criterion.

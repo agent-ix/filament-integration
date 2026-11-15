@@ -23,7 +23,7 @@ fn u33() {
     );
 }
 
-#[trace("TC-107", "QSpec-TC-187", "QSpec-FR-142-AC-14")]
+#[trace("TC-107", "FSpec-TC-187", "FSpec-FR-142-AC-14")]
 #[test]
 fn original_call_literal_is_typed_by_the_declared_ms_node() {
     u33();
@@ -90,7 +90,7 @@ const MODEL: &str = "agent-ix/namespace-clock";
 const TIMER: &str = "ix://agent-ix/namespace-clock/Timer";
 
 fn origin() -> Value {
-    json!({"source": {"sourceIdentity": "ix://agent-ix/namespace-clock/design", "path": "clock.qspec", "startLine": 1, "startColumn": 1}})
+    json!({"source": {"sourceIdentity": "ix://agent-ix/namespace-clock/design", "path": "clock.fspec", "startLine": 1, "startColumn": 1}})
 }
 
 fn document() -> Vec<u8> {
@@ -108,7 +108,7 @@ fn document() -> Vec<u8> {
     })).expect("original native domain document")
 }
 
-#[trace("TC-107", "QSpec-TC-187", "QSpec-FR-142-AC-14")]
+#[trace("TC-107", "FSpec-TC-187", "FSpec-FR-142-AC-14")]
 #[test]
 fn admitted_operation_parameter_names_the_original_ms_unit() {
     u33();

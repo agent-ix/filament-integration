@@ -35,11 +35,11 @@ fn vector(id: &str, inputs: &str, expected: &str) {
 }
 
 fn model_document(identity: &str, dimensions: Value, units: Value) -> Vec<u8> {
-    let path = support::qsl_root().join("tests/fixtures/spine-model.semantic-ir.json");
+    let path = support::fsl_root().join("tests/fixtures/spine-model.semantic-ir.json");
     let bytes = fs::read(&path).unwrap_or_else(|error| panic!("{path:?}: {error}"));
-    let fixture = String::from_utf8(bytes).expect("the QSL model fixture is UTF-8");
+    let fixture = String::from_utf8(bytes).expect("the FSL model fixture is UTF-8");
     let mut model: Value =
-        serde_json::from_str(&fixture.replace(P, identity)).expect("QSL model fixture is JSON");
+        serde_json::from_str(&fixture.replace(P, identity)).expect("FSL model fixture is JSON");
     assert_eq!(model["package"]["identity"], identity);
     let origin = model["types"][0]["origin"].clone();
     let mut dimensions = dimensions;
@@ -131,7 +131,7 @@ fn assemble_refusal(
 
 fn first(id: &str, source: &str, refusal: &AssemblyRefusal, carrier: &str) {
     let [error] = refusal.errors.as_slice() else {
-        panic!("{id}: exactly one first QSL refusal: {refusal:?}");
+        panic!("{id}: exactly one first FSL refusal: {refusal:?}");
     };
     assert_eq!(
         error.cause,
@@ -153,8 +153,8 @@ fn first(id: &str, source: &str, refusal: &AssemblyRefusal, carrier: &str) {
     );
 }
 
-/// Trace: QSpec-TC-187, QSpec-FR-142-AC-16.
-#[trace("QSpec-TC-187", "QSpec-FR-142-AC-16")]
+/// Trace: FSpec-TC-187, FSpec-FR-142-AC-16.
+#[trace("FSpec-TC-187", "FSpec-FR-142-AC-16")]
 #[test]
 fn public_u11y_imported_l_turn_precedes_local_area() {
     vector(
@@ -170,8 +170,8 @@ fn public_u11y_imported_l_turn_precedes_local_area() {
     first("U11y", &source, &refusal, "m2");
 }
 
-/// Trace: QSpec-TC-187, QSpec-FR-142-AC-16.
-#[trace("QSpec-TC-187", "QSpec-FR-142-AC-16")]
+/// Trace: FSpec-TC-187, FSpec-FR-142-AC-16.
+#[trace("FSpec-TC-187", "FSpec-FR-142-AC-16")]
 #[test]
 fn public_u11z1_imported_area_turn_precedes_imported_l() {
     vector(
@@ -221,8 +221,8 @@ fn public_u11z1_imported_area_turn_precedes_imported_l() {
     assert_eq!(&source[error.span.start..error.span.end], P_SELECTION);
 }
 
-/// Trace: QSpec-TC-187, QSpec-FR-142-AC-18.
-#[trace("QSpec-TC-187", "QSpec-FR-142-AC-18")]
+/// Trace: FSpec-TC-187, FSpec-FR-142-AC-18.
+#[trace("FSpec-TC-187", "FSpec-FR-142-AC-18")]
 #[test]
 fn public_u11z2_imported_l_precedes_q_t_and_later_zero_scale() {
     vector(

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-//! Independently check original IEEE operation source through public QSL APIs.
+//! Independently check original IEEE operation source through public FSL APIs.
 use qsl_package::CheckedPackage;
 use qsl_semantics::{
     check::PackageDeclarations,

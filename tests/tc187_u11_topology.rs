@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-//! Selected public TC-187 U11 topology rows through QSL's public intake.
+//! Selected public TC-187 U11 topology rows through FSL's public intake.
 
 use ix_trace_rs::trace;
 use qsl_semantics::check::{AssemblyCause, PackageDeclarations, TopologyFault, TopologyRetained};
@@ -93,8 +93,8 @@ fn assert_refusal(
     assert_eq!(&source[error.span.start..error.span.end], span, "{id}");
 }
 
-/// Trace: QSpec-TC-187 and QSpec-FR-142-AC-15. This proves only these five rows.
-#[trace("QSpec-TC-187", "QSpec-FR-142-AC-15")]
+/// Trace: FSpec-TC-187 and FSpec-FR-142-AC-15. This proves only these five rows.
+#[trace("FSpec-TC-187", "FSpec-FR-142-AC-15")]
 #[test]
 fn public_u11_target_refusals_retain_identity_and_source_order() {
     vector("U11b", "m : L", "m -> cm");

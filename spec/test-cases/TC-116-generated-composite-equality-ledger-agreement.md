@@ -3,9 +3,9 @@ id: TC-116
 title: "Compare composite equality outcomes and per-charge ledgers with the generated oracle"
 type: TC
 relationships:
-  - target: ix://agent-ix/quire-integration/IT-019
+  - target: ix://agent-ix/filament-integration/IT-019
     type: references
-  - target: ix://agent-ix/quire-contract-codegen/FR-018
+  - target: ix://agent-ix/filament-contract-codegen/FR-018
     type: references
 ---
 # TC-116: Compare composite equality outcomes and per-charge ledgers with the generated oracle
@@ -13,9 +13,9 @@ relationships:
 ## Description
 
 Execute the FR-018 composite equality oracle for tuple, record, nested record,
-bounded sequence and nullary union operands against independent QSL authority on the same
+bounded sequence and nullary union operands against independent FSL authority on the same
 original source and the same typed arguments. Compare the typed outcome, every
-ordered admitted charge request and every counter, using quire-exact's
+ordered admitted charge request and every counter, using filament-exact's
 production scoped charge capture on both sides.
 
 ## Test Procedure
@@ -47,7 +47,7 @@ production scoped charge capture on both sides.
    ten counters. Require the independent Boolean answer at the ample allowance
    and, at each exhausted allowance, a WorkUnits stop whose charge point is the
    single denied request.
-5. At the ample allowance run the QSL call-observing ledger on the same function
+5. At the ample allowance run the FSL call-observing ledger on the same function
    and arguments and require its entries after the leading FunctionCall request
    to equal the admitted requests captured around the checked body.
 6. Replace one operand descriptor of one comparison with the other shape's type
@@ -61,7 +61,7 @@ passes for twenty-two input pairs (2 tuple, 2 record, 3 nested record, 3 sequenc
 2 Choice, 3 PayloadChoice, 3 Node, 2 Tree, 2 convert), each under both operators
 with five allowance observations per pair and operator. Generated and
 independent observations are identical in outcome, admitted per-charge
-requests, denied points and counters, and the QSL call ledger agrees at the
+requests, denied points and counters, and the FSL call ledger agrees at the
 ample allowance.
 `generated_oracle_fr018_operation_ledger::changed_operand_descriptor_refuses_without_disturbing_a_sibling`
 passes the typed refusal control, which gives no execution credit.

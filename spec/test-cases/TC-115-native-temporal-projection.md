@@ -3,9 +3,9 @@ id: TC-115
 title: "Native temporal projection, correspondence and join through genuine owners"
 type: TC
 relationships:
-  - target: ix://agent-ix/quire-integration/IT-022
+  - target: ix://agent-ix/filament-integration/IT-022
     type: verifies
-  - target: ix://agent-ix/quire-contract-ir/FR-350
+  - target: ix://agent-ix/filament-contract-ir/FR-350
     type: verifies
 ---
 # TC-115: Native temporal projection, correspondence and join through genuine owners
@@ -13,9 +13,9 @@ relationships:
 ## Description
 
 Execute every IT-022 scenario, which together realize Contract IR TC-461, with
-owner-produced inputs only: QSL-emitted packages, opaque `EvaluatedEvidence` carriers issued by
+owner-produced inputs only: FSL-emitted packages, opaque `EvaluatedEvidence` carriers issued by
 `EvidencePackage::evaluate_temporal_evidence`,
-quire-mltl evaluated and mapped results, and QObs owner views. Expected
+filament-mltl evaluated and mapped results, and QObs owner views. Expected
 correspondence and join bytes are computed by the test from the inputs using
 IT-022's current FR-526 successor encoding rules; no frozen vector, digest or copied owner document is
 used.
@@ -54,7 +54,7 @@ refuses one below it, and no bridge operation invokes an evaluator.
 
 ## Unreachable through genuine owners
 
-- R4 (`unsupported`) and any pair containing it: quire-mltl reports
+- R4 (`unsupported`) and any pair containing it: filament-mltl reports
   `Unsupported` only for formula and lane mismatches (`src/report.rs:735-760`),
   which a bridge-built request for a Supported subject never yields, and a
   result for any other request is `refused` (R1) first.

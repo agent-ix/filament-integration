@@ -112,7 +112,7 @@ fn rational(numerator: i64, denominator: i64) -> Rational {
     Rational::new(integer(numerator), integer(denominator)).expect("nonzero denominator")
 }
 
-/// A package is emitted by the Cargo-lock-selected QSL binary and admitted
+/// A package is emitted by the Cargo-lock-selected FSL binary and admitted
 /// by IR in this run. Refusal at either seam is a test failure.
 fn admitted() -> &'static CheckedPackageV2 {
     static PACKAGE: OnceLock<CheckedPackageV2> = OnceLock::new();
@@ -247,7 +247,7 @@ fn graph() -> UnitGraph {
             (named_key(name), unit)
         })
         .collect::<BTreeMap<_, _>>();
-    UnitGraph::from_checked_nodes(&dimensions, &units).expect("QSL's unit topology admits")
+    UnitGraph::from_checked_nodes(&dimensions, &units).expect("FSL's unit topology admits")
 }
 
 fn quantity(unit: &str, numerator: i64, denominator: i64) -> Quantity {

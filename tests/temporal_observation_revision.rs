@@ -4,11 +4,11 @@
 #[path = "support/observation_revision/mod.rs"]
 mod support;
 
-use ix_trace_rs::trace;
-use quire_integration::temporal::{
+use filament_integration::temporal::{
     read_observation_revision, ObservationAdmissionCode, ObservationAdmissionError,
     ObservationAdmissionLimit, ObservationAdmissionLimits,
 };
+use ix_trace_rs::trace;
 use quire_observation::authority::{self as a, bundle, ErrorCode, Limits};
 use support::Fixture;
 

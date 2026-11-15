@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-//! RT construction controls using identities from a live QSL producer and strict IR reader.
+//! RT construction controls using identities from a live FSL producer and strict IR reader.
 //! The controlled executable parts exercise construction, not temporal producer/executor qualification.
 
 use ix_trace_rs::{string_edge, trace};
@@ -63,9 +63,9 @@ fn admitted() -> &'static quire_contract_ir::CheckedPackageV2 {
             qsl_replay::StageLimits::default(),
             qsl_replay::ReplayLimits::default(),
         )
-        .expect("the lock-selected QSL public compiler emits the authored monitor source");
+        .expect("the lock-selected FSL public compiler emits the authored monitor source");
         let wire: serde_json::Value =
-            serde_json::from_slice(emitted.bytes()).expect("QSL emits checked-package JSON");
+            serde_json::from_slice(emitted.bytes()).expect("FSL emits checked-package JSON");
         let mut evidence = quire_contract_ir::CheckedPackageEvidence::new();
         for feature in wire["lock"]["required_features"]
             .as_array()
@@ -636,7 +636,7 @@ fn parts_for(profile: FixtureState) -> ProgramParts {
                     ValueType::Composite(key("state")),
                 ]),
             ),
-            // This is a controlled native conformance edge, not an emitted QSL relationship.
+            // This is a controlled native conformance edge, not an emitted FSL relationship.
             CompositeDeclaration::new(
                 key("state-pair-child"),
                 "state-pair-child",
@@ -2860,7 +2860,7 @@ fn record_required_read_refuses_optional_presence_without_inventing_an_option_va
 #[trace("TC-098", "IT-018-SC-08", "interface-006-AC-1")]
 #[test]
 fn tuple_dynamic_native_conformance_preserves_position_and_checks_nonidentical_scalar_slots() {
-    // Declaration keys/shapes come from QSL/IR. The conformance edges above are
+    // Declaration keys/shapes come from FSL/IR. The conformance edges above are
     // controlled native diagnostics, not real-producer temporal qualification.
     let (mut input, literal) = tuple_parts(1);
     input.expressions[literal.0].operation = Operation::Literal(
@@ -7256,7 +7256,7 @@ fn native_type_projection_keeps_allocation_and_capacity_requests_distinct() {
 }
 
 // ---- interface-010 SequenceMap / SequenceFilter over a controlled arena whose
-// identities are the QSL-admitted keys above (RT's own tests may not use NodeKey fixtures).
+// identities are the FSL-admitted keys above (RT's own tests may not use NodeKey fixtures).
 
 const SEQ_HELPER: FunctionId = FunctionId(4);
 
@@ -7995,7 +7995,7 @@ fn result_storage_is_reserved_from_the_scratch_byte_budget_before_the_first_visi
     seq_stop(build_fx(), seq_budget()).expect("the same map completes with byte storage");
 }
 
-// FR-276-AC-12 / TC-200 step 10 over a controlled arena whose identities are QSL-admitted.
+// FR-276-AC-12 / TC-200 step 10 over a controlled arena whose identities are FSL-admitted.
 // The real producer never emits an entry that breaks its own bounds, so the oversized State
 // is a literal of the diagnostic Buffered layout (two buffers, both bounded at 22 here).
 fn state_bound_parts(

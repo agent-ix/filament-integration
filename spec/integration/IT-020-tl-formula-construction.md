@@ -3,7 +3,7 @@ id: IT-020
 title: "Construct a bounded TL owner formula from checked occurrences"
 type: IT
 relationships:
-  - target: ix://agent-ix/quire-contract-ir/FR-350
+  - target: ix://agent-ix/filament-contract-ir/FR-350
     type: verifies
 ---
 # IT-020: Construct a bounded TL owner formula from checked occurrences
@@ -16,7 +16,7 @@ valuation, correspondence or result-join premise.
 
 ## Target Integration
 
-Authored QSL source → real checked-package emitter → strict IR admission → QSL
+Authored FSL source → real checked-package emitter → strict IR admission → FSL
 subject and classification → `construct_tl_formula` → actual TL FormulaDocument
 constructor, canonical encoding and strict owner reader. Neither evaluator runs.
 
@@ -35,7 +35,7 @@ closure and `TlFormulaLimits`. Its successful value retains the original classif
 actual owner formula and canonical bytes, and ordered original checked predicate
 handles associated with their TL proposition occurrences. Static Boolean admission
 is not runtime totality. Unsupported classifications retain every owner dimension.
-For event-position and fixed-sample false-extension source, QSL requires a closed
+For event-position and fixed-sample false-extension source, FSL requires a closed
 interval: `eventually holds(true)` returns native `TemporalCause::MissingInterval`
 before any checked package, subject, classification or component exists. Infinite-trace
 unbounded source can reach a checked subject but retains its genuine owner Unsupported

@@ -3,14 +3,14 @@
 
 mod support;
 
+use filament_integration::temporal::{
+    project_tl, MappingBindingRefusal, NativeProjectionInput, TlInput, TlLimits, TlMissingPremise,
+    TlProjectionError, TlProjectionPremise, TL_CORRESPONDENCE_PROFILE,
+};
 use ix_trace_rs::trace;
 use qsl_eval::temporal::ProgressClosure;
 use qsl_eval::temporal::Valuation;
 use qsl_package::checked_views::{mapping_support, temporal_subject, Closure};
-use quire_integration::temporal::{
-    project_tl, MappingBindingRefusal, NativeProjectionInput, TlInput, TlLimits, TlMissingPremise,
-    TlProjectionError, TlProjectionPremise, TL_CORRESPONDENCE_PROFILE,
-};
 use quire_mltl::request::TemporalLane;
 use quire_observation::authority::OpenClosed;
 use tl_mltl::wire::OwnerReadErrorCode;
@@ -459,9 +459,9 @@ fn projection_reader_requires_complete_canonical_expected_value() {
             .project(TlLimits::default())
             .expect("actual projection");
         let read = |bytes: &[u8]| {
-            quire_integration::temporal::read_tl_projection(
+            filament_integration::temporal::read_tl_projection(
                 bytes,
-                quire_integration::temporal::ExpectedTlProjection {
+                filament_integration::temporal::ExpectedTlProjection {
                     package: case.package,
                     subject: case.subject,
                     classification: case.classification,
@@ -1045,7 +1045,7 @@ fn an_aggregate_atom_is_reported_as_tl_projection_formula() {
             assert!(matches!(error, TlProjectionError::Formula(_)), "{error:?}");
             assert_eq!(
                 error.code(),
-                quire_integration::temporal::TlProjectionCode::Formula
+                filament_integration::temporal::TlProjectionCode::Formula
             );
         },
     );

@@ -1,6 +1,6 @@
-# quire-integration
+# filament-integration
 
-Version-locked composition and integration runtime for native Quire V1.
+Version-locked composition and integration runtime for Filament V1.
 
 ## Hash / digest / pin antipattern: present, slated for removal
 
@@ -26,7 +26,7 @@ make audit-unsafe   # check unsafe-block documentation through Clippy
 make ci             # fmt-check + lint + test + kani + deny + audit-unsafe
 ```
 
-`make test` runs the composed QSL, contract IR, driver and codegen tests. The
+`make test` runs the composed FSL, contract IR, driver and codegen tests. The
 real Kani proof and mutation controls run under `make kani` and `make ci`.
 
 All checks are local. This repository intentionally has no hosted workflow, and
@@ -37,16 +37,16 @@ All checks are local. This repository intentionally has no hosted workflow, and
 - `deny.toml` allow-lists licenses and denies unknown registries/git sources
 - The `undocumented_unsafe_blocks` Clippy lint runs through `make lint`; `make audit-unsafe` is its named alias.
 - `rustfmt.toml` uses 100-char width and `StdExternalCrate` import grouping. Local checks fail on drift.
-- `rust-toolchain.toml` selects Rust 1.98.1 (the floor quire-spec-language and quire-contract-codegen require) + rustfmt + clippy + llvm-tools.
+- `rust-toolchain.toml` selects Rust 1.98.1 (the floor filament-spec-language and filament-contract-codegen require) + rustfmt + clippy + llvm-tools.
 
 ## Layout
 
 ```
 src/lib.rs             # crate root
 tests/integration.rs   # end-to-end tests
-tests/ir914_bound_export.rs       # QSL -> driver -> CG, with one export refusal (IR-914)
-tests/qsl_model_owner_admission.rs # QSL checked-package/v2 -> IR -> CG (IT-012, IT-008, IT-010)
-tests/support/         # QSL fixture lookup through Cargo metadata
+tests/ir914_bound_export.rs       # FSL -> driver -> CG, with one export refusal (IR-914)
+tests/fsl_model_owner_admission.rs # FSL checked-package/v2 -> IR -> CG (IT-012, IT-008, IT-010)
+tests/support/         # FSL fixture lookup through Cargo metadata
 benches/               # criterion benchmarks (opt-in; add criterion to dev-deps)
 spec/                  # requirements artifacts (from /spec-create-spec)
 scripts/               # local tooling

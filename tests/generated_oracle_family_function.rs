@@ -38,7 +38,7 @@ const SOURCE: &str = concat!(
 
 #[trace("TC-103", "IT-019-SC-05")]
 #[test]
-fn subtraction_multiplication_and_nested_call_match_fresh_qsl_sessions() {
+fn subtraction_multiplication_and_nested_call_match_fresh_fsl_sessions() {
     let acquisition = acquire_checked_closure(
         CompileUnit {
             source: SourceIdentity::new("agent-ix", "family-functions"),
@@ -51,7 +51,7 @@ fn subtraction_multiplication_and_nested_call_match_fresh_qsl_sessions() {
         StageLimits::default(),
         ReplayLimits::default(),
     )
-    .expect("the original source is checked and emitted by QSL");
+    .expect("the original source is checked and emitted by FSL");
     let mut evidence = CheckedPackageEvidence::new();
     evidence.support_feature("quire.value.complete/v1");
     let CheckedPackageV2ReadResult::Admitted(package) = CheckedPackageV2::read(

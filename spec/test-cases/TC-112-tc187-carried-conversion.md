@@ -3,14 +3,14 @@ id: TC-112
 title: "Compare original carried quantity conversion with native conversion"
 type: TC
 relationships:
-  - target: ix://agent-ix/quire-integration/IT-019
+  - target: ix://agent-ix/filament-integration/IT-019
     type: references
 ---
 # TC-112: Compare original carried quantity conversion with native conversion
 
 ## Description
 
-Exercise public TC-187 U07 and U08 through original checked QSL conversion
+Exercise public TC-187 U07 and U08 through original checked FSL conversion
 bodies and independently invoked native carried conversion. Source names the
 inch unit `inch` because `in` is reserved; its scale is exactly 127/5000 metres.
 The generated carried-target and rounding agreement is executed by
@@ -26,7 +26,7 @@ The generated carried-target and rounding agreement is executed by
    QuantityTarget::Carried Decimal carrier on identical fresh limits.
 3. For U07 use exact and nearest-even Decimal[-100,100;2,2] targets.
    Assert native coefficient, scale and every DecimalLoss field before
-   mechanically normalizing native Decimal to the QSL quantity representation.
+   mechanically normalizing native Decimal to the FSL quantity representation.
    Check full outcomes, located losses/refusals, ordered charges and all ten
    counters. Exercise work four target-domain denial and result-retain denial.
 4. For U08 use Decimal[-2,2;0,0;exact] with -2, 2, -3 and 3 metres.

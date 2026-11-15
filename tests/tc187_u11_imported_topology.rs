@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-//! Public TC-187 imported unit topology through QSL model intake and assembly.
+//! Public TC-187 imported unit topology through FSL model intake and assembly.
 
 mod support;
 
@@ -42,9 +42,9 @@ fn vector(id: &str, inputs: &str, expectation: &str) {
 }
 
 fn model_document() -> Vec<u8> {
-    let path = support::qsl_root().join("tests/fixtures/spine-model.semantic-ir.json");
+    let path = support::fsl_root().join("tests/fixtures/spine-model.semantic-ir.json");
     let document = fs::read(&path).unwrap_or_else(|error| panic!("{path:?}: {error}"));
-    let mut model: Value = serde_json::from_slice(&document).expect("QSL model fixture is JSON");
+    let mut model: Value = serde_json::from_slice(&document).expect("FSL model fixture is JSON");
     assert_eq!(model["package"]["identity"], MODEL_IDENTITY);
     let origin = model["types"][0]["origin"].clone();
     let dimension = format!("ix://{MODEL_IDENTITY}/dimension/L");
@@ -84,10 +84,10 @@ fn refusal(declarations: &str) -> (String, AssemblyRefusal) {
     let document = model_document();
     let models = admit_unit(
         &unit.selections().models,
-        &package_input([document.as_slice()]).expect("the QSL model document has an identity"),
+        &package_input([document.as_slice()]).expect("the FSL model document has an identity"),
         ModelNormalizationLimits::default(),
     )
-    .expect("the selected QSL model admits");
+    .expect("the selected FSL model admits");
     let assembled = PackageDeclarations::assemble(
         parsed.source().reference().clone(),
         "agent-ix/tc187-u11-imported-topology".to_owned(),
@@ -108,9 +108,9 @@ fn first<'a>(id: &str, refusal: &'a AssemblyRefusal) -> &'a qsl_semantics::check
     error
 }
 
-/// Trace: QSpec-TC-187 and QSpec-FR-142-AC-18. The imported root is not
+/// Trace: FSpec-TC-187 and FSpec-FR-142-AC-18. The imported root is not
 /// rechecked; the local two-edge cycle is the selected defect.
-#[trace("QSpec-TC-187", "QSpec-FR-142-AC-18")]
+#[trace("FSpec-TC-187", "FSpec-FR-142-AC-18")]
 #[test]
 fn public_u11s_local_cycle_over_imported_dimension_retains_both_edges() {
     vector(
@@ -146,9 +146,9 @@ fn public_u11s_local_cycle_over_imported_dimension_retains_both_edges() {
     assert_eq!(&source[error.span.start..error.span.end], MODEL_SELECTION);
 }
 
-/// Trace: QSpec-TC-187 and QSpec-FR-142-AC-18. The two-root refusal retains
+/// Trace: FSpec-TC-187 and FSpec-FR-142-AC-18. The two-root refusal retains
 /// the imported root identity and the new local root independently.
-#[trace("QSpec-TC-187", "QSpec-FR-142-AC-18")]
+#[trace("FSpec-TC-187", "FSpec-FR-142-AC-18")]
 #[test]
 fn public_u11t_local_root_conflicts_with_imported_root() {
     vector(
@@ -189,9 +189,9 @@ fn public_u11t_local_root_conflicts_with_imported_root() {
     assert_eq!(&source[error.span.start..error.span.end], MODEL_SELECTION);
 }
 
-/// Trace: QSpec-TC-187 and QSpec-FR-142-AC-18. A local zero scale refuses
+/// Trace: FSpec-TC-187 and FSpec-FR-142-AC-18. A local zero scale refuses
 /// before the imported root can make the dimension look healthy.
-#[trace("QSpec-TC-187", "QSpec-FR-142-AC-18")]
+#[trace("FSpec-TC-187", "FSpec-FR-142-AC-18")]
 #[test]
 fn public_u11u_zero_scale_precedes_imported_root() {
     vector(

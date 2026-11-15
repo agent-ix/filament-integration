@@ -18,9 +18,9 @@ use quire_exact::{ChargePoint, Incomplete, Integer, LimitKind, Outcome, Rational
 #[trace(
     "TC-106",
     "IT-019-SC-04",
-    "QSpec-TC-187",
-    "QSpec-FR-142",
-    "QSpec-FR-142-AC-6"
+    "FSpec-TC-187",
+    "FSpec-FR-142",
+    "FSpec-FR-142-AC-6"
 )]
 #[test]
 fn public_u12_arithmetic_values_have_their_canonical_compound_units() {

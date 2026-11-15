@@ -264,7 +264,7 @@ fn stop(outcome: &Outcome<Conversion>, point: ChargePoint, kind: LimitKind, cons
     assert_eq!(record.next_charge, Integer::from(1_i64));
 }
 
-#[trace("TC-112", "QSpec-TC-187")]
+#[trace("TC-112", "FSpec-TC-187")]
 #[test]
 fn u07_original_carried_exact_and_nearest_even_preserve_loss_and_precedence() {
     bind("U07", "Convert `1 in` to decimal metres at scale two", "`exact`: refused; `nearest-even`: `(3,2) m` plus `{ exact_numerator: 127, exact_denominator: 5000, rounded_coefficient: 3, rounded_scale: 2, mode: nearest-even }`");
@@ -336,7 +336,7 @@ fn u07_original_carried_exact_and_nearest_even_preserve_loss_and_precedence() {
     }
 }
 
-#[trace("TC-112", "QSpec-TC-187")]
+#[trace("TC-112", "FSpec-TC-187")]
 #[test]
 fn u08_original_carried_boundaries_refuse_atomically_after_target_domain() {
     bind("U08", "Convert `-2 m`, `2 m`, `-3 m`, `3 m` into target Decimal coefficient domain `[-2,2]`, scale zero", "`-2` and `2` succeed; one-below/one-over refuse atomically");

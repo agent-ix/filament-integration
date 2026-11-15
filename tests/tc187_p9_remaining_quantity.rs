@@ -55,13 +55,13 @@ fn limits(i: u64, e: u64, o: u64, w: u64, r: u64) -> ScalarLimits {
 #[trace(
     "TC-106",
     "IT-019-SC-04",
-    "QSpec-TC-187",
-    "QSpec-FR-142-AC-1",
-    "QSpec-FR-142-AC-2",
-    "QSpec-FR-142-AC-5",
-    "QSpec-FR-142-AC-6",
-    "QSpec-FR-142-AC-9",
-    "QSpec-FR-142-AC-7"
+    "FSpec-TC-187",
+    "FSpec-FR-142-AC-1",
+    "FSpec-FR-142-AC-2",
+    "FSpec-FR-142-AC-5",
+    "FSpec-FR-142-AC-6",
+    "FSpec-FR-142-AC-9",
+    "FSpec-FR-142-AC-7"
 )]
 #[test]
 fn original_quantity_boundaries_preserve_composed_units_and_adverse_stops() {
@@ -344,12 +344,12 @@ fn refused_source(expression: &str, result: &str, nonzero: bool) -> qsl_forms::E
 #[trace(
     "TC-106",
     "IT-019-SC-04",
-    "QSpec-TC-187",
-    "QSpec-FR-142-AC-2",
-    "QSpec-FR-142-AC-5",
-    "QSpec-FR-142-AC-6",
-    "QSpec-FR-142-AC-9",
-    "QSpec-FR-142-AC-7"
+    "FSpec-TC-187",
+    "FSpec-FR-142-AC-2",
+    "FSpec-FR-142-AC-5",
+    "FSpec-FR-142-AC-6",
+    "FSpec-FR-142-AC-9",
+    "FSpec-FR-142-AC-7"
 )]
 #[test]
 fn original_static_controls_and_public_zero_division_expression_keep_distinct_axes() {
@@ -546,12 +546,12 @@ fn original_static_controls_and_public_zero_division_expression_keep_distinct_ax
 #[trace(
     "TC-106",
     "IT-019-SC-04",
-    "QSpec-TC-187",
-    "QSpec-FR-142-AC-2",
-    "QSpec-FR-142-AC-4",
-    "QSpec-FR-142-AC-6",
-    "QSpec-FR-142-AC-10",
-    "QSpec-FR-142-AC-7"
+    "FSpec-TC-187",
+    "FSpec-FR-142-AC-2",
+    "FSpec-FR-142-AC-4",
+    "FSpec-FR-142-AC-6",
+    "FSpec-FR-142-AC-10",
+    "FSpec-FR-142-AC-7"
 )]
 #[test]
 fn genuine_compound_values_retain_separate_source_and_owner_conversion_evidence() {

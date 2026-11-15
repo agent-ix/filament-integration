@@ -6,7 +6,7 @@ mod family_scalar_limits;
 mod generated_oracle;
 #[path = "support/oracle_observation.rs"]
 mod oracle_observation;
-#[path = "support/qsl_root.rs"]
+#[path = "support/fsl_root.rs"]
 mod support;
 use generated_oracle::cargo_command;
 use quire_contract_codegen::{
@@ -49,7 +49,7 @@ fn compare_protocol_finish(operator: EqualityOperatorKind, syntax: &str, answer:
     )
     .replace("outcome = outcome", &format!("outcome {syntax} outcome"));
     let model =
-        std::fs::read(support::qsl_root().join("tests/fixtures/spine-model.semantic-ir.json"))
+        std::fs::read(support::fsl_root().join("tests/fixtures/spine-model.semantic-ir.json"))
             .expect("lock-selected model input");
     let producer = checked(&source, &model);
     let emitted = qsl_package::emit_checked(

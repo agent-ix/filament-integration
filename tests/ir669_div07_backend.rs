@@ -61,7 +61,7 @@ pub(crate) fn inferred_modulus_domains_retain_renderer_refusal_without_execution
             scalar_execution: None,
         },
     )
-    .expect("typed QSL division request reaches negotiation");
+    .expect("typed FSL division request reaches negotiation");
     assert_eq!(driven.settlements.len(), 1, "result bound");
     let quire_contract_codegen::Disposition::Unsupported { cause } = &driven.settlements[0]
         .backend

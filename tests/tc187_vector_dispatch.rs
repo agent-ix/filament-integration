@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-//! Public TC-187 vector dispatch and real QSL admission controls for IT-019.
+//! Public TC-187 vector dispatch and real FSL admission controls for IT-019.
 
 use std::collections::BTreeSet;
 
@@ -40,7 +40,7 @@ enum RowDispatch {
         generated_owner: &'static str,
         missing: &'static str,
     },
-    QslControl {
+    FslControl {
         expected: &'static str,
         remaining_owner: &'static str,
         missing: &'static str,
@@ -53,7 +53,7 @@ enum RowDispatch {
     OutsideRequiredSet,
 }
 
-// This is dispatch over public IDs, not a copy of QSpec's inputs or expected
+// This is dispatch over public IDs, not a copy of FSpec's inputs or expected
 // prose. A newly exported ID must get its own disposition instead of silently
 // inheriting a passing row. Routed mixed rows name only the backed axis and
 // retain their remaining generated or source-authority work.
@@ -129,10 +129,10 @@ fn dispatch(id: &str) -> Option<RowDispatch> {
             expected: &["false"],
             operation: NativeOperation::Compare,
         }),
-        "U27" => Some(RowDispatch::QslControl {
+        "U27" => Some(RowDispatch::FslControl {
             expected: "undefined",
-            remaining_owner: "QSL",
-            missing: "QSL check refuses the zero divisor as Unproved(Nonzero) before emission, so no generated claim exists",
+            remaining_owner: "FSL",
+            missing: "FSL check refuses the zero divisor as Unproved(Nonzero) before emission, so no generated claim exists",
         }),
         "U03" | "U05" | "U09" => Some(RowDispatch::Checked("ill_typed")),
         "U36" => Some(RowDispatch::NativeOwner {
@@ -140,12 +140,12 @@ fn dispatch(id: &str) -> Option<RowDispatch> {
             generated_owner: "IR-842",
             missing: "CG generated comparison, direct dsec conversion and whole-let bridge agreement",
         }),
-        "U33" => Some(RowDispatch::QslControl {
+        "U33" => Some(RowDispatch::FslControl {
             expected: "literal",
             remaining_owner: "IR-842",
             missing: "native runtime and generated agreement beyond checked emission",
         }),
-        "U37" => Some(RowDispatch::QslControl {
+        "U37" => Some(RowDispatch::FslControl {
             expected: "conflicting-definition",
             remaining_owner: "IR-842",
             missing: "value and generated agreement beyond equivalence admission",
@@ -159,7 +159,7 @@ fn dispatch(id: &str) -> Option<RowDispatch> {
             missing: "semantic-value derived dimension N = L / L must have an empty map, not N^1",
         }),
         "U32" | "U34" | "U35" | "U39" => Some(RowDispatch::OutsideRequiredSet),
-        "U38" | "U40" => pending("intended equivalent-unit positive conversions and dependent operations are unexecuted; IR-842 QSL owner routing"),
+        "U38" | "U40" => pending("intended equivalent-unit positive conversions and dependent operations are unexecuted; IR-842 FSL owner routing"),
         _ => None,
     }
 }
@@ -173,7 +173,7 @@ fn planned_remainder(id: &str) -> Option<RowDispatch> {
             missing: "nominal-to-compound first step has no source form: the compound unit target grammar",
         }),
         "U21" => Some(RowDispatch::Planned {
-            tickets: &["QSL"],
+            tickets: &["FSL"],
             missing: "zero-to-negative power is refused as Unproved(Nonzero) before emission, so no claim exists",
         }),
         _ => None,
@@ -255,7 +255,7 @@ fn assert_admission(vector: &QualificationVector, case: AdmissionCase) {
     );
     let (source, refusal) = assemble_refusal(declarations);
     let [error] = refusal.errors.as_slice() else {
-        panic!("{} must have one typed QSL refusal: {refusal:?}", vector.id);
+        panic!("{} must have one typed FSL refusal: {refusal:?}", vector.id);
     };
     assert_eq!(
         error.cause.catalog_code().to_string(),
@@ -272,8 +272,8 @@ fn assert_admission(vector: &QualificationVector, case: AdmissionCase) {
     assert_eq!(&source[error.span.start..error.span.end], selected_name);
 }
 
-/// Trace: QSpec-TC-187. This partial slice does not back IT-019-SC-04 yet.
-#[trace("QSpec-TC-187")]
+/// Trace: FSpec-TC-187. This partial slice does not back IT-019-SC-04 yet.
+#[trace("FSpec-TC-187")]
 #[test]
 fn public_tc187_ids_fail_closed_and_real_admission_controls_refuse() {
     let mut seen = BTreeSet::new();
@@ -303,7 +303,7 @@ fn public_tc187_ids_fail_closed_and_real_admission_controls_refuse() {
                 observed.insert(vector.id);
             }
             RowDispatch::Topology(expected) => {
-                // Each of these IDs has a value-asserting public QSL control in
+                // Each of these IDs has a value-asserting public FSL control in
                 // tc187_u11_topology, tc187_u11_local_values, tc187_u11_order or
                 // tc187_u11_imported_topology, tc187_u11_dimension_terms,
                 // tc187_u11_multidoc_transitive or tc187_u11_imported_base.
@@ -318,7 +318,7 @@ fn public_tc187_ids_fail_closed_and_real_admission_controls_refuse() {
             }
             RowDispatch::Admitted(expected) => {
                 // The positive U11r source passes the real selected-model
-                // QSL check and emission in tc187_u11_imported_positive.
+                // FSL check and emission in tc187_u11_imported_positive.
                 assert!(
                     vector.inputs.contains("unit cm"),
                     "{} imported unit input",
@@ -345,9 +345,9 @@ fn public_tc187_ids_fail_closed_and_real_admission_controls_refuse() {
             }
             RowDispatch::GeneratedAgreement(expected) => {
                 // tc187_u12_arithmetic, tc187_u13_u21_power, tc187_ir842_conversions and
-                // tc187_p9_remaining_conversions execute these original operations as QSL
+                // tc187_p9_remaining_conversions execute these original operations as FSL
                 // source, emitted bytes, IR admission, CG generation and a native oracle
-                // compared with QSL evaluation.
+                // compared with FSL evaluation.
                 assert!(
                     vector.expected.contains(expected),
                     "{} generated agreement expectation",
@@ -398,7 +398,7 @@ fn public_tc187_ids_fail_closed_and_real_admission_controls_refuse() {
                 );
                 observed.insert(vector.id);
             }
-            RowDispatch::QslControl {
+            RowDispatch::FslControl {
                 expected,
                 remaining_owner,
                 missing,
@@ -414,7 +414,7 @@ fn public_tc187_ids_fail_closed_and_real_admission_controls_refuse() {
                     vector.id
                 );
                 let expected_owner = if matches!(vector.id, "U27") {
-                    "QSL"
+                    "FSL"
                 } else {
                     "IR-842"
                 };

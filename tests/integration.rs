@@ -1,4 +1,4 @@
-use quire_integration::hello;
+use filament_integration::hello;
 
 #[test]
 fn hello_is_non_empty() {

@@ -25,7 +25,7 @@ use quire_contract_ir::{
 
 #[trace("TC-099", "IT-019-SC-01", "IT-019-SC-02")]
 #[test]
-fn actual_generated_function_preserves_the_whole_qsl_call_envelope() {
+fn actual_generated_function_preserves_the_whole_fsl_call_envelope() {
     // Both operands are genuinely bounded in the source. The result is plain
     // Integer, so this control does not conflate an implicit narrow with add.
     const SOURCE: &str = concat!(

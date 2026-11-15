@@ -1,6 +1,7 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
 //! Original-source packages for capture and shared-declaration correspondence.
 
+use filament_integration::temporal::NativeProjectionInput;
 use qsl_eval::temporal::evidence::{CaptureFact, CapturedValue, TraceBinding};
 use qsl_eval::temporal::{
     evidence::{bound_atom_indices, native_atom_operands},
@@ -20,7 +21,6 @@ use quire_contract_ir::{
     CheckedPackageEvidence, CheckedPackageReadLimits, CheckedPackageV2, ClockConfiguration,
     TemporalForm,
 };
-use quire_integration::temporal::NativeProjectionInput;
 use quire_semantic_value::checking::CheckingLimits;
 
 use crate::{
@@ -40,7 +40,7 @@ pub(super) fn package(declarations: &str) -> CheckedPackageV2 {
          model M = \"acme/orders\";\n{declarations}\n"
     );
     let model =
-        std::fs::read(support::qsl_root().join("tests/fixtures/spine-model.semantic-ir.json"))
+        std::fs::read(support::fsl_root().join("tests/fixtures/spine-model.semantic-ir.json"))
             .expect("original model evidence");
     let parsed = qsl_cst::parse(
         qsl_foundation::SourceIdentity::new("agent-ix", "test:temporal-binding-axes"),

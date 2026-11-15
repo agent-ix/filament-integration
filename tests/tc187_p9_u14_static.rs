@@ -29,9 +29,9 @@ const DECLARATIONS: &str = "\
 #[trace(
     "IT-019-SC-04",
     "TC-106",
-    "QSpec-TC-187",
-    "QSpec-FR-142-AC-2",
-    "QSpec-FR-142-AC-7"
+    "FSpec-TC-187",
+    "FSpec-FR-142-AC-2",
+    "FSpec-FR-142-AC-7"
 )]
 #[test]
 fn original_u14_operations_refuse_at_their_source_occurrence() {

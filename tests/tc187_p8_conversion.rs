@@ -274,7 +274,7 @@ fn completed(outcome: Outcome<Value>, context: &AdmittedContext, target: &str, e
     assert_eq!(quantity.unit(), &unit(context, target).id());
 }
 
-#[trace("QSpec-TC-187", "QSpec-FR-142")]
+#[trace("FSpec-TC-187", "FSpec-FR-142")]
 #[test]
 fn original_affine_conversions_and_scale_one_alias_match_native_exactly() {
     bind(
@@ -313,7 +313,7 @@ fn original_affine_conversions_and_scale_one_alias_match_native_exactly() {
     conversion_stops(LENGTH, "metre_alias", "m", 7);
 }
 
-#[trace("QSpec-TC-187", "QSpec-FR-142")]
+#[trace("FSpec-TC-187", "FSpec-FR-142")]
 #[test]
 fn original_u10_exact_tuple_and_named_final_denial_keep_full_prefix() {
     bind("U10", "Convert `100 cm` to `m` with `ScalarLimitsV1 { integer_bits: 8, decimal_digits: 0, scale_expansion: 0, text_input_bytes: 0, text_scalars: 0, normalized_scalars: 0, unit_edges: 1, value_occurrences: 1, work_units: 6, result_units: 1 }`; then deny `unit.result-retain`", "the exact tuple returns `1 m`, with the largest amount `max(bits(100) + bits(1), bits(1) + bits(100)) = 8` at the multiply event; the denied named final charge returns incomplete without a partial quantity");
@@ -370,7 +370,7 @@ fn original_u10_exact_tuple_and_named_final_denial_keep_full_prefix() {
     assert_eq!(counters(&sibling_meter), counters(&meter));
 }
 
-#[trace("QSpec-TC-187", "QSpec-FR-142")]
+#[trace("FSpec-TC-187", "FSpec-FR-142")]
 #[test]
 fn native_normalization_uses_original_admitted_dimension_maps() {
     bind("U02", "Normalize `(L*T)/T` and `L^0`", "respectively `L` and the empty dimension; zero exponents are absent from each retained sorted map");
@@ -392,7 +392,7 @@ fn native_normalization_uses_original_admitted_dimension_maps() {
     assert_eq!(empty.exponents().count(), 0);
 }
 
-#[trace("QSpec-TC-187", "QSpec-FR-142")]
+#[trace("FSpec-TC-187", "FSpec-FR-142")]
 #[test]
 fn original_quantity_subnodes_preserve_native_normalized_compound_identities() {
     use quire_checked::node::NodeKind;

@@ -7,14 +7,14 @@ mod owners;
 mod projection_support;
 mod support;
 
-use ix_trace_rs::trace;
-use owners::{evaluate_mapped, evaluate_native, native_budget};
-use projection_support::{with_case, Case};
-use quire_integration::temporal::{
+use filament_integration::temporal::{
     join_tl, read_tl_bridge_definition, read_tl_join, read_tl_projection, ExpectedTlJoin,
     ExpectedTlProjection, TlJoinError, TlLimits, TlProjectionError, TlProjectionLimit,
     ValidatedTlProjection, TL_BRIDGE_DEFINITION,
 };
+use ix_trace_rs::trace;
+use owners::{evaluate_mapped, evaluate_native, native_budget};
+use projection_support::{with_case, Case};
 
 const HIGH: u64 = 1 << 40;
 

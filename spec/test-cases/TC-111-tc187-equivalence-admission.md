@@ -3,11 +3,11 @@ id: TC-111
 title: "Qualify public TC-187 U37 equivalence admission"
 type: TC
 relationships:
-  - target: ix://agent-ix/quire-integration/IT-019
+  - target: ix://agent-ix/filament-integration/IT-019
     type: references
-  - target: ix://agent-ix/quire-specification/TC-187
+  - target: ix://agent-ix/filament-specification/TC-187
     type: references
-  - target: ix://agent-ix/quire-specification/FR-142
+  - target: ix://agent-ix/filament-specification/FR-142
     type: references
 ---
 # TC-111: Qualify public TC-187 U37 equivalence admission

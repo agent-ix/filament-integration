@@ -3,14 +3,14 @@ id: TC-108
 title: "Observe TC-187 source quantity refusals and native charge precedence"
 type: TC
 relationships:
-  - target: ix://agent-ix/quire-integration/IT-019
+  - target: ix://agent-ix/filament-integration/IT-019
     type: references
 ---
 # TC-108: Observe TC-187 source quantity refusals and native charge precedence
 
 ## Description
 
-Exercise public TC-187 U03, U05 and U09 through genuine QSL source acquisition.
+Exercise public TC-187 U03, U05 and U09 through genuine FSL source acquisition.
 Keep source checking refusals distinct from supplementary native value refusals.
 
 ## Test Procedure

@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-//! Independently check original operation source through public QSL APIs.
+//! Independently check original operation source through public FSL APIs.
 use qsl_package::CheckedPackage;
 use qsl_semantics::{check::PackageDeclarations, model::intake::SelectedModels};
 use quire_semantic_value::checking::CheckingLimits;

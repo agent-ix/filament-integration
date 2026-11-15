@@ -1,8 +1,9 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-//! FR-350 input binding through the public QSL producer and strict IR reader.
+//! FR-350 input binding through the public FSL producer and strict IR reader.
 
 mod support;
 
+use filament_integration::temporal::{validate_mapping_binding, MappingBindingRefusal};
 use ix_trace_rs::trace;
 use qsl_package::checked_views::{mapping_support, temporal_subject, Closure, Support, Target};
 use qsl_semantics::{
@@ -17,14 +18,13 @@ use quire_contract_ir::{
     CheckedPackageEvidence, CheckedPackageReadLimits, CheckedPackageV2, ClockConfiguration,
     TemporalForm,
 };
-use quire_integration::temporal::{validate_mapping_binding, MappingBindingRefusal};
 use quire_semantic_value::checking::CheckingLimits;
 
 /// Emit once and admit twice: the packages have equal contents and distinct owners.
 fn packages() -> (CheckedPackageV2, CheckedPackageV2, CheckedNodeId) {
     let document =
-        std::fs::read(support::qsl_root().join("tests/fixtures/spine-model.semantic-ir.json"))
-            .expect("the selected QSL owner fixture exists");
+        std::fs::read(support::fsl_root().join("tests/fixtures/spine-model.semantic-ir.json"))
+            .expect("the selected FSL owner fixture exists");
     let source = r#"language "ix:native" edition "1-draft";
 profile v = "quire.model.complete/v1";
 profile t = "quire.temporal.event-position.false-extension/v1";

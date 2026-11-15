@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-//! IT-016 / TC-096: runtime identities originate in QSL source admitted by IR.
+//! IT-016 / TC-096: runtime identities originate in FSL source admitted by IR.
 
 #[path = "support/producer_origin.rs"]
 mod producer_origin_support;
@@ -55,7 +55,7 @@ const SOURCE: &str = "language \"ix:native\" edition \"1-draft\";\n\
     function touch_degC using v(x: Quantity<degC>): Quantity<degC> pure { x }\n\
     function keep using v(x: Int[0, 9]): Int[0, 9] pure { x }\n";
 
-/// Run the lock-selected QSL producer and the IR reader. Either missing tool
+/// Run the lock-selected FSL producer and the IR reader. Either missing tool
 /// or refused package fails the test at the source-to-reader seam.
 fn admitted() -> &'static CheckedPackageV2 {
     static PACKAGE: OnceLock<CheckedPackageV2> = OnceLock::new();
@@ -111,7 +111,7 @@ fn declaration_id(package: &CheckedPackageV2, name: &str) -> CheckedNodeId {
     declaration_node(package, name).node_id.clone()
 }
 
-/// Carry a key that came from the admitted IR graph into QSV's structural
+/// Carry a key that came from the admitted IR graph into FSV's structural
 /// identity representation. This does not construct an identity from parts.
 fn admitted_key(package: &CheckedPackageV2, id: &CheckedNodeId) -> NodeKey {
     let structural = package
@@ -519,8 +519,8 @@ fn admitted_root_units_have_canonical_compound_terms_and_order_refusal() {
     assert!(actual.iter().all(|(_, exponent)| !exponent.is_zero()));
 }
 
-/// The same root read from QSL bytes retains its declared identity even when
-/// QSV derives a one-term compound over it.
+/// The same root read from FSL bytes retains its declared identity even when
+/// FSV derives a one-term compound over it.
 #[test]
 #[trace("IT-016-SC-03", "IT-016-SC-05", "TC-096", "FR-275-AC-23")]
 fn admitted_declared_root_differs_from_its_derived_compound_arm() {

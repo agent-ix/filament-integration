@@ -3,7 +3,7 @@ id: TC-110
 title: TC-187 source and model quantity namespaces
 type: TC
 relationships:
-  - target: ix://agent-ix/quire-specification/FR-142
+  - target: ix://agent-ix/filament-specification/FR-142
     type: verifies
 ---
 # TC-110: TC-187 source and model quantity namespaces

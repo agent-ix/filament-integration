@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-//! Actual generated scalar/composite/function execution against checked QSL.
+//! Actual generated scalar/composite/function execution against checked FSL.
 
 #[path = "support/generated_oracle.rs"]
 mod generated_oracle;
@@ -122,7 +122,7 @@ fn boolean_outcome(
 /// the scalar/composite/function coordinator executes their controls.
 #[trace("TC-099")]
 #[test]
-fn generated_boolean_negation_matches_the_actual_qsl_body() {
+fn generated_boolean_negation_matches_the_actual_fsl_body() {
     let admitted = admit("function negation using v(): Boolean pure { not false }");
     let nodes = operation_nodes(&admitted.ir, "quire.op.boolean.not");
     let items = derive_exact_scalar_items(&admitted.ir, &nodes)
@@ -156,9 +156,9 @@ fn generated_boolean_negation_matches_the_actual_qsl_body() {
         body.formed_units,
         &mut qsl_meter,
     )
-    .expect("the actual closed QSL body evaluates");
+    .expect("the actual closed FSL body evaluates");
     let quire_eval::FamilyOutcome::Evaluated(qsl_outcome) = qsl.outcome else {
-        panic!("the actual QSL body must reach its value family");
+        panic!("the actual FSL body must reach its value family");
     };
     assert!(
         qsl.location.is_none(),
@@ -193,10 +193,10 @@ fn observe() {{
 }
 
 /// A missing scalar bound remains CG's typed generation refusal, even when
-/// QSL itself can evaluate the unbounded source. It is not agreement credit.
+/// FSL itself can evaluate the unbounded source. It is not agreement credit.
 #[trace("TC-099")]
 #[test]
-fn unbounded_qsl_integer_source_retains_the_codegen_bound_refusal() {
+fn unbounded_fsl_integer_source_retains_the_codegen_bound_refusal() {
     let admitted = admit("function unbounded using v(): Integer pure { 4 + 1 }");
     let nodes = operation_nodes(&admitted.ir, "quire.op.integer.add");
     let results = derive_exact_scalar_items(&admitted.ir, &nodes);
@@ -221,7 +221,7 @@ fn unbounded_qsl_integer_source_retains_the_codegen_bound_refusal() {
 /// this value/occurrence contribution does not claim whole-call accounting parity.
 #[trace("TC-099")]
 #[test]
-fn bounded_integer_source_executes_its_generated_oracle_and_observed_qsl_operation() {
+fn bounded_integer_source_executes_its_generated_oracle_and_observed_fsl_operation() {
     use qsl_eval::value::{ApplicationObservationOptions, CheckedPackageEvaluation, QualifiedName};
     use qsl_semantics::model::object_environment::ObjectEnvironment;
     use quire_exact::{Integer, Meter, Outcome, Value};
@@ -290,7 +290,7 @@ fn bounded_integer_source_executes_its_generated_oracle_and_observed_qsl_operati
     let evaluation = observation
         .evaluation
         .as_ref()
-        .expect("the real bounded QSL call executes");
+        .expect("the real bounded FSL call executes");
     assert!(!observation.unavailable_imported_call);
     assert!(!observation.function_case_limit_reached);
     assert_eq!(observation.function_evaluations, 1);
@@ -346,7 +346,7 @@ fn observe() {{
         format!("{:?}", Outcome::Completed(selected_value.clone()))
     );
     eprintln!(
-        "QSL whole call: {:?}; raw meter {:?}; losses {:?}",
+        "FSL whole call: {:?}; raw meter {:?}; losses {:?}",
         evaluation.outcome, qsl_meter, evaluation.losses
     );
     eprintln!("Generated body whole observation: {}", native[1]);

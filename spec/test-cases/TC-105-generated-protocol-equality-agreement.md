@@ -3,9 +3,9 @@ id: TC-105
 title: "Execute original protocol-slot equality as public operation authority"
 type: TC
 relationships:
-  - target: ix://agent-ix/quire-integration/IT-019
+  - target: ix://agent-ix/filament-integration/IT-019
     type: references
-  - target: ix://agent-ix/quire-contract-codegen/FR-018
+  - target: ix://agent-ix/filament-contract-codegen/FR-018
     type: references
 ---
 # TC-105: Execute original protocol-slot equality as public operation authority

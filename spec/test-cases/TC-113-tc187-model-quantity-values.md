@@ -3,7 +3,7 @@ id: TC-113
 title: "Observe original selected-model quantity values and admission"
 type: TC
 relationships:
-  - target: ix://agent-ix/quire-integration/IT-019
+  - target: ix://agent-ix/filament-integration/IT-019
     type: references
 ---
 # TC-113: Observe original selected-model quantity values and admission
@@ -19,7 +19,7 @@ only admission; a partial observation never qualifies an entire mixed row.
 
 1. Supply original nonempty model documents for acme/rpc, acme/flow and, where
    required, acme/clock. Parse original source, admit the selected documents and
-   assemble declarations through public QSL APIs. Retain actual unit and dimension
+   assemble declarations through public FSL APIs. Retain actual unit and dimension
    identities rather than inventing structural keys.
 2. Execute U36 call admission and independent argument, sum, comparison and direct
    conversion refusals. Evaluate its original closed quotient and product bodies,
@@ -46,7 +46,7 @@ whole let bridge are observed independently. The five successful quantity stages
 compare complete typed results, empty exact losses, ordered charge records and
 every meter counter. Compound terms and dimension maps use original owner keys.
 The let binding is observed as magnitude three with the one original root term;
-the entire QSL let stage agrees with the native multiply/divide/convert sequence.
+the entire FSL let stage agrees with the native multiply/divide/convert sequence.
 
 The two explicitly named characterization tests record a measured owner
 disagreement: the original equivalent conversion source refuses checking with
@@ -62,9 +62,9 @@ red probes were executed before characterizations were authorized.
 | U36 call with R seconds | Source admitted | Planned |
 | U36 calls with F and local seconds | Exact argument TypeMismatch, independently | Planned |
 | U36 mixed sum, less-than, and F conversion | Exact source loci; native IncompatibleDimensions, no charges/all counters zero | Planned |
-| U36 mixed quotient | Exact one; original two-dimension map and root terms; full QSL/native agreement | Planned |
-| U36 same-root quotient | Exact one; empty dimension and root maps; full QSL/native agreement | Planned |
-| U36 mixed and same-root products | Exact six each; unequal complete canonical units/maps; full QSL/native agreement | Planned |
+| U36 mixed quotient | Exact one; original two-dimension map and root terms; full FSL/native agreement | Planned |
+| U36 same-root quotient | Exact one; empty dimension and root maps; full FSL/native agreement | Planned |
+| U36 mixed and same-root products | Exact six each; unequal complete canonical units/maps; full FSL/native agreement | Planned |
 | U36 direct Dur conversion | Source refusal; native distinct declared dimensions, no charges/all counters zero | Planned |
 | U36 whole let bridge | Exact three dsec; native binding terms and complete original whole-stage agreement | Planned |
 | U38 R/F equivalence declaration | Actual row owner/span, sorted keys, scale and class ratio verified | Planned |

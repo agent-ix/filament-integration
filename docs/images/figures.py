@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: AGPL-3.0-or-later
 # Copyright (C) 2026 Agent-IX
-"""quire-integration's documentation figures, rendered by the docs-figures skill.
+"""filament-integration's documentation figures, rendered by the docs-figures skill.
 
 Regenerate from the repository root with the agent-ix/dev-tools skill:
 
@@ -55,15 +55,15 @@ def hero():
         "hero",
         980,
         330,
-        "The integration tests take a QSL source and its domain model through QSL's compiler into "
+        "The integration tests take a FSL source and its domain model through FSL's compiler into "
         "a checked package, read it with contract IR and feed it to the code generator, then compile "
-        "and run what was generated. QSL's own runtime evaluates the same input, and the test "
+        "and run what was generated. FSL's own runtime evaluates the same input, and the test "
         "passes only when the two verdicts agree.",
     )
     w, gap, top = 148, 18, 20
     xs = [i * (w + gap) for i in range(6)]
-    f.box(xs[0], top, w, 56, "code", "QSL source", "+ domain model")
-    f.box(xs[1], top, w, 56, "logic", "QSL", "check · package")
+    f.box(xs[0], top, w, 56, "code", "FSL source", "+ domain model")
+    f.box(xs[1], top, w, 56, "logic", "FSL", "check · package")
     f.box(xs[2], top, w, 56, "model", "package bytes", "checked-package/v2")
     f.box(xs[3], top, w, 56, "logic", "contract IR", "reads the bytes")
     f.box(xs[4], top, w, 56, "logic", "codegen", "public APIs")
@@ -72,7 +72,7 @@ def hero():
         role = "model" if i in (1, 4) else "logic"
         f.line([(xs[i] + w, top + 28), (xs[i + 1] - 3, top + 28)], role)
     low = 150
-    f.box(xs[1], low, w, 56, "logic", "QSL runtime", "runtime::execute")
+    f.box(xs[1], low, w, 56, "logic", "FSL runtime", "runtime::execute")
     f.line([(xs[1] + w // 2, top + 56), (xs[1] + w // 2, low - 3)], "logic")
     f.box(xs[5], low, w, 56, "logic", "build and run", "compiled for real")
     f.line([(xs[5] + w // 2, top + 56), (xs[5] + w // 2, low - 3)], "model")
@@ -113,47 +113,47 @@ def lock():
 
 
 REPOS = [
-    (1, 0, "quire-driver", "the quire command", True),
-    (2, 0, "quire-integration", "tests the whole chain", True),
-    (3, 0, "quire-verification", "plans verification", True),
-    (0, 1, "quire-specification", "the standard", True),
-    (1, 1, "quire-spec-language", "compiler · evaluator", False),
-    (2, 1, "quire-contract-ir", "contract model", False),
-    (3, 1, "quire-contract-codegen", "code · tests · proofs", False),
-    (4, 1, "quire-contract-runtime", "runs generated checks", False),
-    (0, 2, "quire-observation", "qualified observations", False),
-    (1, 2, "quire-protocol", "protocol conformance", True),
-    (2, 2, "quire-analyze", "SMT consistency", False),
-    (0, 3, "quire-mltl", "MLTL over observations", False),
+    (1, 0, "filament-driver", "the fsl command", True),
+    (2, 0, "filament-integration", "tests the whole chain", True),
+    (3, 0, "filament-verification", "plans verification", True),
+    (0, 1, "filament-specification", "the standard", True),
+    (1, 1, "filament-spec-language", "compiler · evaluator", False),
+    (2, 1, "filament-contract-ir", "contract model", False),
+    (3, 1, "filament-contract-codegen", "code · tests · proofs", False),
+    (4, 1, "filament-contract-runtime", "runs generated checks", False),
+    (0, 2, "filament-observation", "qualified observations", False),
+    (1, 2, "filament-protocol", "protocol conformance", True),
+    (2, 2, "filament-analyze", "SMT consistency", False),
+    (0, 3, "filament-mltl", "MLTL over observations", False),
 ]
 FEEDS = [
-    ("quire-specification", "quire-spec-language"),
-    ("quire-spec-language", "quire-contract-ir"),
-    ("quire-contract-ir", "quire-contract-codegen"),
-    ("quire-contract-codegen", "quire-contract-runtime"),
-    ("quire-spec-language", "quire-protocol"),
-    ("quire-contract-ir", "quire-analyze"),
-    ("quire-observation", "quire-protocol"),
-    ("quire-observation", "quire-mltl"),
+    ("filament-specification", "filament-spec-language"),
+    ("filament-spec-language", "filament-contract-ir"),
+    ("filament-contract-ir", "filament-contract-codegen"),
+    ("filament-contract-codegen", "filament-contract-runtime"),
+    ("filament-spec-language", "filament-protocol"),
+    ("filament-contract-ir", "filament-analyze"),
+    ("filament-observation", "filament-protocol"),
+    ("filament-observation", "filament-mltl"),
 ]
-SHARED = ["quire-eval", "quire-exact", "quire-semantic-value", "quire-walk", "quire-canonical",
-          "quire-verification-contracts"]
+SHARED = ["filament-eval", "filament-exact", "filament-semantic-value", "filament-walk", "quire-canonical",
+          "filament-verification-contracts"]
 
 
-def ecosystem(here="quire-integration"):
+def ecosystem(here="filament-integration"):
     """The Quire repositories: the main chain, its branches, and what runs and shares it."""
     f = Figure(
         "ecosystem",
         980,
         476,
-        "The Quire repositories. The main chain runs from the standard, quire-specification, to "
-        "the compiler, quire-spec-language, then quire-contract-ir, quire-contract-codegen and "
-        "quire-contract-runtime. quire-spec-language also feeds quire-protocol, and "
-        "quire-contract-ir feeds quire-analyze. quire-observation feeds quire-protocol and "
-        "quire-mltl. Above the chain, quire-driver runs it, quire-integration tests it and "
-        "quire-verification plans verification. Below it, shared libraries used throughout: "
-        "quire-eval, quire-exact, quire-semantic-value, quire-walk, quire-canonical and "
-        "quire-verification-contracts.",
+        "The Quire repositories. The main chain runs from the standard, filament-specification, to "
+        "the compiler, filament-spec-language, then filament-contract-ir, filament-contract-codegen and "
+        "filament-contract-runtime. filament-spec-language also feeds filament-protocol, and "
+        "filament-contract-ir feeds filament-analyze. filament-observation feeds filament-protocol and "
+        "filament-mltl. Above the chain, filament-driver runs it, filament-integration tests it and "
+        "filament-verification plans verification. Below it, shared libraries used throughout: "
+        "filament-eval, filament-exact, filament-semantic-value, filament-walk, quire-canonical and "
+        "filament-verification-contracts.",
     )
     w, h, step = 176, 50, 201
     rows = {0: 20, 1: 120, 2: 210, 3: 290}

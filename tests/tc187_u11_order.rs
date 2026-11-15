@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-//! Public TC-187 U11 first-defect ordering through QSL intake.
+//! Public TC-187 U11 first-defect ordering through FSL intake.
 
 use ix_trace_rs::trace;
 use qsl_semantics::check::{
@@ -90,8 +90,8 @@ fn assert_first(id: &str, declarations: &str, cause: AssemblyCause, code: &str, 
     );
 }
 
-/// Trace: QSpec-TC-187 and QSpec-FR-142-AC-15. Scale is checked before target.
-#[trace("QSpec-TC-187", "QSpec-FR-142-AC-15")]
+/// Trace: FSpec-TC-187 and FSpec-FR-142-AC-15. Scale is checked before target.
+#[trace("FSpec-TC-187", "FSpec-FR-142-AC-15")]
 #[test]
 fn public_u11h_zero_scale_precedes_unknown_target_in_one_unit() {
     vector(
@@ -114,8 +114,8 @@ fn public_u11h_zero_scale_precedes_unknown_target_in_one_unit() {
     );
 }
 
-/// Trace: QSpec-TC-187 and QSpec-FR-142-AC-15. Unit order beats row order.
-#[trace("QSpec-TC-187", "QSpec-FR-142-AC-15")]
+/// Trace: FSpec-TC-187 and FSpec-FR-142-AC-15. Unit order beats row order.
+#[trace("FSpec-TC-187", "FSpec-FR-142-AC-15")]
 #[test]
 fn public_u11i_earlier_unknown_target_precedes_later_zero_scale() {
     vector(
@@ -147,8 +147,8 @@ fn public_u11i_earlier_unknown_target_precedes_later_zero_scale() {
     );
 }
 
-/// Trace: QSpec-TC-187 and QSpec-FR-142-AC-15. Two roots precede a self-cycle.
-#[trace("QSpec-TC-187", "QSpec-FR-142-AC-15")]
+/// Trace: FSpec-TC-187 and FSpec-FR-142-AC-15. Two roots precede a self-cycle.
+#[trace("FSpec-TC-187", "FSpec-FR-142-AC-15")]
 #[test]
 fn public_u11j_two_roots_precede_self_cycle() {
     vector(
@@ -176,8 +176,8 @@ fn public_u11j_two_roots_precede_self_cycle() {
     );
 }
 
-/// Trace: QSpec-TC-187 and QSpec-FR-142-AC-15. Dimension order beats unit row.
-#[trace("QSpec-TC-187", "QSpec-FR-142-AC-15")]
+/// Trace: FSpec-TC-187 and FSpec-FR-142-AC-15. Dimension order beats unit row.
+#[trace("FSpec-TC-187", "FSpec-FR-142-AC-15")]
 #[test]
 fn public_u11k_earlier_dimension_cycle_precedes_later_zero_scale() {
     vector(
@@ -207,8 +207,8 @@ fn public_u11k_earlier_dimension_cycle_precedes_later_zero_scale() {
     );
 }
 
-/// Trace: QSpec-TC-187 and QSpec-FR-142-AC-16. Earlier dimension wins.
-#[trace("QSpec-TC-187", "QSpec-FR-142-AC-16")]
+/// Trace: FSpec-TC-187 and FSpec-FR-142-AC-16. Earlier dimension wins.
+#[trace("FSpec-TC-187", "FSpec-FR-142-AC-16")]
 #[test]
 fn public_u11m_dimension_order_selects_cycle_or_unanchored_base() {
     vector(

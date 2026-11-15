@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-//! FR-018 composite equality cells: the generated CG oracle and QSL's checked
+//! FR-018 composite equality cells: the generated CG oracle and FSL's checked
 //! operation, on the same original source and typed arguments, agree on the
 //! outcome, every ordered admitted per-charge request and every counter.
 //!
-//! The QSL side is the public `call_observing_applications` ledger. The
+//! The FSL side is the public `call_observing_applications` ledger. The
 //! generated side is quire-exact's production scoped charge capture around the
 //! generated oracle call. Neither side subtracts or precharges anything.
 
@@ -347,7 +347,7 @@ println!("IT019_OBSERVATION input {{:?}} {{:?}}",left,right);
                 right_name = constructors[right_index],
             ));
             for work in WORK {
-                // Independent QSL authority: the same checked original body on the
+                // Independent FSL authority: the same checked original body on the
                 // same typed arguments, with the production scoped capture.
                 let function = checked
                     .graph()
@@ -366,7 +366,7 @@ println!("IT019_OBSERVATION input {{:?}} {{:?}}",left,right);
                 .expect("independent checked-body evaluation");
                 assert!(evaluation.losses.is_empty());
                 let FamilyOutcome::Evaluated(outcome) = evaluation.outcome else {
-                    panic!("QSL value family");
+                    panic!("FSL value family");
                 };
                 let capture = meter
                     .take_charge_capture()
@@ -380,7 +380,7 @@ println!("IT019_OBSERVATION input {{:?}} {{:?}}",left,right);
                     );
                     assert!(denied.is_empty());
                     assert!(!admitted.is_empty());
-                    // The QSL call ledger carries the same operation requests after
+                    // The FSL call ledger carries the same operation requests after
                     // its own leading FunctionCall request.
                     let mut call_meter = Meter::new(limits(work));
                     let observation = checked.call_observing_applications(
@@ -396,9 +396,9 @@ println!("IT019_OBSERVATION input {{:?}} {{:?}}",left,right);
                             max_size_requests: 256,
                         },
                     );
-                    let ledger = observation.ledger.as_ref().expect("complete QSL ledger");
+                    let ledger = observation.ledger.as_ref().expect("complete FSL ledger");
                     let [call, operation @ ..] = ledger.entries() else {
-                        panic!("QSL ledger has the call request");
+                        panic!("FSL ledger has the call request");
                     };
                     assert_eq!(call.request.point, ChargePoint::FunctionCall);
                     assert_eq!(
@@ -407,7 +407,7 @@ println!("IT019_OBSERVATION input {{:?}} {{:?}}",left,right);
                             .map(|entry| &entry.request)
                             .collect::<Vec<_>>(),
                         admitted,
-                        "{name} QSL call ledger and operation capture"
+                        "{name} FSL call ledger and operation capture"
                     );
                 } else {
                     let Outcome::Incomplete(stop) = &outcome else {

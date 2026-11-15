@@ -1,8 +1,12 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-//! FR-350 input binding through the public QSL producer and strict IR reader.
+//! FR-350 input binding through the public FSL producer and strict IR reader.
 
 mod support;
 
+use filament_integration::temporal::{
+    construct_tl_formula, MappingBindingRefusal, TlFormulaCode, TlFormulaComponent, TlFormulaError,
+    TlFormulaLimit, TlFormulaLimits,
+};
 use ix_trace_rs::trace;
 use qsl_package::checked_views::{mapping_support, temporal_subject, Closure, Support, Unmatched};
 use qsl_semantics::{
@@ -16,10 +20,6 @@ use quire_contract_ir::{
     read_checked_package, CheckedNodeId, CheckedNodeKind, CheckedPackageDispatchResult,
     CheckedPackageEvidence, CheckedPackageReadLimits, CheckedPackageV2, ClockConfiguration,
     ClockExactNumber, TemporalForm,
-};
-use quire_integration::temporal::{
-    construct_tl_formula, MappingBindingRefusal, TlFormulaCode, TlFormulaComponent, TlFormulaError,
-    TlFormulaLimit, TlFormulaLimits,
 };
 use quire_semantic_value::checking::CheckingLimits;
 use tl_syntax::{
@@ -87,8 +87,8 @@ temporal Due using t over (g: M::Gadget) clock "events" on origin {{
 /// Emit once and admit twice: the packages have equal contents and distinct owners.
 fn packages(formula: &str, profile: &str) -> (CheckedPackageV2, CheckedPackageV2, CheckedNodeId) {
     let document =
-        std::fs::read(support::qsl_root().join("tests/fixtures/spine-model.semantic-ir.json"))
-            .expect("the selected QSL owner fixture exists");
+        std::fs::read(support::fsl_root().join("tests/fixtures/spine-model.semantic-ir.json"))
+            .expect("the selected FSL owner fixture exists");
     let graph = checked_formula(formula, profile, &document).expect("the temporal package checks");
     let selections: Vec<_> = graph
         .temporal_clauses()
@@ -651,7 +651,7 @@ fn bounded_endpoint_conversion_is_exact_and_out_of_owner_range_refuses() {
 #[test]
 fn bounded_profiles_refuse_missing_intervals_before_any_checked_package_exists() {
     let document =
-        std::fs::read(support::qsl_root().join("tests/fixtures/spine-model.semantic-ir.json"))
+        std::fs::read(support::fsl_root().join("tests/fixtures/spine-model.semantic-ir.json"))
             .expect("selected owner model fixture");
     for profile in [EVENT, SAMPLE] {
         let refusals = checked_formula("eventually holds(true)", profile, &document)

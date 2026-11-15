@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: AGPL-3.0-or-later
-//! TC-186 text comparison through checked QSL source and the exact runtime.
+//! TC-186 text comparison through checked FSL source and the exact runtime.
 
 use ix_trace_rs::trace;
 use qsl_eval::value::{CheckedPackageEvaluation, QualifiedName};
@@ -31,13 +31,13 @@ const LIMITS: ScalarLimits = ScalarLimits {
 };
 
 fn selected_vector(id: &str) -> &'static QualificationVector {
-    // Branch-gating string comparison: only these explicit QSpec IDs own this slice.
+    // Branch-gating string comparison: only these explicit FSpec IDs own this slice.
     let rows: Vec<_> = vectors_of(TestCase::Tc186)
         .filter(|vector| vector.id == id)
         .collect();
     let [row] = rows.as_slice() else {
         panic!(
-            "QSpec TC-186 must contain exactly one {id} row; found {}",
+            "FSpec TC-186 must contain exactly one {id} row; found {}",
             rows.len()
         );
     };
@@ -56,11 +56,11 @@ fn codepoint_sequence(text: &str) -> String {
                 .take_while(|ch| ch.is_ascii_hexdigit())
                 .collect();
             let codepoint =
-                u32::from_str_radix(&digits, 16).expect("QSpec codepoint is hexadecimal");
-            char::from_u32(codepoint).expect("QSpec codepoint is a Unicode scalar")
+                u32::from_str_radix(&digits, 16).expect("FSpec codepoint is hexadecimal");
+            char::from_u32(codepoint).expect("FSpec codepoint is a Unicode scalar")
         })
         .collect();
-    assert!(!scalars.is_empty(), "QSpec needs codepoint inputs: {text}");
+    assert!(!scalars.is_empty(), "FSpec needs codepoint inputs: {text}");
     scalars.into_iter().collect()
 }
 
@@ -97,7 +97,7 @@ fn t01_operands() -> (String, String) {
 }
 
 fn source_literal(value: &str) -> String {
-    serde_json::to_string(value).expect("QSpec Unicode scalar sequence is a source string")
+    serde_json::to_string(value).expect("FSpec Unicode scalar sequence is a source string")
 }
 
 fn checked_text_literal(
@@ -237,7 +237,7 @@ fn checked_compare_with_limits(
         .expect("S6a calls the checked text function");
     let FamilyOutcome::Evaluated(outcome) = evaluation.outcome else {
         panic!(
-            "QSL did not reach text evaluation: {:?}",
+            "FSL did not reach text evaluation: {:?}",
             evaluation.outcome
         );
     };
@@ -266,7 +266,7 @@ fn checked_equal_with_limits(
 fn checked_equal(profile: TextProfile, left: &Text, right: &Text) -> (bool, Meter) {
     let (outcome, meter) = checked_equal_with_limits(profile, left, right, LIMITS, None);
     let Outcome::Completed(Value::Boolean(equal)) = outcome else {
-        panic!("QSL did not complete text equality: {outcome:?}");
+        panic!("FSL did not complete text equality: {outcome:?}");
     };
     (equal, meter)
 }
@@ -286,7 +286,7 @@ fn assert_agreement(profile: TextProfile, left: &str, right: &str, expected: boo
         "{profile:?} source/runtime equality"
     );
     assert_eq!(format!("{qsl_equal:?}"), format!("{runtime_equal:?}"));
-    assert_eq!(qsl_equal, expected, "{profile:?} QSpec equality");
+    assert_eq!(qsl_equal, expected, "{profile:?} FSpec equality");
     assert_eq!(
         qsl_meter.admitted_charges()[0].point,
         ChargePoint::FunctionCall
@@ -311,14 +311,14 @@ fn assert_agreement(profile: TextProfile, left: &str, right: &str, expected: boo
 fn tc186_t01_t02_text_profiles_agree_from_checked_source_to_runtime() {
     let t01 = selected_vector("T01");
     let t02 = selected_vector("T02");
-    // Branch-gating QSpec prose split: T01 authors the two scalar sequences.
+    // Branch-gating FSpec prose split: T01 authors the two scalar sequences.
     let (left, right) = t01
         .inputs
         .split_once(" and ")
         .expect("T01 has two operands");
     let composed = codepoint_sequence(left);
     let decomposed = codepoint_sequence(right);
-    // Branch-gating QSpec reference: T02 must use T01's operands.
+    // Branch-gating FSpec reference: T02 must use T01's operands.
     assert!(t02.inputs.contains("T01"), "T02 must refer to T01 operands");
     assert_agreement(TextProfile::UnicodeScalars, &composed, &decomposed, false);
     for (profile, retained) in [
@@ -335,14 +335,14 @@ fn tc186_t01_t02_text_profiles_agree_from_checked_source_to_runtime() {
 #[test]
 fn tc186_t03_compatibility_profiles_agree_from_checked_source_to_runtime() {
     let row = selected_vector("T03");
-    // Branch-gating QSpec input spelling: T03 selects the ligature and ff.
+    // Branch-gating FSpec input spelling: T03 selects the ligature and ff.
     let (ligature, letters) = row
         .inputs
         .split_once(" and ")
         .expect("T03 has two operands");
     let ligature = codepoint_sequence(ligature);
     assert!(letters.contains("`ff`"), "T03's second operand is ff");
-    // Branch-gating QSpec expected spelling: compatibility profiles agree.
+    // Branch-gating FSpec expected spelling: compatibility profiles agree.
     assert!(
         row.expected.contains("equal under compatibility profiles"),
         "T03 expects compatibility equality"
@@ -381,7 +381,7 @@ fn tc186_t05b_bare_text_type_refuses_at_source_recognition() {
 #[test]
 fn tc186_t06_invalid_utf8_refuses_at_both_reader_boundaries() {
     let row = selected_vector("T06");
-    // Branch-gating QSpec prose split: T06 authors two invalid UTF-8 bytes.
+    // Branch-gating FSpec prose split: T06 authors two invalid UTF-8 bytes.
     let bytes = row
         .inputs
         .split_once("bytes ")
@@ -389,7 +389,7 @@ fn tc186_t06_invalid_utf8_refuses_at_both_reader_boundaries() {
         .map(|(hex, _)| {
             hex.trim_matches('`')
                 .split_whitespace()
-                .map(|byte| u8::from_str_radix(byte, 16).expect("QSpec byte is hexadecimal"))
+                .map(|byte| u8::from_str_radix(byte, 16).expect("FSpec byte is hexadecimal"))
                 .collect::<Vec<_>>()
         })
         .expect("T06 names reader bytes");
@@ -412,7 +412,7 @@ fn tc186_t06_invalid_utf8_refuses_at_both_reader_boundaries() {
 fn tc186_t04_t05_text_bounds_admit_and_refuse() {
     let t04 = selected_vector("T04");
     let t05 = selected_vector("T05");
-    // Branch-gating QSpec bound spellings: reject changed row inputs.
+    // Branch-gating FSpec bound spellings: reject changed row inputs.
     assert!(t04.inputs.contains("Text[1,1;nfc]"));
     assert!(t05.inputs.contains("Text[0,0;nfc]"));
     let composed = codepoint_sequence(t04.inputs);
@@ -479,7 +479,7 @@ fn tc186_t04_t05_text_bounds_admit_and_refuse() {
 #[test]
 fn tc186_t06b_checked_text_values_agree_with_runtime_bytes() {
     let row = selected_vector("T06b");
-    // Branch-gating QSpec source spellings: this row owns both source forms.
+    // Branch-gating FSpec source spellings: this row owns both source forms.
     assert!(row.inputs.contains("\\u00e9"));
     assert!(row.inputs.contains("binary-utf8"));
     let raw_spelling = "\"é\"";
@@ -526,7 +526,7 @@ fn tc186_t06b_checked_text_values_agree_with_runtime_bytes() {
                 .expect("same binary Text profile");
         assert!(
             matches!(&qsl, Outcome::Completed(Value::Boolean(true))),
-            "{pair} checked QSL equality: {qsl:?}"
+            "{pair} checked FSL equality: {qsl:?}"
         );
         assert_eq!(
             runtime_equal,
@@ -541,7 +541,7 @@ fn tc186_t06b_checked_text_values_agree_with_runtime_bytes() {
 #[test]
 fn tc186_t10_distinct_text_profiles_refuse_before_charge() {
     let row = selected_vector("T10");
-    // Branch-gating QSpec profile spelling: this row selects binary UTF-8.
+    // Branch-gating FSpec profile spelling: this row selects binary UTF-8.
     assert!(row.inputs.contains("binary-utf8"));
     let source = "language \"ix:native\" edition \"1-draft\";\n\
          profile v = \"quire.value.complete/v1\";\n\
@@ -629,7 +629,7 @@ fn assert_order_agreement(id: &str, profile: TextProfile, left: &str, right: &st
         .expect("same-profile T12 operands type-check");
     assert!(
         matches!(&qsl, Outcome::Completed(Value::Boolean(true))),
-        "{id} QSL order: {qsl:?}"
+        "{id} FSL order: {qsl:?}"
     );
     assert_eq!(runtime, Outcome::Completed(true), "{id} runtime order");
     assert_meter_agreement(&qsl_meter, &runtime_meter);
@@ -647,7 +647,7 @@ fn tc186_t12_scalar_and_unsigned_utf8_order_agree() {
 #[test]
 fn tc186_t11_nfc_exact_limits_and_named_denials_agree() {
     let row = selected_vector("T11");
-    // Branch-gating QSpec charge-point spelling: this denial is authored.
+    // Branch-gating FSpec charge-point spelling: this denial is authored.
     assert!(row.inputs.contains("text.normalize-output"));
     let (composed, decomposed) = t01_operands();
     let (left, right) = (
@@ -707,7 +707,7 @@ fn tc186_t11_nfc_exact_limits_and_named_denials_agree() {
         let runtime = compare_text(ComparisonOperator::Equal, &left, &right, &mut runtime_meter)
             .expect("same profile");
         let Outcome::Incomplete(qsl_shortage) = qsl else {
-            panic!("QSL must stop at {point:?}: {qsl:?}");
+            panic!("FSL must stop at {point:?}: {qsl:?}");
         };
         let Outcome::Incomplete(runtime_shortage) = runtime else {
             panic!("runtime must stop at {point:?}: {runtime:?}");
@@ -761,7 +761,7 @@ fn tc186_t11_nfc_exact_limits_and_named_denials_agree() {
 #[test]
 fn tc186_t14_non_normalizing_comparison_and_one_under_agree() {
     let row = selected_vector("T14");
-    // Branch-gating QSpec limit spelling: this row authors the one-under case.
+    // Branch-gating FSpec limit spelling: this row authors the one-under case.
     assert!(row.inputs.contains("work_units: 2"));
     let (composed, decomposed) = t01_operands();
     for profile in [TextProfile::UnicodeScalars, TextProfile::BinaryUtf8] {
@@ -822,7 +822,7 @@ fn tc186_t14_non_normalizing_comparison_and_one_under_agree() {
 #[test]
 fn tc186_t13_normalized_length_controls_admission() {
     let row = selected_vector("T13");
-    // Branch-gating QSpec bound spelling: this row authors NFD refusal.
+    // Branch-gating FSpec bound spelling: this row authors NFD refusal.
     assert!(row.inputs.contains("Text[1,1;nfd]"));
     let (composed, decomposed) = t01_operands();
     let decomposed_literal = source_literal(&decomposed);
@@ -864,7 +864,7 @@ fn tc186_t13_normalized_length_controls_admission() {
 #[test]
 fn tc186_t16_admission_limit_precedence_is_exact() {
     let row = selected_vector("T16");
-    // Branch-gating QSpec limit spelling: this row authors normalized denial.
+    // Branch-gating FSpec limit spelling: this row authors normalized denial.
     assert!(row.inputs.contains("normalized_scalars: 1"));
     let (composed, decomposed) = t01_operands();
     assert_checked_text_literal_refusal((1, 1), TextProfile::Nfd, &decomposed, 2);
@@ -1063,13 +1063,13 @@ mod enum_rows {
     };
 
     fn selected_vector(id: &str) {
-        // Branch-gating QSpec ID comparison: each enum row must be published exactly once.
+        // Branch-gating FSpec ID comparison: each enum row must be published exactly once.
         let rows: Vec<_> = vectors_of(TestCase::Tc186)
             .filter(|vector| vector.id == id)
             .collect();
         let [row] = rows.as_slice() else {
             panic!(
-                "QSpec TC-186 must contain exactly one {id} row; found {}",
+                "FSpec TC-186 must contain exactly one {id} row; found {}",
                 rows.len()
             );
         };
@@ -1339,7 +1339,7 @@ mod enum_rows {
 
 #[ix_trace_rs::string_edge]
 fn t_route(id: &str) -> fn() {
-    // Branch-gating QSpec ID match: a new row must have a runnable route.
+    // Branch-gating FSpec ID match: a new row must have a runnable route.
     match id {
         "T01" | "T02" => tc186_t01_t02_text_profiles_agree_from_checked_source_to_runtime,
         "T03" => tc186_t03_compatibility_profiles_agree_from_checked_source_to_runtime,
@@ -1357,7 +1357,7 @@ fn t_route(id: &str) -> fn() {
         "T14" => tc186_t14_non_normalizing_comparison_and_one_under_agree,
         "T15" => enum_rows::tc186_t15_precedence_is_ill_typed_with_zero_limits_and_no_charge,
         "T16" => tc186_t16_admission_limit_precedence_is_exact,
-        other => panic!("unrouted QSpec TC-186 T vector {other}"),
+        other => panic!("unrouted FSpec TC-186 T vector {other}"),
     }
 }
 
@@ -1369,5 +1369,5 @@ fn tc186_every_published_t_row_has_a_runnable_route() {
         seen += 1;
         t_route(row.id)();
     }
-    assert!(seen > 0, "QSpec TC-186 offers no vectors");
+    assert!(seen > 0, "FSpec TC-186 offers no vectors");
 }
