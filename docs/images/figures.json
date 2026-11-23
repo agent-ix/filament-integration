@@ -1,4 +1,9 @@
 {
+  "data": {
+    "locked": {"from":"regex","path":"Cargo.lock","all":true,"names":["crate","repo","kind","ref","commit"],"pattern":"name = \"([^\"]+)\"\\nversion = \"[^\"]+\"\\nsource = \"git\\+https://github.com/agent-ix/([^?\"]+)\\?(branch|rev)=([^#\"]+)#([0-9a-f]+)\""},
+    "lock_repos": {"from":"expr","value":"unique(pluck(locked, 'repo'))"},
+    "lock_rows": {"from":"expr","value":"sort_by(sort_by(tally(pluck(locked, 'repo'), lock_repos), 'key'), 'n', 'desc')"}
+  },
   "figures": [
     {
       "id": "hero",
@@ -27,7 +32,24 @@
         {"k":"note","at":[896,230],"text":"generated verdict","role":"evidence","anchor":"end"}
       ]
     },
-    {"id":"ecosystem","construct":{"name":"ecosystem","here":"filament-integration"}}
+    {"id":"ecosystem","construct":{"name":"ecosystem","here":"filament-integration"}},
+    {
+      "id": "lock",
+      "width": 980, "height": "=34 + 34 * len(lock_rows) + 8",
+      "label": "The version lock is Cargo.lock. It pins {join(pluck(lock_rows, 'key'), ', ')} each to one exact commit, so every crate of a repository resolves to a single copy.",
+      "items": [
+        {"k":"text","at":[12,16],"text":"REPOSITORY","role":"muted","size":12},
+        {"k":"text","at":[342,16],"text":"TRACKS","role":"muted","size":12},
+        {"k":"text","at":[532,16],"text":"PINNED COMMIT","role":"muted","size":12},
+        {"k":"text","at":[772,16],"text":"CRATES LOCKED","role":"muted","size":12},
+        {"k":"repeat","over":"lock_rows","let":{"y":"=34 + i * 34","pin":"=find(locked, 'repo', row.key)"},"items":[
+          {"k":"rect","at":[0,"=y",980,28],"role":"ink","fill":false},
+          {"k":"text","at":[12,"=y + 21"],"text":"=row.key","role":"ink","font":"title"},
+          {"k":"text","at":[342,"=y + 21"],"text":"=if(pin.kind == 'branch', 'branch main', 'fixed revision')","role":"muted","size":13},
+          {"k":"text","at":[532,"=y + 21"],"text":"=head(pin.commit, 10)","role":"model","size":13},
+          {"k":"text","at":[772,"=y + 21"],"text":"=row.n","role":"ink","size":13}
+        ]}
+      ]
+    }
   ]
 }
-
