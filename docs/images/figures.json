@@ -1,0 +1,55 @@
+{
+  "data": {
+    "locked": {"from":"regex","path":"Cargo.lock","all":true,"names":["crate","repo","kind","ref","commit"],"pattern":"name = \"([^\"]+)\"\\nversion = \"[^\"]+\"\\nsource = \"git\\+https://github.com/agent-ix/([^?\"]+)\\?(branch|rev)=([^#\"]+)#([0-9a-f]+)\""},
+    "lock_repos": {"from":"expr","value":"unique(pluck(locked, 'repo'))"},
+    "lock_rows": {"from":"expr","value":"sort_by(sort_by(count_by(pluck(locked, 'repo'), lock_repos), 'key'), 'n', 'desc')"}
+  },
+  "figures": [
+    {
+      "id": "hero",
+      "width": 980, "height": 330,
+      "label": "The integration tests take a FSL source and its domain model through FSL's compiler into a checked package, read it with contract IR and feed it to the code generator, then compile and run what was generated. FSL's own runtime evaluates the same input, and the test passes only when the two verdicts agree.",
+      "items": [
+        {"k":"box","at":[0,20,148,56],"role":"code","title":"FSL source","subs":["+ domain model"]},
+        {"k":"box","at":[166,20,148,56],"role":"logic","title":"FSL","subs":["check · package"]},
+        {"k":"box","at":[332,20,148,56],"role":"model","title":"package bytes","subs":["checked-package/v2"]},
+        {"k":"box","at":[498,20,148,56],"role":"logic","title":"contract IR","subs":["reads the bytes"]},
+        {"k":"box","at":[664,20,148,56],"role":"logic","title":"codegen","subs":["public APIs"]},
+        {"k":"box","at":[830,20,148,56],"role":"model","title":"generated","subs":["Rust · Kani"]},
+        {"k":"line","points":[[148,48],[163,48]],"role":"logic"},
+        {"k":"line","points":[[314,48],[329,48]],"role":"model"},
+        {"k":"line","points":[[480,48],[495,48]],"role":"logic"},
+        {"k":"line","points":[[646,48],[661,48]],"role":"logic"},
+        {"k":"line","points":[[812,48],[827,48]],"role":"model"},
+        {"k":"box","at":[166,150,148,56],"role":"logic","title":"FSL runtime","subs":["runtime::execute"]},
+        {"k":"line","points":[[240,76],[240,147]],"role":"logic"},
+        {"k":"box","at":[830,150,148,56],"role":"logic","title":"build and run","subs":["compiled for real"]},
+        {"k":"line","points":[[904,76],[904,147]],"role":"model"},
+        {"k":"box","at":[478,258,188,56],"role":"evidence","title":"verdicts agree","subs":["or the test fails"]},
+        {"k":"line","points":[[240,206],[240,286],[475,286]],"role":"evidence"},
+        {"k":"line","points":[[904,206],[904,286],[669,286]],"role":"evidence"},
+        {"k":"note","at":[248,230],"text":"native verdict","role":"evidence"},
+        {"k":"note","at":[896,230],"text":"generated verdict","role":"evidence","anchor":"end"}
+      ]
+    },
+    {"id":"ecosystem","construct":{"name":"ecosystem","here":"filament-integration"}},
+    {
+      "id": "lock",
+      "width": 980, "height": "=34 + 34 * len(lock_rows) + 8",
+      "label": "The version lock is Cargo.lock. It pins {join(pluck(lock_rows, 'key'), ', ')} each to one exact commit, so every crate of a repository resolves to a single copy.",
+      "items": [
+        {"k":"text","at":[12,16],"text":"REPOSITORY","role":"muted","size":12},
+        {"k":"text","at":[342,16],"text":"TRACKS","role":"muted","size":12},
+        {"k":"text","at":[532,16],"text":"PINNED COMMIT","role":"muted","size":12},
+        {"k":"text","at":[772,16],"text":"CRATES LOCKED","role":"muted","size":12},
+        {"k":"repeat","over":"lock_rows","let":{"y":"=34 + i * 34","pin":"=find(locked, 'repo', row.key)"},"items":[
+          {"k":"rect","at":[0,"=y",980,28],"role":"ink","fill":false},
+          {"k":"text","at":[12,"=y + 21"],"text":"=row.key","role":"ink","font":"title"},
+          {"k":"text","at":[342,"=y + 21"],"text":"=if(pin.kind == 'branch', 'branch main', 'fixed revision')","role":"muted","size":13},
+          {"k":"text","at":[532,"=y + 21"],"text":"=head(pin.commit, 10)","role":"model","size":13},
+          {"k":"text","at":[772,"=y + 21"],"text":"=row.n","role":"ink","size":13}
+        ]}
+      ]
+    }
+  ]
+}
