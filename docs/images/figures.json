@@ -1,0 +1,33 @@
+{
+  "figures": [
+    {
+      "id": "hero",
+      "width": 980, "height": 330,
+      "label": "The integration tests take a FSL source and its domain model through FSL's compiler into a checked package, read it with contract IR and feed it to the code generator, then compile and run what was generated. FSL's own runtime evaluates the same input, and the test passes only when the two verdicts agree.",
+      "items": [
+        {"k":"box","at":[0,20,148,56],"role":"code","title":"FSL source","subs":["+ domain model"]},
+        {"k":"box","at":[166,20,148,56],"role":"logic","title":"FSL","subs":["check · package"]},
+        {"k":"box","at":[332,20,148,56],"role":"model","title":"package bytes","subs":["checked-package/v2"]},
+        {"k":"box","at":[498,20,148,56],"role":"logic","title":"contract IR","subs":["reads the bytes"]},
+        {"k":"box","at":[664,20,148,56],"role":"logic","title":"codegen","subs":["public APIs"]},
+        {"k":"box","at":[830,20,148,56],"role":"model","title":"generated","subs":["Rust · Kani"]},
+        {"k":"line","points":[[148,48],[163,48]],"role":"logic"},
+        {"k":"line","points":[[314,48],[329,48]],"role":"model"},
+        {"k":"line","points":[[480,48],[495,48]],"role":"logic"},
+        {"k":"line","points":[[646,48],[661,48]],"role":"logic"},
+        {"k":"line","points":[[812,48],[827,48]],"role":"model"},
+        {"k":"box","at":[166,150,148,56],"role":"logic","title":"FSL runtime","subs":["runtime::execute"]},
+        {"k":"line","points":[[240,76],[240,147]],"role":"logic"},
+        {"k":"box","at":[830,150,148,56],"role":"logic","title":"build and run","subs":["compiled for real"]},
+        {"k":"line","points":[[904,76],[904,147]],"role":"model"},
+        {"k":"box","at":[478,258,188,56],"role":"evidence","title":"verdicts agree","subs":["or the test fails"]},
+        {"k":"line","points":[[240,206],[240,286],[475,286]],"role":"evidence"},
+        {"k":"line","points":[[904,206],[904,286],[669,286]],"role":"evidence"},
+        {"k":"note","at":[248,230],"text":"native verdict","role":"evidence"},
+        {"k":"note","at":[896,230],"text":"generated verdict","role":"evidence","anchor":"end"}
+      ]
+    },
+    {"id":"ecosystem","construct":{"name":"ecosystem","here":"filament-integration"}}
+  ]
+}
+

@@ -2,6 +2,10 @@
 # Copyright (C) 2026 Agent-IX
 """filament-integration's documentation figures, rendered by the docs-figures skill.
 
+Only the version-lock table is defined here. Its rows come from Cargo.lock, which
+docs/images/figures.json cannot yet express (data-driven rows). The other figures are
+defined in docs/images/figures.json and rendered by `make figures`.
+
 Regenerate from the repository root with the agent-ix/dev-tools skill:
 
     python3 -m pip install fonttools
@@ -21,16 +25,6 @@ STYLE = "ix-docs"
 
 ROOT = Path(__file__).resolve().parents[2]
 
-# One role per kind of thing, fixed across the Quire repositories.
-ROLES = [
-    ("code", "authored source", "box"),
-    ("logic", "compiler stage", "box"),
-    ("model", "checked package / IR", "box"),
-    ("evidence", "outcome", "box"),
-    ("ink", "input", "box"),
-]
-
-
 # ---- repository data ---------------------------------------------------------
 
 
@@ -47,42 +41,6 @@ def locked_repositories():
 
 
 # ---- figures -----------------------------------------------------------------
-
-
-def hero():
-    """README hero: one source, two routes, one comparison."""
-    f = Figure(
-        "hero",
-        980,
-        330,
-        "The integration tests take a FSL source and its domain model through FSL's compiler into "
-        "a checked package, read it with contract IR and feed it to the code generator, then compile "
-        "and run what was generated. FSL's own runtime evaluates the same input, and the test "
-        "passes only when the two verdicts agree.",
-    )
-    w, gap, top = 148, 18, 20
-    xs = [i * (w + gap) for i in range(6)]
-    f.box(xs[0], top, w, 56, "code", "FSL source", "+ domain model")
-    f.box(xs[1], top, w, 56, "logic", "FSL", "check · package")
-    f.box(xs[2], top, w, 56, "model", "package bytes", "checked-package/v2")
-    f.box(xs[3], top, w, 56, "logic", "contract IR", "reads the bytes")
-    f.box(xs[4], top, w, 56, "logic", "codegen", "public APIs")
-    f.box(xs[5], top, w, 56, "model", "generated", "Rust · Kani")
-    for i in range(5):
-        role = "model" if i in (1, 4) else "logic"
-        f.line([(xs[i] + w, top + 28), (xs[i + 1] - 3, top + 28)], role)
-    low = 150
-    f.box(xs[1], low, w, 56, "logic", "FSL runtime", "runtime::execute")
-    f.line([(xs[1] + w // 2, top + 56), (xs[1] + w // 2, low - 3)], "logic")
-    f.box(xs[5], low, w, 56, "logic", "build and run", "compiled for real")
-    f.line([(xs[5] + w // 2, top + 56), (xs[5] + w // 2, low - 3)], "model")
-    bottom = 258
-    f.box(xs[3] - 20, bottom, w + 40, 56, "evidence", "verdicts agree", "or the test fails")
-    f.line([(xs[1] + w // 2, low + 56), (xs[1] + w // 2, bottom + 28), (xs[3] - 23, bottom + 28)], "evidence")
-    f.line([(xs[5] + w // 2, low + 56), (xs[5] + w // 2, bottom + 28), (xs[3] + w + 23, bottom + 28)], "evidence")
-    f.note(xs[1] + w // 2 + 8, low + 80, "native verdict", "evidence")
-    f.note(xs[5] + w // 2 - 8, low + 80, "generated verdict", "evidence", anchor="end")
-    return f
 
 
 def lock():
@@ -112,76 +70,4 @@ def lock():
     return f
 
 
-REPOS = [
-    (1, 0, "filament-driver", "the fsl command", True),
-    (2, 0, "filament-integration", "tests the whole chain", True),
-    (3, 0, "filament-verification", "plans verification", True),
-    (0, 1, "filament-specification", "the standard", True),
-    (1, 1, "filament-spec-language", "compiler · evaluator", False),
-    (2, 1, "filament-contract-ir", "contract model", False),
-    (3, 1, "filament-contract-codegen", "code · tests · proofs", False),
-    (4, 1, "filament-contract-runtime", "runs generated checks", False),
-    (0, 2, "filament-observation", "qualified observations", False),
-    (1, 2, "filament-protocol", "protocol conformance", True),
-    (2, 2, "filament-analyze", "SMT consistency", False),
-    (0, 3, "filament-mltl", "MLTL over observations", False),
-]
-FEEDS = [
-    ("filament-specification", "filament-spec-language"),
-    ("filament-spec-language", "filament-contract-ir"),
-    ("filament-contract-ir", "filament-contract-codegen"),
-    ("filament-contract-codegen", "filament-contract-runtime"),
-    ("filament-spec-language", "filament-protocol"),
-    ("filament-contract-ir", "filament-analyze"),
-    ("filament-observation", "filament-protocol"),
-    ("filament-observation", "filament-mltl"),
-]
-SHARED = ["filament-eval", "filament-exact", "filament-semantic-value", "filament-walk", "quire-canonical",
-          "filament-verification-contracts"]
-
-
-def ecosystem(here="filament-integration"):
-    """The Quire repositories: the main chain, its branches, and what runs and shares it."""
-    f = Figure(
-        "ecosystem",
-        980,
-        476,
-        "The Quire repositories. The main chain runs from the standard, filament-specification, to "
-        "the compiler, filament-spec-language, then filament-contract-ir, filament-contract-codegen and "
-        "filament-contract-runtime. filament-spec-language also feeds filament-protocol, and "
-        "filament-contract-ir feeds filament-analyze. filament-observation feeds filament-protocol and "
-        "filament-mltl. Above the chain, filament-driver runs it, filament-integration tests it and "
-        "filament-verification plans verification. Below it, shared libraries used throughout: "
-        "filament-eval, filament-exact, filament-semantic-value, filament-walk, quire-canonical and "
-        "filament-verification-contracts.",
-    )
-    w, h, step = 176, 50, 201
-    rows = {0: 20, 1: 120, 2: 210, 3: 290}
-    where = {}
-    for col, row, name, sub, _ in REPOS:
-        x, y = col * step, rows[row]
-        where[name] = (x, y)
-        role = "logic" if name == here else "ink"
-        f.box(x, y, w, h, role, name, sub)
-    for a, b in FEEDS:
-        (ax, ay), (bx, by) = where[a], where[b]
-        if ay == by:
-            f.line([(ax + w, ay + h / 2), (bx - 3, by + h / 2)], "model")
-        else:
-            f.line([(ax + w / 2, ay + h), (bx + w / 2, by - 3)], "model")
-    f.text(0, 12, "ORCHESTRATION", "muted", "mono", SMALL)
-    f.text(0, 112, "THE CHAIN", "muted", "mono", SMALL)
-    f.text(0, 382, "SHARED LIBRARIES · USED THROUGHOUT", "muted", "mono", SMALL)
-    gap = 10
-    widths = [FONTS["title"].width(name, TITLE) + 24 for name in SHARED]
-    spare = (980 - sum(widths) - gap * (len(SHARED) - 1)) / len(SHARED)
-    x = 0
-    for name, w0 in zip(SHARED, widths):
-        w0 = round(w0 + spare)
-        f.box(x, 390, w0, h, "logic" if name == here else "ink", name)
-        x += w0 + gap
-    f.legend(0, 472, [("logic", "this repository", "box"), ("model", "feeds", "fill")])
-    return f
-
-
-FIGURES = [hero, lock, ecosystem]
+FIGURES = [lock]
