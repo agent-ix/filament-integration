@@ -2,7 +2,7 @@
   "data": {
     "locked": {"from":"regex","path":"Cargo.lock","all":true,"names":["crate","repo","kind","ref","commit"],"pattern":"name = \"([^\"]+)\"\\nversion = \"[^\"]+\"\\nsource = \"git\\+https://github.com/agent-ix/([^?\"]+)\\?(branch|rev)=([^#\"]+)#([0-9a-f]+)\""},
     "lock_repos": {"from":"expr","value":"unique(pluck(locked, 'repo'))"},
-    "lock_rows": {"from":"expr","value":"sort_by(sort_by(tally(pluck(locked, 'repo'), lock_repos), 'key'), 'n', 'desc')"}
+    "lock_rows": {"from":"expr","value":"sort_by(sort_by(count_by(pluck(locked, 'repo'), lock_repos), 'key'), 'n', 'desc')"}
   },
   "figures": [
     {
