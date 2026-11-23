@@ -77,7 +77,7 @@ ci: fmt-check lint test kani deny audit-unsafe
 # =============================================================================
 # Documentation figures
 # =============================================================================
-# docs/images/figures.json defines the figures; ixd-figures (agent-ix/ix-diagrams) renders them.
+# docs/images/figures.json defines the figures; `ixd build` (agent-ix/ix-diagrams) renders them.
 # Install it with: cargo install --git https://github.com/agent-ix/ix-diagrams ix-diagrams
 
 IXD ?= ixd
