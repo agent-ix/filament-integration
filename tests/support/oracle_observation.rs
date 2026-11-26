@@ -20,3 +20,24 @@ pub fn snapshot<T: std::fmt::Debug, L: std::fmt::Debug>(
         )
     )
 }
+
+/// Preserve the typed result, ordered per-charge requests with their admission
+/// decisions, and every counter, from the production bounded charge capture.
+/// A truncated capture is a failure, never a prefix comparison.
+pub fn captured_snapshot<T: std::fmt::Debug>(
+    outcome: &Outcome<T>,
+    meter: &mut Meter,
+) -> String {
+    let events = meter
+        .disable_charge_capture()
+        .expect("the observation enabled charge capture")
+        .expect("the bounded charge capture is complete");
+    format!(
+        "{:?}",
+        (
+            outcome,
+            events.events(),
+            LimitKind::ALL.map(|kind| (kind, meter.consumed(kind))),
+        )
+    )
+}
