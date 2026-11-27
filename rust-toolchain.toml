@@ -1,6 +1,5 @@
 [toolchain]
-# filament-spec-language and filament-contract-codegen require Rust 1.98; llvm-tools backs the
-# measured-coverage composition test.
-channel = "1.98.1"
+# Standardized ecosystem compiler; llvm-tools backs the measured-coverage composition test.
+channel = "1.100.0"
 components = ["rustfmt", "clippy", "llvm-tools"]
 profile = "minimal"
