@@ -71,7 +71,7 @@ fn original_call_literal_is_typed_by_the_declared_ms_node() {
     let [(literal, type_id, value)] = literals.as_slice() else {
         panic!("one original quantity literal: {nodes:#?}");
     };
-    assert_eq!(**value, json!("3"));
+    assert_eq!(value.as_str(), Some("3"));
     assert_eq!(literal.semantic_type, ms.node_id);
     assert_eq!(**type_id, ms.node_id);
     let start = text.find("3 ms").expect("original call literal");
@@ -235,5 +235,5 @@ fn admitted_operation_parameter_names_the_original_ms_unit() {
     let CheckedTerm::Literal { value, .. } = value.as_ref() else {
         panic!("operation name literal");
     };
-    assert_eq!(value, "delay");
+    assert_eq!(value.as_str(), Some("delay"));
 }
