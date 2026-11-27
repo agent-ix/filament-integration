@@ -17,7 +17,7 @@ use quire_exact::{
 };
 use quire_semantic_value::{
     checking::CheckingLimits,
-    location::{Location, Origin},
+    location::{ExpressionLocation, ExpressionOwner},
     quantity::{evaluate_quantity_unit, QuantityOperation, QuantityRefusal, UnitTable},
     unit::{NominalUnitForm, Unit},
 };
@@ -114,8 +114,8 @@ fn check(text: &str, package: PackageDeclarations, expression: &str, cause: IllT
     assert_eq!(
         refusals,
         vec![CheckRefusal {
-            location: Location::at(
-                Origin::Body {
+            location: ExpressionLocation::at(
+                ExpressionOwner::Body {
                     function: "bad".to_owned(),
                     index: 0
                 },
