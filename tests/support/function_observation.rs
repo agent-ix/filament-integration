@@ -17,7 +17,7 @@ use quire_contract_model::{
 };
 use quire_eval::{CallFailure, Evaluation, FamilyOutcome, FamilyResult};
 use quire_exact::{Integer, LimitKind, Meter, Outcome, ScalarLimits, Value};
-use quire_semantic_value::location::Origin;
+use quire_semantic_value::location::ExpressionOwner;
 use quire_semantic_value::object_closure::ObjectClosure;
 const SOURCE: &str = __AUTHORED_SOURCE__;
 
@@ -86,7 +86,7 @@ fn assert_required_terminal(
                 .as_ref()
                 .expect("the stopped result has its checked body location");
             assert!(
-                matches!(&location.origin, Origin::Body { function, index: 0 } if function == "combine"),
+                matches!(&location.origin, ExpressionOwner::Body { function, index: 0 } if function == "combine"),
                 "{name}: checked body origin"
             );
             assert_eq!(location.depth(), 0, "{name}: body depth");

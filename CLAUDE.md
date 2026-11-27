@@ -37,7 +37,7 @@ All checks are local. This repository intentionally has no hosted workflow, and
 - `deny.toml` allow-lists licenses and denies unknown registries/git sources
 - The `undocumented_unsafe_blocks` Clippy lint runs through `make lint`; `make audit-unsafe` is its named alias.
 - `rustfmt.toml` uses 100-char width and `StdExternalCrate` import grouping. Local checks fail on drift.
-- `rust-toolchain.toml` selects Rust 1.98.1 (the floor filament-spec-language and filament-contract-codegen require) + rustfmt + clippy + llvm-tools.
+- `rust-toolchain.toml` selects the standardized Rust 1.100.0 compiler + rustfmt + clippy + llvm-tools.
 
 ## Layout
 

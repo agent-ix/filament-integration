@@ -193,7 +193,7 @@ fn compare_protocol_finish(operator: EqualityOperatorKind, syntax: &str, answer:
     ) {
         (
             quire_contract_ir::CheckedProtocolLocationOrigin::TypeDeclaration { name: emitted },
-            quire_semantic_value::location::Origin::TypeDeclaration { name: checked },
+            quire_semantic_value::location::ExpressionOwner::TypeDeclaration { name: checked },
         ) => assert_eq!(emitted.as_ref(), checked.as_str()),
         other => panic!("original protocol body location correspondence: {other:?}"),
     }

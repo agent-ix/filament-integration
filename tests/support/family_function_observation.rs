@@ -27,7 +27,9 @@ use quire_contract_model::{
 };
 use quire_eval::{CallFailure, Evaluation, FamilyOutcome};
 use quire_exact::{ChargePoint, Integer, LimitKind, Meter, Outcome, Value};
-use quire_semantic_value::{call::InputRefusal, location::Origin, object_closure::ObjectClosure};
+use quire_semantic_value::{
+    call::InputRefusal, location::ExpressionOwner, object_closure::ObjectClosure,
+};
 
 const SOURCE: &str = __AUTHORED_SOURCE__;
 
@@ -107,7 +109,7 @@ fn required(
             .as_ref()
             .expect("a stopped checked body has its location");
         assert!(
-            matches!(&location.origin, Origin::Body { function, index } if function == name && *index == source_index)
+            matches!(&location.origin, ExpressionOwner::Body { function, index } if function == name && *index == source_index)
         );
         assert_eq!(location.depth(), 0);
         assert_eq!(location.last_index(), None);
