@@ -27,7 +27,9 @@ use quire_contract_model::{
 };
 use quire_eval::{CallFailure, Evaluation, FamilyOutcome};
 use quire_exact::{ChargePoint, Integer, LimitKind, Meter, Outcome, Value};
-use quire_semantic_value::{call::InputRefusal, location::ExpressionOwner, object_closure::ObjectClosure};
+use quire_semantic_value::{
+    call::InputRefusal, location::ExpressionOwner, object_closure::ObjectClosure,
+};
 
 const SOURCE: &str = __AUTHORED_SOURCE__;
 
